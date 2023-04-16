@@ -16,13 +16,16 @@ const Liked = ({ data }) => {
 
     useEffect(() => {
         setIsLiked(false)
-        likedList?.every((ele) => {
-            if (mediaData === `${ele.type}/${ele.id}`) {
-                setIsLiked(true)
-                return false
-            }
-            return true
-        })
+        if (likedList.length > 0) {
+
+            likedList?.every((ele) => {
+                if (mediaData === `${ele.type}/${ele.id}`) {
+                    setIsLiked(true)
+                    return false
+                }
+                return true
+            })
+        }
     }, [likedList, mediaData])
 
     const liked = () => {

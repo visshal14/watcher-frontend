@@ -47,6 +47,7 @@ const Navbar = () => {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
             let data = response.data
+            console.log(response.data)
             dispatch(
                 setData({
                     first_name: data.first_name,
@@ -55,7 +56,7 @@ const Navbar = () => {
                     profile_photo: data.profile_photo,
                     playlists: data.playlists,
                     friends: data.friends,
-                    pending_requests: data.pending_requests,
+                    pending_requests: data.pending_request,
                     watch_later: data.watch_later,
                     liked: data.liked,
                     watched: data.watched,
