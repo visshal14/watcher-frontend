@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+.Cloudinary.js
+.tmdb.js
 # testing
 /coverage
 

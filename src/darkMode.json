@@ -1,0 +1,79 @@
+{
+    "background": {
+        "default": "#171717"
+    },
+    "scrollBtn": {
+        "background": "#929294",
+        "leftColor": "#FFFFFF",
+        "rightColor": "#000000"
+    },
+    "login": {
+        "leftPart": "#929294",
+        "mainText": "#FFFFFF",
+        "secondaryText": "#929294",
+        "labelText": "#FFFFFF",
+        "input": "#929294",
+        "signButton": "#929294",
+        "signButtonText": "#FFFFFF"
+    },
+    "navbar": {
+        "background": "#171717",
+        "leftDrawerToggle": "#FFFFFF",
+        "searchBarOutline": "#FFFFFF",
+        "searchBarBackground": "#929294",
+        "searchBarText": "#FFFFFF",
+        "menuItem": "#FFFFFF"
+    },
+    "leftSideNav": {
+        " background": "#121212",
+        "textColor": "#F4F5F8"
+    },
+    "rightSideNav": {
+        "background": "#121212",
+        "textColor": "#FFFFFF",
+        "secondaryTextColor": "#000000",
+        "cardBackground": "#929294"
+    },
+    "row": {
+        "textColor": "#ffffff"
+    },
+    "movieTv": {
+        "smtextColor": "#ffffff",
+        "xxsTextColor": "#ffffff",
+        "smCastColor": "#ffffff",
+        "seasonsBackground": "#929294",
+        "aSeasonBackground": "#484848",
+        "episodesBackground": "#929294",
+        "aEpisodeBackground": "#484848"
+    },
+    "profileTabs": {
+        "background": "#484848",
+        "activHeading": "#FFFFFF",
+        "inActivHeading": "#9698A2",
+        "divider": "#9698A2"
+    },
+    "details": {
+        "profilePhotoBorder": "#AA0404",
+        "headingColor": "#DEE1EF",
+        "textColor": "#FFFFFF",
+        "inputBackground": "#929294"
+    },
+    "friends": {
+        "background": "#929294",
+        "textColor": "#FFFFFF",
+        "inputColor": "#484848",
+        "friendBackground": "#484848",
+        "innerBoxBackground": "#484848",
+        "removeBtnBackground": "#484848"
+    },
+    "playlists": {
+        "background": "#484848",
+        "textColor": "#FFFFFF",
+        "titleBackground": "#929294"
+    },
+    "addMenu": {
+        "border": "#ffffff",
+        "background": "#484848",
+        "textColor": "#ffffff"
+    }
+}
