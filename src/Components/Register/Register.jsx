@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTheme, setAlert } from '../../userSlice';
 import { getTheme } from '../../userSlice';
 import { useNavigate } from 'react-router-dom';
+import { googleClient_id } from '../../tmdb';
 const Register = () => {
 
     const dispatch = useDispatch()
@@ -73,7 +74,7 @@ const Register = () => {
         /* global google */
 
         window.google.accounts.id.initialize({
-            client_id: "135648070728-6odnu4geph64ues3ahla9q0d6ffdu0r7.apps.googleusercontent.com",
+            client_id: googleClient_id,
             callback: handleCallbackResponse
         })
         // window.google.accounts.id.prompt()

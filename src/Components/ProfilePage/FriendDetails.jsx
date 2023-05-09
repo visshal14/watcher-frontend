@@ -75,7 +75,13 @@ const FriendDetails = () => {
                 return
                 // return alert(response.data.errMsg)
             }
-            alert(response.data.msg)
+            dispatch(setAlert({
+                type: "sucess",
+                data: response.data.msg,
+                isOpen: true
+            }))
+
+            // alert(response.data.msg)
             dispatchSetData(response.data.data)
             // dispatch(
             //     setData({
@@ -116,7 +122,12 @@ const FriendDetails = () => {
                     return
                     // return alert(response.data.errMsg)
                 }
-                alert(response.data.msg)
+                dispatch(setAlert({
+                    type: "sucess",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
+                // alert(response.data.msg)
                 dispatchSetData(response.data.data)
                 // dispatch(
                 //     setData({
@@ -149,7 +160,12 @@ const FriendDetails = () => {
                     return
                     // return alert(response.data.errMsg)
                 }
-                alert(response.data.msg)
+                dispatch(setAlert({
+                    type: "sucess",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
+                // alert(response.data.msg)
 
                 dispatchSetData(response.data.data)
                 // dispatch(

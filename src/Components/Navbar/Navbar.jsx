@@ -40,6 +40,7 @@ const Navbar = () => {
     }, [])
     useEffect(() => {
         // console.log(theme)
+
         if (window.localStorage.getItem("accessToken") === "") {
             return
         }
@@ -47,7 +48,6 @@ const Navbar = () => {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
             let data = response.data
-            console.log(response.data)
             dispatch(
                 setData({
                     first_name: data.first_name,

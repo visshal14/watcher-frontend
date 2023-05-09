@@ -13,7 +13,7 @@ const Row = ({ titles, fetchUrl, type }) => {
         axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
             setTiles(response.data.results)
         })
-        console.log(type)
+        // console.log(type)
         // eslint-disable-next-line
     }, [])
 
