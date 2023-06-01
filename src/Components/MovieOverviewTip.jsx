@@ -190,7 +190,7 @@ const MovieOverviewTip = ({ ele, type }) => {
                 },
                 mt: "5px"
             }}
-                onClick={() => knowMore(`${ele.media_type || ele.type || ele.details?.type || type}/${ele.id || ele.details?.id || ele.media_id}`)}
+                onClick={() => knowMore(`${ele?.media_type || ele?.type || ele.details?.type || type}/${ele.id || ele.details?.id || ele.media_id}`)}
             >Know More</Button>
             <Liked data={(ele.media_type || ele.type || ele.details?.type) + "/" + (ele.id || ele.details?.id || ele.media_id)} />
         </Box>

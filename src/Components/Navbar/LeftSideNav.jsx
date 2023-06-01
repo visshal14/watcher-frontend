@@ -102,6 +102,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                             fontSize: "13px",
                             minHeight: 0
                         }}
+                        onClick={() => navigate("/discover/movie")}
                     >Movies</Button>
                     <Button fullWidth startIcon={<Tv />}
                         sx={{
@@ -110,6 +111,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                             fontSize: "13px",
                             minHeight: 0
                         }}
+                        onClick={() => navigate("/discover/tv")}
                     >TV</Button>
                 </Box>
 

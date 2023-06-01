@@ -34,6 +34,8 @@ const Register = () => {
         setShowPassword(prev => !prev);
     }
     const submitButton = async () => {
+
+
         backendAxios.post('/register', {
             file: profilePhoto,
             email: email,

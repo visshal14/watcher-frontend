@@ -8,11 +8,14 @@ import RightSideNav from './RightSideNav'
 import SearchBar from "./SearchBar"
 import { useSelector } from 'react-redux'
 import { getFirstName, getProfilePhoto } from '../../userSlice'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { setData } from '../../userSlice'
 import { useDispatch } from 'react-redux'
 import backendAxios from "../../backendAxios"
 const Navbar = () => {
+
+
+    const navigate = useNavigate()
 
     const firstName = useSelector(getFirstName)
     const profilePhoto = useSelector(getProfilePhoto)
@@ -145,13 +148,15 @@ const Navbar = () => {
                         },
                         color: "navbar.menuItem"
                     }}>
-                        <ListItemButton>
+                        <ListItemButton onClick={() => navigate("/")}>
                             <ListItemText>Home</ListItemText>
+                            {/* <ListItemText>Home</ListItemText> */}
+
                         </ListItemButton>
-                        <ListItemButton>
+                        <ListItemButton onClick={() => navigate("/discover/movie")}>
                             <ListItemText>Movies</ListItemText>
                         </ListItemButton>
-                        <ListItemButton>
+                        <ListItemButton onClick={() => navigate("/discover/tv")}>
                             <ListItemText>Tv</ListItemText>
                         </ListItemButton>
                     </List>

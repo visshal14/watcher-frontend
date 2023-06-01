@@ -75,5 +75,13 @@
         "border": "#ffffff",
         "background": "#484848",
         "textColor": "#ffffff"
+    },
+    "discover": {
+        "buttonBorder": "#ffffff",
+        "buttonFore": "#ffffff",
+        "filterBack": "#ffffff",
+        "filterFore": "#484848",
+        "tilesBack": "#484848",
+        "color": "#ffffff"
     }
 }

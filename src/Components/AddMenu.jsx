@@ -10,7 +10,6 @@ import LoginChecker from '../LoginChecker';
 
 const AddMenu = ({ position, padding, mr, mt, height, id }, ref) => {
 
-
     const data = useSelector(getAllPlaylists)
     const friends = useSelector(getFriends)
     const shared = useSelector(getShared)
