@@ -55,7 +55,7 @@ function App() {
         xs: 300, // phone
         xsm: 450,
         sm: 600, // tablets
-        xmd: 750,
+        xmd: 800,
         md: 900, // small laptop
         lg: 1200, // desktop
       }
@@ -71,7 +71,6 @@ function App() {
             <Navbar />
             <Outlet />
           </>}>
-
             <Route path="/" element={<Homepage />} />
             <Route path="/movie/:id" element={<Movie />} />
             <Route path="/tv/:id" element={<TvDetails />} />

@@ -43,6 +43,11 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                     // return alert("error in saving")
                 }
                 dispatchSetData(response.data.data)
+                dispatch(setAlert({
+                    type: "success",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
                 // dispatch(
                 //     setData({
                 //         first_name: response.data.data.first_name,
@@ -58,7 +63,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                 //         shared: response.data.data.shared
                 //     })
                 // )
-                alert(response.data.msg)
+                // alert(response.data.msg)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/watch-later/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -74,6 +79,11 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                     // return alert("error in saving")
                 }
                 dispatchSetData(response.data.data)
+                dispatch(setAlert({
+                    type: "success",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
                 // dispatch(
                 //     setData({
                 //         first_name: response.data.data.first_name,
@@ -89,7 +99,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                 //         shared: response.data.data.shared
                 //     })
                 // )
-                alert(response.data.msg)
+                // alert(response.data.msg)
                 // UpdateUserData(response.data.data)
             })
         }
@@ -134,6 +144,10 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
             fontSize: fontSize || {
                 xxs: "10px",
                 md: "0.875rem"
+            },
+            "&:hover": {
+                bgcolor: "white",
+                color: "red"
             }
 
             // padding: {

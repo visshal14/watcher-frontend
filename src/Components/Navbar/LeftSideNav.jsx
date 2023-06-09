@@ -193,7 +193,8 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                     justifyContent: "flex-start",
                     color: "leftSideNav.textColor",
                     fontSize: "13px",
-                    minHeight: 0
+                    minHeight: 0,
+
                 }}>Logout</Button>
         </Drawer>
     )

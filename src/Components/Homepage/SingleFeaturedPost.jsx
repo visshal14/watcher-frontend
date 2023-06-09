@@ -21,7 +21,8 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
             display: {
                 xxs: series === 0 ? "block" : "none",
                 md: "block"
-            }
+            },
+            // transition: "width 1s, height 1s, transform 2s"
         }}>
 
             <Box
@@ -32,7 +33,9 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                     backgroundPosition: "center center",
                     backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,
                     position: "relative",
-                    borderRadius: 3
+                    borderRadius: 3,
+                    cursor: "default",
+
                 }}>
                 <Box
                     sx={{
@@ -81,6 +84,11 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                                     xxs: "2px 6px",
                                     xs: "3px 8px",
                                     sm: "6px 16px"
+                                },
+
+                                "&:hover": {
+                                    bgcolor: "white",
+                                    color: "red"
                                 }
 
                             }}
@@ -95,7 +103,7 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                         }} height={{
                             xxs: "1.2rem",
                             sm: "1em"
-                        }} position="normal" id={`${data.media_type}/${data.id}`} />
+                        }} position="normal" id={`${data.media_type}/${data.id}`} name={data?.name || data?.title || data?.original_title} />
 
                         {/* <Button variant='contained' sx={{
                             bgcolor: "red", color: "white", fontSize: {
@@ -115,7 +123,7 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                 </Box>
                 <Box sx={{ backgroundImage: "linear-gradient( 180deg,transparent,rgba(37,37,37,0.6),#111 )", height: "10rem", bottom: 0, position: "absolute", width: "100%", borderRadius: " 0 0 12px 12px", display: spot ? "block" : "none" }}></Box>
             </Box>
-        </Grid>
+        </Grid >
     )
 }
 

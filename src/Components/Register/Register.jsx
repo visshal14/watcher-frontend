@@ -8,6 +8,7 @@ import { setTheme, setAlert } from '../../userSlice';
 import { getTheme } from '../../userSlice';
 import { useNavigate } from 'react-router-dom';
 import { googleClient_id } from '../../tmdb';
+import { Helmet } from 'react-helmet';
 const Register = () => {
 
     const dispatch = useDispatch()
@@ -59,7 +60,7 @@ const Register = () => {
                     return
                     // return alert(response.data.errMsg)
                 }
-                alert(response.data)
+                // alert(response.data)
 
                 navigate("/login")
 
@@ -115,6 +116,11 @@ const Register = () => {
             overflow: "scroll",
             bgcolor: "background.default"
         }}>
+
+            <Helmet>
+                <title>Watcher</title>
+            </Helmet>
+
             <Grid item xxs={12} md={6} order={{ xxs: 2, md: 1 }}
                 sx={{
                     display: "flex",

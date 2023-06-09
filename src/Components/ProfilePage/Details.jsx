@@ -127,9 +127,11 @@ const Details = () => {
                 <Stack spacing={2}>
 
                     <Typography color={"details.headingColor"}>Info
-                        <IconButton onClick={changeStart}>
+                        <IconButton sx={{
+                            ml: "16px"
+                        }} onClick={changeStart}>
                             <Create sx={{
-                                color: change ? "details.profilePhotoBorder" : "details.headingColor"
+                                color: change ? "details.profilePhotoBorder" : "details.headingColor",
                             }} />
                         </IconButton>
                         {change ? <>
@@ -143,6 +145,7 @@ const Details = () => {
                                     xs: "3px 8px",
                                     sm: "6px 16px"
                                 },
+                                ml: "16px",
                                 bgcolor: "details.inputBackground"
                             }}
                                 onClick={doneChange}

@@ -58,7 +58,7 @@ const Layout = ({ data, title }) => {
 
                                 }}>
                                     <Grid item xxs={4}>
-                                        <img src={`https://image.tmdb.org/t/p/original${ele.background}`} alt="img" style={{
+                                        <img src={`https://image.tmdb.org/t/p/original${ele.background}`} loading="lazy" alt="img" style={{
                                             width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                         }} />
                                     </Grid>
@@ -66,11 +66,10 @@ const Layout = ({ data, title }) => {
                                         <Typography variant={"h5"}>{ele.title} </Typography>
                                         <Typography>{truncate(ele.description, 100)} </Typography>
                                         <Typography>{ele?.release_date?.split("-")[0]}</Typography>
-
                                     </Grid>
                                 </Grid>
                                 <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-                                    <AddMenu id={`${ele.type}/${ele.id}`} />
+                                    <AddMenu id={`${ele.type}/${ele.id}`} name={ele.title} />
                                 </Box>
                             </Grid>
 

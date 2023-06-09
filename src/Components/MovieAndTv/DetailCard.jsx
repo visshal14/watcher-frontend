@@ -1,16 +1,16 @@
 import { FiberManualRecord, StarRateRounded } from '@mui/icons-material'
 import { Grid, Box, Stack, Typography, Button, Avatar } from '@mui/material'
 import React from 'react'
-
+import { Helmet } from "react-helmet";
 import AddMenu from '../AddMenu'
 import Cast from './Cast'
 import WatchLater from '../WatchLaterBtn'
 import { useParams } from 'react-router-dom'
 
 const DetailCard = ({ watch_provider, details, isTv, cast }) => {
-    function truncate(str, n) {
-        return str?.length > n ? str.substr(0, n - 1) + "..." : str;
-    }
+    // function truncate(str, n) {
+    //     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+    // }
     const getHourFromRuntime = (runtime) => {
         const h = runtime / 60
         const min = runtime % 60
@@ -24,7 +24,8 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
             backgroundSize: "cover",
             backgroundPosition: "center center",
             // backgroundImage: `url(https://image.tmdb.org/t/p/original${details.backdrop_path})`,
-            position: "relative"
+            position: "relative",
+            cursor: "default"
         }}>
             <Box sx={{
                 width: "100%", height: {
@@ -34,12 +35,14 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                     sm: "100%"
                 }
             }}>
-                <img src={details?.backdrop_path ? `https://image.tmdb.org/t/p/original${details?.backdrop_path}` : ""} alt={`background of ${details?.original_title || details?.name}`} style={{
+                <img src={details?.backdrop_path ? `https://image.tmdb.org/t/p/original${details?.backdrop_path}` : ""} loading="lazy" alt={`background of ${details?.original_title || details?.name}`} style={{
                     width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px"
                 }} />
             </Box>
 
-
+            <Helmet>
+                <title>{details?.name || details?.title || details?.original_title}</title>
+            </Helmet>
 
 
 
@@ -63,7 +66,7 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                         sm: "movieTv.smTextColor"
                     }
                 }}>
-                    {details?.original_title || details?.name}
+                    {details?.name || details?.title || details?.original_title}
                 </Typography>
                 <Grid container alignItems={"center"} columnSpacing={3} >
                     <Grid item sx={{
@@ -107,7 +110,7 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                             }} key={i} sx={{
                                 mr: "5px",
                                 fontSize: "12px"
-                            }} >   {ele.name}</Typography>
+                            }}>{ele.name} {details.genres[i + 1] ? "|" : ""}</Typography>
                         )}
                     </Grid>
                     <Grid item sx={{
@@ -137,13 +140,15 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                             fontSize: {
                                 xxs: "10px",
                                 md: "12px"
-                            }
+                            },
+                            lineClamp: 2,
+                            overflow: "hidden"
                         }} color={{
                             xxs: "movieTv.xxsTextColor",
                             sm: "movieTv.smTextColor"
                         }} >
-                            {truncate(details?.overview, 150)}
-
+                            {/* {truncate(details?.overview, 150)} */}
+                            {details?.overview}
                         </Typography>
                         <Grid container justifyContent={{ xxs: "center", sm: "flex-start" }} mt={"10px"}>
                             {watch_provider &&
@@ -159,6 +164,10 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                                     padding: {
                                         xxs: "4px 4px",
                                         md: "6px 8px"
+                                    },
+                                    "&:hover": {
+                                        bgcolor: "white",
+                                        color: "gray"
                                     }
                                 }}
 
@@ -211,6 +220,7 @@ const DetailCard = ({ watch_provider, details, isTv, cast }) => {
                             }} mr="10px" mt="5px"
 
                                 id={isTv ? `tv/${details?.id}` : `movie/${details?.id}`}
+                                name={details?.name || details?.title || details?.original_title}
                             />
                         </Grid>
                     </Grid>

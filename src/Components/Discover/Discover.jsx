@@ -6,10 +6,11 @@ import countryList from "./countryList.json"
 import movieGenres from "./movieGenres.json"
 import { apiKey } from '../../tmdb'
 import axios from 'axios'
+import { Helmet } from "react-helmet";
 import AddMenu from '../AddMenu'
 import MovieOverviewTip from '../MovieOverviewTip'
 import knowMore from '../KnowMore'
-import { Close } from '@mui/icons-material'
+import { Close, FilterAlt } from '@mui/icons-material'
 const Discover = () => {
 
     const { type } = useParams()
@@ -284,6 +285,9 @@ const Discover = () => {
             xsm: 5
         }} py={10}>
 
+            <Helmet>
+                <title>Watcher | Discover</title>
+            </Helmet>
             <Grid container>
                 <Button
                     onClick={handleClick("genre")}
@@ -358,20 +362,27 @@ const Discover = () => {
                         mr: "-0.5rem"
                     }}>  {country ? `${country.split(",").length} selected` : ""}</Typography>}
                 </Button>
+
                 <CountryPopover anchorEl={anchorEl} handleClose={handleClose} countries={country} removeFun={clearAllGenreCountry} checkBoxFunc={countryCheckBox} />
                 <Button
                     onClick={filterClicked}
                     sx={{
                         m: 1,
                         width: "fit-content",
-                        border: "1px solid white",
+                        // border: "1px solid white",
                         bgcolor: "discover.filterBack",
                         borderRadius: "50px",
                         padding: "0.25rem 1rem",
-                        color: "discover.filterFore"
+                        color: "discover.filterFore",
+                        fontWeight: 700,
+                        "&:hover": {
+                            bgcolor: "discover.filterFore",
+                            color: "discover.filterBack"
+                        }
                     }}
+                    endIcon={<FilterAlt />}
                 >
-                    Submit
+                    Filter
                 </Button>
 
             </Grid>
@@ -406,7 +417,10 @@ const CountryPopover = ({ anchorEl, handleClose, countries, removeFun, checkBoxF
                 "& .MuiPopover-paper": {
                     p: 2,
 
-                }
+                },
+                "&::-webkit-scrollbar": {
+                    display: "none"
+                },
             }}
         >
             <Button fullWidth startIcon={<Close />}
@@ -422,9 +436,10 @@ const CountryPopover = ({ anchorEl, handleClose, countries, removeFun, checkBoxF
                     "& .MuiFormControlLabel-label": {
                         fontSize: "12px"
                     },
-                    minWidth: "150px"
+                    minWidth: "150px",
                 }} size="small" control={<Checkbox onChange={checkBoxFunc} value={ele.iso_3166_1} checked={countries?.includes(`${ele.iso_3166_1}`)} sx={{
-                    p: 0
+                    p: 0,
+                    bgColor: "white"
                 }} />} label={ele.english_name} />
             )}
         </Menu>
@@ -500,11 +515,13 @@ const SingleTiles = ({ data }) => {
             // m: 0.5,
 
             borderRadius: 1,
-            position: "relative"
+            position: "relative",
+            cursor: "pointer",
+
             // bgcolor: "grey"
         }} p={1}>
 
-            <AddMenu mt="8px" mr="8px" id={`${data?.first_air_date ? "tv" : "movie"}/${data.id}`} />
+            <AddMenu mt="8px" mr="8px" id={`${data?.first_air_date ? "tv" : "movie"}/${data.id}`} name={data?.name || data?.title || data?.original_title} />
             <Tooltip title={<MovieOverviewTip ele={data} bgcolor={"red"} type={`${data?.first_air_date ? "tv" : "movie"}`} />} enterDelay={500} placement="right">
 
 
@@ -520,7 +537,7 @@ const SingleTiles = ({ data }) => {
                     onClick={() => knowMore(`${data?.first_air_date ? "tv" : "movie"}/${data.id}`)}
                 >
 
-                    <img src={`https://image.tmdb.org/t/p/original${data.poster_path}`} style={{ height: "auto", width: "100%", objectFit: "contain", borderRadius: "8px" }} alt="poster" />
+                    <img src={`https://image.tmdb.org/t/p/original${data.poster_path}`} loading="lazy" style={{ height: "auto", width: "100%", objectFit: "contain", borderRadius: "8px" }} alt="poster" />
                     <Typography sx={{
                         width: "100%",
                         textOverflow: "ellipsis",

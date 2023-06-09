@@ -14,13 +14,14 @@ const TvDetails = () => {
     const [cast, setCast] = useState()
     const [watch_provider, setWatch_provider] = useState()
     const [seasons, setSeasons] = useState([])
-
+    const [noOfSeasons, setNoOfSeasons] = useState("")
 
     useEffect(() => {
-
+        setSeasons([])
         axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en&append_to_response=credits`).then((response) => {
             setDetails(response.data)
             getSeasonsEpisodes(response.data.number_of_seasons)
+            setNoOfSeasons(response.data.number_of_seasons)
             setCast(response.data.credits.cast)
         })
         axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${apiKey}`).then((response) => {
@@ -32,16 +33,30 @@ const TvDetails = () => {
         // eslint-disable-next-line
     }, [])
 
+    function compare(a, b) {
+        if (a.season_number > b.season_number) return 1;
+        if (a.season_number < b.season_number) return -1;
+        return 0;
+    }
+
+
     function getSeasonsEpisodes(n) {
         for (let i = 1; i <= n; i++) {
-
             axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${apiKey}`).then((response) => {
                 setSeasons(prev => [...prev, response.data])
             })
+        }
 
+    }
+    useEffect(() => {
+        // console.log(seasons.length)
+        if (seasons.length === noOfSeasons) {
+            const sorted = [...seasons].sort(compare);
+            setSeasons(sorted);
 
         }
-    }
+        // eslint-disable-next-line
+    }, [seasons])
     // useEffect(() => {
     //     console.log(seasons)
     // }, [seasons])
@@ -83,7 +98,8 @@ const TvDetails = () => {
                 px: "10px",
                 pb: "20px",
                 borderRadius: "20px",
-                position: "relative"
+                position: "relative",
+
             }}>
                 <Typography sx={{
                     position: "absolute",
@@ -93,7 +109,8 @@ const TvDetails = () => {
                     width: "100%",
                     textAlign: "center",
                     fontSize: "13px",
-                    color: "movieTv.xxsTextColor"
+                    color: "movieTv.xxsTextColor",
+                    cursor: "default"
                 }}>{`Total ${seasons?.length} seasons ${totalEpisodes()} episodes `}</Typography>
 
                 <Box

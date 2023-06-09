@@ -1,5 +1,5 @@
-import { Search } from '@mui/icons-material'
-import { TextField, Box, InputAdornment, Stack, Grid, Typography, ClickAwayListener } from '@mui/material'
+import { Clear, Search } from '@mui/icons-material'
+import { TextField, Box, InputAdornment, Stack, Grid, Typography, ClickAwayListener, IconButton } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import knowMore from '../KnowMore'
@@ -59,7 +59,7 @@ const SearchBar = () => {
             },
             position: "relative"
         }}>
-            <TextField fullWidth id="outlined-basic" variant="outlined" placeholder='Search'
+            <TextField fullWidth id="outlined-basic" variant="outlined" placeholder='Search' autoFocus
                 value={value}
                 onChange={(e) => { setValue(e.target.value) }}
                 sx={{
@@ -76,12 +76,13 @@ const SearchBar = () => {
                         borderStyle: "solid",
                         borderColor: "navbar.searchBarOutline",
                         borderRadius: value !== "" ? " 20px 20px 0 0" : "50px",
+
                     },
 
                     width: "100%",
                     mr: "10px",
                     mb: {
-                        xxs: "10px",
+                        xxs: value ? "0px" : "10px",
                         sm: "0"
                     },
                     "& .MuiOutlinedInput-root": {
@@ -90,7 +91,9 @@ const SearchBar = () => {
                             borderStyle: "solid",
                             borderColor: "navbar.searchBarOutline",
                         }
-                    }
+                    },
+
+
                 }}
 
                 InputProps={{
@@ -111,6 +114,14 @@ const SearchBar = () => {
                         </InputAdornment>
 
                     ),
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            {value && <IconButton>
+                                <Clear sx={{ color: "navbar.searchBarOutline" }} />
+                            </IconButton>}
+                        </InputAdornment>
+
+                    ),
                 }}
             />
 
@@ -122,7 +133,7 @@ const SearchBar = () => {
                         sm: "100%"
                     },
                     // height: "100px",
-                    bgcolor: "grey",
+                    bgcolor: "navbar.searchBarBackground",
                     top: "100%",
                     // bottom: { xxs: "-90px", sm: "-100px" },
                     left: 0,
@@ -134,32 +145,47 @@ const SearchBar = () => {
                     display: value !== "" ? "block" : "none",
                     maxHeight: "400px",
                     borderRadius: "0 0 20px 20px",
-                    overflowY: "auto"
+                    overflowY: "auto",
+                    "&::-webkit-scrollbar": {
+                        display: "none"
+                    },
+                    borderWidth: "2px ",
+                    borderStyle: "solid",
+                    borderColor: "navbar.searchBarOutline",
+                    borderTop: "none"
                 }}
                     spacing={1}
                 >
 
                     {data?.map((ele, i) =>
 
-                        <Grid key={"grid" + i} id={`${ele.media_type}/${ele.id}`} container onClick={() => knowMore(`${ele.media_type}/${ele.id}`)} bgcolor={"grey.400"}
+                        <Grid flexWrap="nowrap" key={"grid" + i} id={`${ele.media_type}/${ele.id}`} container onClick={() => knowMore(`${ele.media_type}/${ele.id}`)} bgcolor={"grey.400"}
                             sx={{
-                                height: "100px",
+                                height: "140px",
                                 borderRadius: "10px",
                                 p: 1,
-
+                                bgcolor: "navbar.searchBarGrid",
+                                color: "navbar.searchBarText"
                             }}
                         >
-                            <Grid item sx={{
+                            {ele?.poster_path && <Grid item sx={{
                                 height: "100%",
                                 width: "auto",
                                 mr: "8px"
                             }}>
-                                <img src={ele.poster_path ? "https://image.tmdb.org/t/p/original" + ele?.poster_path : ""} alt="" style={{ height: "100%", objectFit: "contain", maxWidth: "100%", borderRadius: "5px" }} />
-                            </Grid>
-                            <Grid item sx={{ maxWidth: "70%" }}>
-                                <Typography sx={{ wordBreak: "break-all" }}>{ele?.name || ele?.original_title}</Typography>
-                                <Typography sx={{ width: "fit-content", pr: 1, display: "inline-block" }}>{ele?.first_air_date?.split("-")[0] || ele?.release_date?.split("-")[0]}</Typography>
-                                <Typography sx={{ width: "fit-content", display: "inline-block" }}>TV</Typography>
+                                <img src={"https://image.tmdb.org/t/p/original" + ele?.poster_path} alt="moviePoster" style={{ height: "100%", objectFit: "cover", maxWidth: "100%", borderRadius: "5px" }} />
+                            </Grid>}
+                            <Grid container
+                                // sx={{ maxWidth: ele?.poster_path ? "70%" : "100%" }}
+                                flexDirection={"column"} justifyContent={"space-between"}>
+                                <Typography sx={{
+                                    // wordBreak: "break-all"
+
+                                }}>{ele?.name || ele?.title || ele?.original_title}</Typography>
+                                <Grid container justifyContent={"space-between"}>
+                                    <Typography sx={{ width: "fit-content", pr: 1, display: "inline-block" }}>{ele?.first_air_date?.split("-")[0] || ele?.release_date?.split("-")[0]}</Typography>
+                                    <Typography sx={{ width: "fit-content", display: "inline-block", border: "1px solid #fcba4e", padding: "0 0.25rem", borderRadius: "0.25rem" }}>{ele?.media_type}</Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
 

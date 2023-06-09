@@ -60,7 +60,11 @@ const Liked = ({ data }) => {
                 //         shared: response.data.data.shared
                 //     })
                 // )
-                alert(response.data.msg)
+                dispatch(setAlert({
+                    type: "success",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
             })
         } else {
             backendAxios.post(`/saveForWatchLater/liked/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -91,7 +95,11 @@ const Liked = ({ data }) => {
                 //         shared: response.data.data.shared
                 //     })
                 // )
-                alert(response.data.msg)
+                dispatch(setAlert({
+                    type: "success",
+                    data: response.data.msg,
+                    isOpen: true
+                }))
 
                 // UpdateUserData(response.data.data)
             })
@@ -131,7 +139,12 @@ const Liked = ({ data }) => {
             padding: "2px 4px",
             mt: "5px",
             minWidth: "0px",
-            height: "25px"
+            height: "25px",
+
+            "&:hover": {
+                bgcolor: "white",
+                color: "red"
+            }
         }}
             onClick={liked}
         >{isLiked ? <Favorite /> : <FavoriteBorder />}</Button>

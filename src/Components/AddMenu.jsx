@@ -1,5 +1,5 @@
 import { Add, Lock, Link, ExpandLess, ExpandMore, } from '@mui/icons-material';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField } from '@mui/material'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPlaylists, getFriends, setData, getShared, setAlert } from '../userSlice';
@@ -8,7 +8,7 @@ import backendAxios from "../backendAxios"
 import LoginChecker from '../LoginChecker';
 // import { UpdateUserData } from '../dataUpdate';
 
-const AddMenu = ({ position, padding, mr, mt, height, id }, ref) => {
+const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
     const data = useSelector(getAllPlaylists)
     const friends = useSelector(getFriends)
@@ -458,7 +458,11 @@ const AddMenu = ({ position, padding, mr, mt, height, id }, ref) => {
 
     const copyLink = () => {
         navigator.clipboard.writeText(`http://localhost:3000/${mediaData}`).then((function () {
-            alert('Link Copied!');
+            dispatch(setAlert({
+                type: "success",
+                data: "Link Copied",
+                isOpen: true
+            }))
         }), function () {
             console.log('Copy Error')
         });
@@ -626,20 +630,25 @@ const AddMenu = ({ position, padding, mr, mt, height, id }, ref) => {
                 sx={{
                     minWidth: 0,
                     bgcolor: "black",
+                    color: "white",
                     position: position ? "static" : "absolute",
                     top: position ? "" : "10px",
                     right: position ? "" : "10px",
                     zIndex: 1,
                     padding: padding || "",
                     mt: mt || 0,
-                    mr: mr || 0
+                    mr: mr || 0,
+                    "&:hover": {
+                        bgcolor: "white",
+                        color: "black"
+                    }
                 }}
 
             >
                 <Add id={id} sx={{
-                    height: height || "1em", width: height || "1em", color: "white"
+                    height: height || "1em", width: height || "1em",
                 }} />
-            </Button>
+            </Button >
 
 
 
@@ -663,8 +672,30 @@ const AddMenu = ({ position, padding, mr, mt, height, id }, ref) => {
                     p: 4,
                     maxHeight: "400px",
                     overflowY: "auto",
-                    color: "addMenu.textColor"
+                    color: "addMenu.textColor",
+                    "&::-webkit-scrollbar": {
+                        display: "none"
+                    }
                 }}>
+
+
+                    {name && <Typography variant="h2" component={"h2"} sx={{
+                        color: "addMenu.textColor",
+                        fontSize: "24px",
+                        fontWeight: 800,
+                        textAlign: "center",
+                        width: "100%",
+                        borderBottom: "1px solid",
+                        borderColor: "addMenu.textColor",
+                        marginBottom: "8px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                    }}>
+
+                        {name}
+
+                    </Typography>}
 
                     <Button fullWidth sx={{
                         color: "addMenu.textColor", fontSize: {

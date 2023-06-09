@@ -83,7 +83,8 @@ const FeaturedPosts = () => {
 
     return (
         <Grid container sx={{
-            position: "relative"
+            position: "relative",
+            height: "400px"
         }}>
             {
                 featured.map((ele, i) =>

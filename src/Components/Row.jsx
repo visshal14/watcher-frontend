@@ -5,6 +5,7 @@ import axios from 'axios'
 import knowMore from './KnowMore'
 import MovieOverviewTip from './MovieOverviewTip'
 import AddMenu from './AddMenu'
+import { useNavigate } from 'react-router-dom'
 
 const Row = ({ titles, fetchUrl, type }) => {
 
@@ -30,7 +31,7 @@ const Row = ({ titles, fetchUrl, type }) => {
     //     window.location.href = `/${e.target.id}`
 
     // }
-
+    const navigate = useNavigate()
 
     return (
 
@@ -40,9 +41,10 @@ const Row = ({ titles, fetchUrl, type }) => {
                     fontSize: {
                         xxs: "0.8rem",
                         sm: "1.5rem"
-                    }
+                    },
+                    cursor: "pointer"
 
-                }}> {titles} </Typography>
+                }} onClick={() => navigate("/discover/movie")}> {titles} </Typography>
                 <Box>
                     <Button sx={{
                         bgcolor: "scrollBtn.background",
@@ -98,13 +100,15 @@ const Row = ({ titles, fetchUrl, type }) => {
                     "&::-webkit-scrollbar": {
                         display: "none"
                     },
+                    overflowY: "hidden",
                     scrollSnapType: "x mandatory",
                     height: {
                         xxs: "158px",
                         sm: "166px",
                         md: "200px"
 
-                    }
+                    },
+
                 }}>
                 {
                     tiles?.map((ele, i) => (
@@ -126,10 +130,17 @@ const Row = ({ titles, fetchUrl, type }) => {
                                 xxs: "10px 10px 0 0",
                                 sm: "10px"
                             },
-                            position: "relative"
+                            position: "relative",
+                            scrollSnapAlign: "start",
+
+                            "&:hover": {
+                                cursor: "pointer"
+                                // bgcolor: "white",
+                                // color: "red"
+                            }
                         }}>
 
-                            <AddMenu id={`${ele.media_type || type}/${ele.id}`} />
+                            <AddMenu id={`${ele.media_type || type}/${ele.id}`} name={ele?.name || ele?.title || ele?.original_title} />
 
                             <Tooltip title={<MovieOverviewTip ele={ele} bgcolor={"red"} type={type} />} enterDelay={500} placement="right">
 
@@ -156,7 +167,7 @@ const Row = ({ titles, fetchUrl, type }) => {
                                     </Box>
 
 
-                                    <img src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt="abc" style={{
+                                    <img src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt="abc" loading="lazy" style={{
                                         width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                     }} />
 
@@ -209,7 +220,7 @@ const Row = ({ titles, fetchUrl, type }) => {
                                             }
                                         }}>
 
-                                            {ele.name || ele.original_title}
+                                            {ele.name || ele.title || ele.original_title}
                                         </Typography>
                                     </Grid>
                                 </Box>

@@ -9,6 +9,8 @@ import backendAxios from "../../backendAxios"
 import AddMenu from '../AddMenu'
 import knowMore from '../KnowMore'
 import LoginChecker from '../../LoginChecker'
+import { Helmet } from 'react-helmet'
+
 const Playlist = () => {
 
     LoginChecker()
@@ -119,6 +121,11 @@ const Playlist = () => {
             xxs: "10px",
             sm: "50px"
         }} py={"100px"}>
+
+
+            <Helmet>
+                <title>{data?.name}</title>
+            </Helmet>
 
             <Grid item xxs={12} md={4} sx={{
                 px: 2,
@@ -239,22 +246,28 @@ const Playlist = () => {
                                 container p={{
                                     xxs: 1,
                                     sm: 2
-                                }} mb={1} sx={{
+                                }} mb={1}
+                                sx={{
                                     bgcolor: "playlists.titleBackground",
-                                    borderRadius: "10px"
-                                }} position={"relative"}>
+                                    borderRadius: "10px",
+                                    cursor: "default"
+                                }}
+                                position={"relative"}
+
+
+                            >
 
                                 <Grid container onClick={() => {
                                     knowMore(ele.media_type + "/" + ele.media_id)
 
                                 }}>
                                     <Grid item xxs={4}>
-                                        <img src={`https://image.tmdb.org/t/p/original${ele.background}`} alt="img" style={{
+                                        <img src={`https://image.tmdb.org/t/p/original${ele.background}`} loading="lazy" alt="img" style={{
                                             width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                         }} />
                                     </Grid>
                                     <Grid item xxs={8} px={1}>
-                                        <Typography variant={"h5"}>{ele.name} </Typography>
+                                        <Typography variant={"h5"} sx={{ mr: 2 }}>{ele.name} </Typography>
                                         <Typography>{truncate(ele.description, 100)} </Typography>
                                         <Typography>{ele.release_date.split("-")[0]}</Typography>
 
@@ -264,14 +277,13 @@ const Playlist = () => {
 
 
                                 <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-                                    <AddMenu id={`${ele.media_type}/${ele.media_id}`} />
+                                    <AddMenu id={`${ele.media_type}/${ele.media_id}`} name={ele?.name} />
                                 </Box>
                             </Grid>
 
 
                         )
                     }
-
 
 
 

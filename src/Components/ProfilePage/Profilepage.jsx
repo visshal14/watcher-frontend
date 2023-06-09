@@ -11,6 +11,7 @@ import knowMore from '../KnowMore'
 import { getWatch_later, getLiked, getWatched, getPlaylists } from '../../userSlice'
 import { Link } from 'react-router-dom'
 import LoginChecker from '../../LoginChecker'
+import { Helmet } from 'react-helmet'
 
 const Profilepage = () => {
     LoginChecker()
@@ -44,14 +45,6 @@ const Profilepage = () => {
 }
 
 const Row = ({ titles, data, url }) => {
-    // const [tiles, setTiles] = useState([])
-    // useEffect(() => {
-    //     axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
-    //         setTiles(response.data.results)
-    //     })
-    //     // eslint-disable-next-line
-    // }, [])
-
     const scrollLeft = () => {
         document.getElementById(titles).scrollLeft -= 300
     }
@@ -144,12 +137,16 @@ const Row = ({ titles, data, url }) => {
                         }} /> </Button>
                 </Box>
             </Grid>
+            <Helmet>
 
+                <title>Watcher</title>
+            </Helmet>
             <Grid id={titles} container flexWrap="nowrap" overflow="auto"
                 sx={{
                     "&::-webkit-scrollbar": {
                         display: "none"
                     },
+                    overflowY: "hidden",
                     scrollSnapType: "x mandatory",
                     height: {
                         xxs: "158px",
@@ -178,10 +175,12 @@ const Row = ({ titles, data, url }) => {
                                 xxs: "10px 10px 0 0",
                                 sm: "10px"
                             },
-                            position: "relative"
+                            scrollSnapAlign: "start",
+                            position: "relative",
+                            cursor: "default"
                         }}>
 
-                            <AddMenu id={`${ele.type || ele.media_type || ele?.details?.type}/${ele.id || ele.media_id || ele.details?.id}`} />
+                            <AddMenu id={`${ele.type || ele.media_type || ele?.details?.type}/${ele.id || ele.media_id || ele.details?.id}`} name={ele.name || ele.title || ele?.original_title || ele?.details.title || ""} />
 
                             <Tooltip title={<MovieOverviewTip ele={ele} bgcolor={"red"} />} enterDelay={500} placement="right">
 
@@ -208,7 +207,7 @@ const Row = ({ titles, data, url }) => {
                                     </Box>
 
 
-                                    <img src={`https://image.tmdb.org/t/p/original${ele.background || ele.details?.background}`} alt="abc" style={{
+                                    <img src={`https://image.tmdb.org/t/p/original${ele.background || ele.details?.background}`} loading="lazy" alt="abc" style={{
                                         width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                     }} />
 

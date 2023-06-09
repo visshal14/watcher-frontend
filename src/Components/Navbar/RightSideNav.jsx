@@ -1,19 +1,19 @@
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded, MoreVert } from '@mui/icons-material'
 import { Avatar, Box, Button, Drawer, Grid, Menu, MenuItem, Stack, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFirstName, getProfilePhoto, getPlaylists, getWatch_later, getWatched, setData, setAlert } from '../../userSlice'
-import axios from 'axios'
+import { getFirstName, getProfilePhoto, getPlaylists, getWatch_later, setData, setAlert } from '../../userSlice'
+// import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import knowMore from '../KnowMore'
-import { apiKey } from '../../tmdb'
+// import { apiKey } from '../../tmdb'
 const RightSideNav = ({ isOpen, openFunc }) => {
 
     const firstName = useSelector(getFirstName)
     const profilePhoto = useSelector(getProfilePhoto)
     const playlists = useSelector(getPlaylists)
     const watchLater = useSelector(getWatch_later)
-    const watched = useSelector(getWatched)
+    // const watched = useSelector(getWatched)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -150,7 +150,7 @@ const RightSideNav = ({ isOpen, openFunc }) => {
 
 
 
-                    <NewEpisodeRow tv={watched.series} id={"right_newEpi"} />
+                    {/* <NewEpisodeRow tv={watched.series} id={"right_newEpi"} /> */}
 
                     <Row name={"Watch Later"} id={"right_watchLaterBox"} data={watchLater} />
 
@@ -167,136 +167,136 @@ const RightSideNav = ({ isOpen, openFunc }) => {
     )
 }
 
-const NewEpisodeRow = ({ tv, id }) => {
+// const NewEpisodeRow = ({ tv, id }) => {
 
-    const scrollLeft = () => {
-        document.getElementById(id).scrollLeft -= 200
-    }
-    const scrollRight = () => {
-        document.getElementById(id).scrollLeft += 200
-    }
+//     const scrollLeft = () => {
+//         document.getElementById(id).scrollLeft -= 200
+//     }
+//     const scrollRight = () => {
+//         document.getElementById(id).scrollLeft += 200
+//     }
 
-    const [tvDetails, setTvDetails] = useState([])
+//     const [tvDetails, setTvDetails] = useState([])
 
-    useEffect(() => {
-        tv?.map((ele) =>
-            axios.get(`https://api.themoviedb.org/3/tv/${ele.details.id}?api_key=${apiKey}`).then((response) => {
+//     useEffect(() => {
+//         tv?.map((ele) =>
+//             axios.get(`https://api.themoviedb.org/3/tv/${ele.details.id}?api_key=${apiKey}`).then((response) => {
 
-                setTvDetails(prev => [...prev, response.data])
-            })
+//                 setTvDetails(prev => [...prev, response.data])
+//             })
 
-        )
-    }, [tv])
-
-
-    return (
-        <Stack sx={{
-            width: "100%",
-            my: 1,
-        }}>
-            <Grid mb={1} container justifyContent={"space-between"} alignItems={"center"}>
-                <Typography color={"rightSideNav.textColor"}>New Episode</Typography>
-                <Box >
-                    <Button sx={{
-                        bgcolor: "scrollBtn.background",
-                        color: "scrollBtn.leftColor",
-                        minWidth: 0,
-                        padding: "3px 1px",
-                        mx: 1,
-                        "&:hover ": {
-                            backgroundColor: "#929294",
-                        },
-                    }}
-                        onClick={scrollLeft}
-                    ><ArrowBackIosNewRounded sx={{
-                        height: {
-                            xxs: "0.9rem",
-                            sm: "1rem",
-                            md: "1.5rem"
-                        },
-                        width: {
-                            xxs: "0.9rem",
-                            sm: "1rem",
-                            md: "1.5rem"
-                        }
-                    }} /></Button>
-                    <Button sx={{
-                        bgcolor: "scrollBtn.background",
-                        color: "scrollBtn.rightColor",
-                        minWidth: 0,
-                        padding: "3px 1px",
-                        mr: 1,
-                        "&:hover ": {
-                            backgroundColor: "#929294",
-                        },
-
-                    }}
-                        onClick={scrollRight}> <ArrowForwardIosRounded sx={{
-                            height: {
-                                xxs: "0.9rem",
-                                sm: "1rem",
-                                md: "1.5rem"
-                            },
-                            width: {
-                                xxs: "0.9rem",
-                                sm: "1rem",
-                                md: "1.5rem"
-                            }
-                        }} /> </Button>
-                </Box>
-            </Grid>
-            <Box id={id} sx={{
-                width: "100%",
-                overflowX: "scroll",
-                "&::-webkit-scrollbar": {
-                    display: "none"
-                },
-            }}>
-                <Grid container sx={{ width: "fit-content", flexWrap: "nowrap" }}>
-
-                    {tvDetails && tvDetails?.map((ele, i) =>
-                        ele.next_episode_to_air !== null && <Grid key={`newEpi` + i} onClick={() => knowMore(`tv/${ele.id}`)} container spacing={1} sx={{
-                            width: "200px",
-                            height: "150px",
-                            bgcolor: "rightSideNav.cardBackground",
-                            m: 0.5,
-                            p: 1,
-                            borderRadius: "10px",
-                            flexWrap: "nowrap", position: "relative"
-                        }}>
-                            <img src={`https://image.tmdb.org/t/p/original${ele.poster_path}`} alt="poster" style={{ height: "100%", width: "auto", objectFit: "contain", borderRadius: "7px" }} />
-                            <Grid item color={"rightSideNav.textColor"}>
-                                <Typography sx={{ wordBreak: "break-all" }}>{ele?.name || ele.original_name}</Typography>
-                                <Typography fontSize={"13px"}>S{ele?.last_episode_to_air.season_number} Ep{ele?.last_episode_to_air.episode_number}</Typography>
-                                <Typography fontSize={"13px"}>{ele?.last_episode_to_air.air_date} </Typography>
-                            </Grid>
-                            <Box sx={{
-                                position: "absolute",
-                                left: 0,
-                                bottom: "20px",
-                                p: "2px 5px",
-                                bgcolor: "blue"
-                            }}>
-                                <Typography fontSize={"9px"}>New</Typography>
-                            </Box>
-                        </Grid>
-                    )}
+//         )
+//     }, [tv])
 
 
+//     return (
+//         <Stack sx={{
+//             width: "100%",
+//             my: 1,
+//         }}>
+//             <Grid mb={1} container justifyContent={"space-between"} alignItems={"center"}>
+//                 <Typography color={"rightSideNav.textColor"}>New Episode</Typography>
+//                 <Box >
+//                     <Button sx={{
+//                         bgcolor: "scrollBtn.background",
+//                         color: "scrollBtn.leftColor",
+//                         minWidth: 0,
+//                         padding: "3px 1px",
+//                         mx: 1,
+//                         "&:hover ": {
+//                             backgroundColor: "#929294",
+//                         },
+//                     }}
+//                         onClick={scrollLeft}
+//                     ><ArrowBackIosNewRounded sx={{
+//                         height: {
+//                             xxs: "0.9rem",
+//                             sm: "1rem",
+//                             md: "1.5rem"
+//                         },
+//                         width: {
+//                             xxs: "0.9rem",
+//                             sm: "1rem",
+//                             md: "1.5rem"
+//                         }
+//                     }} /></Button>
+//                     <Button sx={{
+//                         bgcolor: "scrollBtn.background",
+//                         color: "scrollBtn.rightColor",
+//                         minWidth: 0,
+//                         padding: "3px 1px",
+//                         mr: 1,
+//                         "&:hover ": {
+//                             backgroundColor: "#929294",
+//                         },
 
+//                     }}
+//                         onClick={scrollRight}> <ArrowForwardIosRounded sx={{
+//                             height: {
+//                                 xxs: "0.9rem",
+//                                 sm: "1rem",
+//                                 md: "1.5rem"
+//                             },
+//                             width: {
+//                                 xxs: "0.9rem",
+//                                 sm: "1rem",
+//                                 md: "1.5rem"
+//                             }
+//                         }} /> </Button>
+//                 </Box>
+//             </Grid>
+//             <Box id={id} sx={{
+//                 width: "100%",
+//                 overflowX: "scroll",
+//                 "&::-webkit-scrollbar": {
+//                     display: "none"
+//                 },
+//             }}>
+//                 <Grid container sx={{ width: "fit-content", flexWrap: "nowrap" }}>
 
-
-                </Grid>
+//                     {tvDetails && tvDetails?.map((ele, i) =>
+//                         ele.next_episode_to_air !== null && <Grid key={`newEpi` + i} onClick={() => knowMore(`tv/${ele.id}`)} container spacing={1} sx={{
+//                             width: "200px",
+//                             height: "150px",
+//                             bgcolor: "rightSideNav.cardBackground",
+//                             m: 0.5,
+//                             p: 1,
+//                             borderRadius: "10px",
+//                             flexWrap: "nowrap", position: "relative"
+//                         }}>
+//                             <img src={`https://image.tmdb.org/t/p/original${ele.poster_path}`} alt="poster" style={{ height: "100%", width: "auto", objectFit: "contain", borderRadius: "7px" }} />
+//                             <Grid item color={"rightSideNav.textColor"}>
+//                                 <Typography sx={{ wordBreak: "break-all" }}>{ele?.name || ele.original_name}</Typography>
+//                                 <Typography fontSize={"13px"}>S{ele?.last_episode_to_air.season_number} Ep{ele?.last_episode_to_air.episode_number}</Typography>
+//                                 <Typography fontSize={"13px"}>{ele?.last_episode_to_air.air_date} </Typography>
+//                             </Grid>
+//                             <Box sx={{
+//                                 position: "absolute",
+//                                 left: 0,
+//                                 bottom: "20px",
+//                                 p: "2px 5px",
+//                                 bgcolor: "blue"
+//                             }}>
+//                                 <Typography fontSize={"9px"}>New</Typography>
+//                             </Box>
+//                         </Grid>
+//                     )}
 
 
 
 
-            </Box>
+
+//                 </Grid>
 
 
-        </Stack>
-    )
-}
+
+
+//             </Box>
+
+
+//         </Stack>
+//     )
+// }
 
 
 const Row = ({ name, data, id }) => {

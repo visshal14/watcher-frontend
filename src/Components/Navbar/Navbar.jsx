@@ -148,22 +148,39 @@ const Navbar = () => {
                         },
                         color: "navbar.menuItem"
                     }}>
-                        <ListItemButton onClick={() => navigate("/")}>
+                        <ListItemButton
+                            sx={{
+                                "&:hover": {
+                                    borderRadius: "0.5rem"
+                                }
+                            }}
+                            onClick={() => navigate("/")}>
                             <ListItemText>Home</ListItemText>
                             {/* <ListItemText>Home</ListItemText> */}
 
                         </ListItemButton>
-                        <ListItemButton onClick={() => navigate("/discover/movie")}>
+                        <ListItemButton sx={{
+                            "&:hover": {
+                                borderRadius: "0.5rem"
+                            }
+                        }} onClick={() => navigate("/discover/movie")}>
                             <ListItemText>Movies</ListItemText>
                         </ListItemButton>
-                        <ListItemButton onClick={() => navigate("/discover/tv")}>
+                        <ListItemButton sx={{
+                            "&:hover": {
+                                borderRadius: "0.5rem"
+                            }
+                        }} onClick={() => navigate("/discover/tv")}>
                             <ListItemText>Tv</ListItemText>
                         </ListItemButton>
                     </List>
 
                     <Button startIcon={<Avatar src={profilePhoto} />}
                         sx={{
-                            color: "navbar.menuItem"
+                            color: "navbar.menuItem",
+                            "&:hover": {
+                                borderRadius: "0.5rem"
+                            }
                         }}
                         onClick={loginBtnClicked} >
                         <Typography sx={{

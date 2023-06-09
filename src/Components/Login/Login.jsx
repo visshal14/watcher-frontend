@@ -8,6 +8,7 @@ import { setData, setTheme, setAlert } from '../../userSlice';
 import { getTheme } from '../../userSlice';
 import { googleClient_id } from '../../tmdb';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Login = () => {
 
@@ -122,6 +123,10 @@ const Login = () => {
             height: "100vh", width: "100vw",
             bgcolor: "background.default"
         }}>
+
+            <Helmet>
+                <title>Watcher</title>
+            </Helmet>
             <Grid item xxs={12} md={6} order={{ xxs: 2, md: 1 }}
                 sx={{
                     display: "flex",
@@ -174,7 +179,7 @@ const Login = () => {
                         },
                         color: "login.secondaryText"
                     }}>
-                        Don’t have an account? <Link href="/" component="a"
+                        Don’t have an account? <Link href="/register" component="a"
                             sx={{ color: "login.mainText" }}
 
                         >Create a account</Link> is takes

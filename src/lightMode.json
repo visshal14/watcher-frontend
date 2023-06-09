@@ -22,7 +22,8 @@
         "searchBarOutline": "#929294",
         "searchBarBackground": "#FFFFFF",
         "searchBarText": "#000000",
-        "menuItem": "#000000"
+        "menuItem": "#000000",
+        "searchBarGrid": "#DEE1EF"
     },
     "leftSideNav": {
         "background": "#F8F9FE",
@@ -79,8 +80,8 @@
     "discover": {
         "buttonBorder": "#484848",
         "buttonFore": "#484848",
-        "filterBack": "#484848",
-        "filterFore": "#ffffff",
+        "filterBack": "#fcba4e",
+        "filterFore": "#484848",
         "tilesBack": "#ffffff",
         "color": "#484848"
     }
