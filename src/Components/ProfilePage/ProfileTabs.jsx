@@ -4,10 +4,12 @@ import React, { useState } from 'react'
 import Details from './Details'
 import PasswordSecurity from './PasswordSecurity'
 import FriendDetails from './FriendDetails'
+import { useSelector } from 'react-redux'
+import { getIsOAuth } from '../../userSlice'
 
 const ProfileTabs = () => {
 
-
+    const isOAuth = useSelector(getIsOAuth)
     const [current, setCurrent] = useState("details")
 
     return (
@@ -33,11 +35,11 @@ const ProfileTabs = () => {
                 }}>
                     Friends
                 </Button>
-                <Button sx={{ color: current === "security" ? "profileTabs.activHeading" : "profileTabs.inActivHeading" }} onClick={() => {
+                {!isOAuth && <Button sx={{ color: current === "security" ? "profileTabs.activHeading" : "profileTabs.inActivHeading" }} onClick={() => {
                     setCurrent("security")
                 }}>
                     Password & Security
-                </Button>
+                </Button>}
             </Box>
             <Divider sx={{ color: "profileTabs.divider" }} />
 

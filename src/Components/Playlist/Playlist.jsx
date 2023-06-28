@@ -117,9 +117,10 @@ const Playlist = () => {
 
 
     return (
-        <Grid container spacing={2} px={{
-            xxs: "10px",
-            sm: "50px"
+        <Grid container px={{
+            xxs: 1,
+            sm: 5,
+            md: 8
         }} py={"100px"}>
 
 
@@ -129,7 +130,7 @@ const Playlist = () => {
 
             <Grid item xxs={12} md={4} sx={{
                 px: 2,
-
+                pb: 2
             }}>
                 <Box sx={{
                     bgcolor: "playlists.background",
@@ -226,7 +227,7 @@ const Playlist = () => {
                 </Box>
             </Grid>
             <Grid item md={8} sx={{
-                pl: 2,
+                px: 2,
             }}>
                 <Box sx={{
                     bgcolor: "playlists.background",
@@ -261,12 +262,12 @@ const Playlist = () => {
                                     knowMore(ele.media_type + "/" + ele.media_id)
 
                                 }}>
-                                    <Grid item xxs={4}>
+                                    <Grid item xxs={12} sm={4} >
                                         <img src={`https://image.tmdb.org/t/p/original${ele.background}`} loading="lazy" alt="img" style={{
                                             width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                         }} />
                                     </Grid>
-                                    <Grid item xxs={8} px={1}>
+                                    <Grid item xxs={12} sm={8} px={1}>
                                         <Typography variant={"h5"} sx={{ mr: 2 }}>{ele.name} </Typography>
                                         <Typography>{truncate(ele.description, 100)} </Typography>
                                         <Typography>{ele.release_date.split("-")[0]}</Typography>

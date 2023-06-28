@@ -166,7 +166,7 @@ const MovieOverviewTip = ({ ele, type }) => {
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
-            }}> {ele?.name || ele?.original_title || ele?.title || ele?.details?.title}</Typography>
+            }}> {ele?.name || ele?.title || ele?.original_title || ele?.details?.title}</Typography>
             <Grid container justifyContent="space-between" >
                 <Grid container alignItems="center" width=" fit-content" ><StarRateRounded sx={{ color: "yellow", width: "1rem", height: "0.5em" }} /><Typography fontSize={12}>{ele?.vote_average?.toFixed(2) || ele?.rating?.toFixed(2) || ele?.details?.rating?.toFixed(2) || "NA"}</Typography> </Grid>
                 <Typography fontSize={12}>{ele?.release_date?.split("-")[0] || ele?.first_air_date?.split("-")[0] || ele?.first_epi_date?.split("-")[0] || ele?.details?.first_epi_date?.split("-")[0]}</Typography>

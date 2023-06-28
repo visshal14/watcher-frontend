@@ -21,6 +21,7 @@ import WatchLater from './Components/WatchLaterLiked/WatchLater';
 import Liked from './Components/WatchLaterLiked/Liked';
 import AlertBox from './Components/AlertBox';
 import Discover from './Components/Discover/Discover';
+import ForgetPassword from './Components/Login/ForgetPassword';
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
           </Route>
           {/* <Route exact path="/m" element={<MovieOverviewTip />} /> */}
           <Route exact path="/login" element={<Login />} />
+          <Route path="/forgetpassword/:id" element={<ForgetPassword />} />
           <Route exact path="/register" element={<Register />} />
         </Routes>
       </BrowserRouter>

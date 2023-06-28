@@ -24,8 +24,9 @@ const Profilepage = () => {
 
     return (
         <Stack px={{
-            xxs: 2,
-            xsm: 5
+            xxs: 1,
+            sm: 5,
+            md: 8
         }} py={10} sx={{
         }} >
 

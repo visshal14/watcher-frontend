@@ -20,7 +20,8 @@ const initialState = {
         type: "",
         data: "",
         isOpen: false,
-    }
+    },
+    isOAuth: false
 }
 
 
@@ -47,13 +48,15 @@ const userSlice = createSlice({
             state.liked = action.payload.liked
             state.watched = action.payload.watched
             state.shared = action.payload.shared
+            state.isOAuth = action.payload.isOAuth
         },
+
         setMedia: (state, action) => {
             state.mediaIdAndType = action.payload.media
         },
         setAlert: (state, action) => {
-            state.alertBox.type = action.payload.type
-            state.alertBox.data = action.payload.data
+            state.alertBox.type = !action.payload.type ? state.alertBox.type : action.payload.type
+            state.alertBox.data = !action.payload.data ? state.alertBox.data : action.payload.data
             state.alertBox.isOpen = action.payload.isOpen
         }
     }
@@ -74,6 +77,7 @@ export const getLiked = (state) => state.user.liked
 export const getWatched = (state) => state.user.watched
 export const getShared = (state) => state.user.shared
 export const getAllData = (state) => state.user
+export const getIsOAuth = (state) => state.user.isOAuth
 
 export const getAllPlaylists = (state) => [state.user.playlists, state.user.watch_later, state.user.watched, state.user.liked, state.user.shared]
 

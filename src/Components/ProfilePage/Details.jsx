@@ -176,11 +176,32 @@ const Details = () => {
                                 change ? <TextField id="filled-basic" label="" placeholder='Enter First Name' variant="filled"
                                     sx={{
                                         "& input": {
-                                            padding: "2px",
+                                            padding: "2px 6px",
                                             fontSize: "13px"
                                         },
-                                        bgcolor: "details.inputBackground"
+                                        "& input:focus": {
+                                            outline: "none"
+                                        },
+                                        "& .MuiInputBase-root": {
+                                            borderRadius: "4px"
+                                        },
+                                        borderRadius: "4px ",
+                                        bgcolor: "details.inputBackground",
+                                        mr: 1
                                     }}
+                                    InputProps={{
+                                        sx: {
+                                            "&:before": {
+                                                content: "''",
+                                                borderBottom: "none !important"
+                                            },
+                                            "&:after": {
+                                                content: "''",
+                                                borderBottom: "none "
+                                            }
+                                        },
+                                    }}
+
                                     value={newFirstName}
                                     onChange={(e) => setNewFirstName(e.target.value)}
                                 /> : <Typography fontWeight={"bold"} color={"details.textColor"} fontSize={{
@@ -199,11 +220,29 @@ const Details = () => {
                                 change ? <TextField id="filled-basic" label="" placeholder='Enter Last Name' variant="filled"
                                     sx={{
                                         "& input": {
-
-                                            padding: "2px",
+                                            padding: "2px 6px",
                                             fontSize: "13px"
                                         },
+                                        "& input:focus": {
+                                            outline: "none"
+                                        },
+                                        "& .MuiInputBase-root": {
+                                            borderRadius: "4px"
+                                        },
+                                        borderRadius: "4px ",
                                         bgcolor: "details.inputBackground"
+                                    }}
+                                    InputProps={{
+                                        sx: {
+                                            "&:before": {
+                                                content: "''",
+                                                borderBottom: "none !important"
+                                            },
+                                            "&:after": {
+                                                content: "''",
+                                                borderBottom: "none "
+                                            }
+                                        },
                                     }}
                                     value={newLastName}
                                     onChange={(e) => setNewLastName(e.target.value)}

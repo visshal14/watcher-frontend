@@ -167,7 +167,7 @@ const Row = ({ titles, fetchUrl, type }) => {
                                     </Box>
 
 
-                                    <img src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt="abc" loading="lazy" style={{
+                                    <img src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt={ele.name || ele.title || ele.original_title} loading="lazy" style={{
                                         width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                     }} />
 

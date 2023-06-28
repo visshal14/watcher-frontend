@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Grid, IconButton, InputAdornment, Link, Paper, TextField, Typography, } from '@mui/material';
+import { Box, Button, Grid, IconButton, InputAdornment, Link, Paper, TextField, Typography } from '@mui/material';
 import { DarkMode, LightMode, Visibility, VisibilityOff } from '@mui/icons-material';
 import jwt_decode from "jwt-decode"
 import backendAxios from "../../backendAxios"
@@ -19,7 +19,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
-
+    const [OAuth, setOAuth] = useState(false)
     const handleClick = () => {
         setShowPassword(prev => !prev);
     }
@@ -78,12 +78,22 @@ const Login = () => {
 
     function handleCallbackResponse(response) {
         const userObj = jwt_decode(response.credential)
-        console.log(userObj)
+        setEmail(userObj.email)
+        setPassword(userObj.iss + "-" + userObj.sub)
+        setOAuth(true)
+
     }
+    useEffect(() => {
+        if (OAuth) {
+            submitButton()
+        }
+        // eslint-disable-next-line
+    }, [OAuth])
+
+
 
     useEffect(() => {
         /* global google */
-
         window.google.accounts.id.initialize({
             client_id: googleClient_id,
             callback: handleCallbackResponse
@@ -101,7 +111,7 @@ const Login = () => {
         //     { size: "large", theme: "filled_black" }
         // )
 
-
+        // eslint-disable-next-line
     }, [])
 
     const themeChange = () => {
@@ -180,7 +190,7 @@ const Login = () => {
                         color: "login.secondaryText"
                     }}>
                         Don’t have an account? <Link href="/register" component="a"
-                            sx={{ color: "login.mainText" }}
+                            sx={{ color: "login.mainText", textDecoration: "underline !important" }}
 
                         >Create a account</Link> is takes
                         less than a minute
@@ -275,7 +285,7 @@ const Login = () => {
                                 }
                             }}
                         />
-                        <Link href="/" component="a"
+                        <Link href="/forgetpassword/email" component="a"
                             sx={{ color: "login.mainText" }}
                         >Forget Password</Link>
                         <Button type="submit"

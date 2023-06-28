@@ -21,6 +21,8 @@ const AlertBox = () => {
             return;
         }
         dispatch(setAlert({
+            type: false,
+            data: false,
             isOpen: false
         }))
     };
@@ -32,7 +34,7 @@ const AlertBox = () => {
             autoHideDuration={4000}
             onClose={handleClose}
         >
-            {data?.type === "success" || data?.type === "Success" ?
+            {data?.type === "success" || data?.type === "Success" || data?.type !== "error" ?
                 <Alert severity="success" sx={{ width: '100%' }}>{data?.data}</Alert>
                 :
                 <Alert severity="error" sx={{ width: '100%' }}>{data?.data}</Alert>}

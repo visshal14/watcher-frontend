@@ -23,14 +23,9 @@ const Register = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setlastName] = useState("")
     const [profilePhoto, setProfilePhoto] = useState("")
+    const [isOAuth, setIsOAuth] = useState(false)
+    const [OAuthProfilePhoto, setOAuthProfilePhoto] = useState("")
 
-
-
-
-    function handleCallbackResponse(response) {
-        const userObj = jwt_decode(response.credential)
-        console.log(userObj)
-    }
     const handleClick = () => {
         setShowPassword(prev => !prev);
     }
@@ -42,21 +37,24 @@ const Register = () => {
             email: email,
             password: password,
             first_name: firstName,
-            last_name: lastName
+            last_name: lastName,
+            OAuth: isOAuth,
+            OAuthProfilePhoto: OAuthProfilePhoto
         }, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         })
             .then(function (response) {
-                if (response.data.errMsg) {
+                if (response.data.errMsg || response.data.err) {
                     dispatch(setAlert({
                         type: "error",
-                        data: response.data.errMsg,
+                        data: response.data.errMsg || response.data.err,
                         isOpen: true
                     }))
-
-
+                    if (response.data.errMsg === "Please Login Using Email And Password" || response.data.err === "Please Login Using Email And Password") {
+                        navigate("/login")
+                    }
                     return
                     // return alert(response.data.errMsg)
                 }
@@ -73,27 +71,51 @@ const Register = () => {
 
     const fileUploadRef = useRef()
 
+
+
+    function handleCallbackResponse(response) {
+        const userObj = jwt_decode(response.credential)
+        const uniqueId = userObj.iss + "-" + userObj.sub
+        setIsOAuth(true)
+        setEmail(userObj.email)
+        setPassword(uniqueId)
+        setFirstName(userObj.given_name)
+        setlastName(userObj.family_name)
+        setOAuthProfilePhoto(userObj.picture)
+    }
+    useEffect(() => {
+        if (isOAuth) {
+            submitButton()
+        }
+        // eslint-disable-next-line
+    }, [isOAuth])
+
+
     useEffect(() => {
         /* global google */
+        try {
+            window.google.accounts.id.initialize({
+                client_id: googleClient_id,
+                callback: handleCallbackResponse
+            })
+            // window.google.accounts.id.prompt()
 
-        window.google.accounts.id.initialize({
-            client_id: googleClient_id,
-            callback: handleCallbackResponse
-        })
-        // window.google.accounts.id.prompt()
+            window.google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    google.accounts.id.prompt()
+                }
+            });
 
-        window.google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                google.accounts.id.prompt()
-            }
-        });
+        } catch (e) {
+            console.log("Error in Google Callback  " + e)
+        }
 
         // window.google.accounts.id.renderButton(
         //     document.getElementById("signId"),
         //     { size: "large", theme: "filled_black" }
         // )
 
-
+        // eslint-disable-next-line
     }, [])
 
 
@@ -163,8 +185,8 @@ const Register = () => {
                     <Typography component="h3" variant='h5' sx={{
                         my: 2,
                         fontSize: {
-                            xxs: 20,
-                            sm: 25
+                            xxs: 15,
+                            sm: 20
                         },
                         color: "login.mainText"
                     }}>
@@ -172,12 +194,12 @@ const Register = () => {
                         <Typography component="span" sx={{
                             wordWrap: "wrap",
                             fontSize: {
-                                xxs: 12,
-                                sm: 15
+                                xxs: 10,
+                                sm: 12
                             },
                             color: "login.secondaryText"
                         }}>
-                            <Link href="/" component="a"
+                            <Link href="/login" component="a"
                                 sx={{ color: "login.mainText" }}
 
                             >     Already have a account</Link>

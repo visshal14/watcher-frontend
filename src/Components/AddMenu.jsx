@@ -457,7 +457,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
     const copyLink = () => {
-        navigator.clipboard.writeText(`http://localhost:3000/${mediaData}`).then((function () {
+        navigator.clipboard.writeText(`https://watcher-380709.web.app/${mediaData}`).then((function () {
             dispatch(setAlert({
                 type: "success",
                 data: "Link Copied",
@@ -631,6 +631,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     minWidth: 0,
                     bgcolor: "black",
                     color: "white",
+                    // border: "1px solid white",
                     position: position ? "static" : "absolute",
                     top: position ? "" : "10px",
                     right: position ? "" : "10px",
@@ -640,7 +641,8 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     mr: mr || 0,
                     "&:hover": {
                         bgcolor: "white",
-                        color: "black"
+                        color: "black",
+                        // border: "1px solid black",
                     }
                 }}
 

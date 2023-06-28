@@ -281,8 +281,9 @@ const Discover = () => {
 
     return (
         <Stack px={{
-            xxs: 2,
-            xsm: 5
+            xxs: 1,
+            sm: 5,
+            md: 8
         }} py={10}>
 
             <Helmet>
@@ -499,7 +500,9 @@ const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc 
                         fontSize: "12px"
                     },
                     minWidth: "130px"
-                }} control={<Checkbox onChange={checkBoxFunc} value={ele.id} checked={genres.includes(`${ele.id}`)} />} label={ele.name} />
+                }} control={<Checkbox onChange={checkBoxFunc} style={{
+                    color: "#ffffff", borderRadius: "50%"
+                }} value={ele.id} checked={genres.includes(`${ele.id}`)} />} label={ele.name} />
             )}
         </Menu>
     )
@@ -544,15 +547,17 @@ const SingleTiles = ({ data }) => {
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                     }}>
-                        {data.original_title || data.name}
+                        {data.title || data.original_title || data.name}
                     </Typography>
                     <Grid container justifyContent={"space-between"}>
                         <Typography >
                             {data.release_date?.split("-")[0] || data?.first_air_date?.split("-")[0]}
                         </Typography>
-                        <Typography>
-                            {data?.first_air_date ? "Tv" : "Movie"}
-                        </Typography>
+
+                        <Typography sx={{ width: "fit-content", display: "inline-block", border: "1px solid #fcba4e", padding: "0 0.25rem", borderRadius: "0.25rem" }}>{data?.first_air_date ? "TV" : "Movie"}</Typography>
+                        {/* <Typography>
+                            {data?.first_air_date ? "TV" : "Movie"}
+                        </Typography> */}
                     </Grid>
 
                 </Box>

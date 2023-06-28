@@ -16,7 +16,6 @@ const Navbar = () => {
 
 
     const navigate = useNavigate()
-
     const firstName = useSelector(getFirstName)
     const profilePhoto = useSelector(getProfilePhoto)
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(false)
@@ -41,9 +40,9 @@ const Navbar = () => {
         return () => window.removeEventListener("resize", () => {
         });
     }, [])
-    useEffect(() => {
-        // console.log(theme)
 
+
+    const getUserData = () => {
         if (window.localStorage.getItem("accessToken") === "") {
             return
         }
@@ -51,26 +50,11 @@ const Navbar = () => {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
             let data = response.data
-            dispatch(
-                setData({
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                    email: data.email,
-                    profile_photo: data.profile_photo,
-                    playlists: data.playlists,
-                    friends: data.friends,
-                    pending_requests: data.pending_request,
-                    watch_later: data.watch_later,
-                    liked: data.liked,
-                    watched: data.watched,
-                    shared: data.shared
-                })
-            )
+            dispatch(setData(data))
         })
-        // window.location.reload()
-
-
-
+    }
+    useEffect(() => {
+        getUserData()
         // eslint-disable-next-line
     }, [])
 
@@ -95,9 +79,7 @@ const Navbar = () => {
 
     return (
 
-        <Box x={{ flexGrow: 1 }}>
-
-
+        <Box sx={{ flexGrow: 1 }}>
             <AppBar sx={{ zIndex: "9", bgcolor: "navbar.background" }}>
                 <Toolbar sx={{
                     justifyContent: "space-between"
@@ -171,7 +153,7 @@ const Navbar = () => {
                                 borderRadius: "0.5rem"
                             }
                         }} onClick={() => navigate("/discover/tv")}>
-                            <ListItemText>Tv</ListItemText>
+                            <ListItemText>TV</ListItemText>
                         </ListItemButton>
                     </List>
 
@@ -207,7 +189,6 @@ const Navbar = () => {
         </Box>
     )
 }
-
 
 
 

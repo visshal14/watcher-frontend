@@ -8,14 +8,18 @@ const Layout = ({ data, title }) => {
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
     }
     return (
-        <Grid container spacing={2} px={{
-            xxs: "10px",
-            sm: "50px"
+        <Grid container spacing={{
+            xxs: 0,
+            sm: 2
+        }} px={{
+            xxs: 1,
+            sm: 5,
+            md: 8
         }} py={"100px"}>
 
-            <Grid item xxs={12} md={4} sx={{
+            <Grid item xxs={12} sm={4} sx={{
                 px: 2,
-
+                mb: 2,
             }}>
                 <Box sx={{
                     bgcolor: "playlists.background",
@@ -28,8 +32,9 @@ const Layout = ({ data, title }) => {
                     <Typography variant={"h6"}>{data?.length} items</Typography>
                 </Box>
             </Grid>
-            <Grid item md={8} sx={{
-                pl: 2,
+            <Grid item sm={8} sx={{
+                px: 2,
+                pb: 2
             }}>
                 <Box sx={{
                     bgcolor: "playlists.background",
@@ -44,8 +49,6 @@ const Layout = ({ data, title }) => {
                         data?.map((ele, i) =>
 
                             <Grid key={i} id={ele.type + "/" + ele.id}
-
-
                                 container p={{
                                     xxs: 1,
                                     sm: 2
@@ -57,13 +60,13 @@ const Layout = ({ data, title }) => {
                                     knowMore(ele.type + "/" + ele.id)
 
                                 }}>
-                                    <Grid item xxs={4}>
+                                    <Grid item xxs={12} md={4}>
                                         <img src={`https://image.tmdb.org/t/p/original${ele.background}`} loading="lazy" alt="img" style={{
                                             width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                         }} />
                                     </Grid>
-                                    <Grid item xxs={8} px={1}>
-                                        <Typography variant={"h5"}>{ele.title} </Typography>
+                                    <Grid item xxs={12} md={8} px={1}>
+                                        <Typography variant={"h6"} sx={{ mr: 3 }}>{ele.title} </Typography>
                                         <Typography>{truncate(ele.description, 100)} </Typography>
                                         <Typography>{ele?.release_date?.split("-")[0]}</Typography>
                                     </Grid>

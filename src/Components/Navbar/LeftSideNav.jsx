@@ -134,7 +134,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
 
             </Stack>
             <Stack>
-                <Typography color={"leftSideNav.textColor"} fontSize={"13px"}>Library</Typography>
+                <Typography color={"leftSideNav.textColor"} fontSize={"13px"} mt={2}>Library</Typography>
 
                 <Button startIcon={<FavoriteBorder />}
                     onClick={() => navigate("/liked")}
@@ -167,7 +167,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                 )}
             </Stack>
             <Stack>
-                <Typography color={"leftSideNav.textColor"} fontSize={"13px"}>General</Typography>
+                <Typography color={"leftSideNav.textColor"} fontSize={"13px"} mt={2}>General</Typography>
 
                 <Button startIcon={theme === "dark" ? <LightModeOutlined /> : <DarkModeOutlined />}
                     sx={{

@@ -136,7 +136,7 @@ const RightSideNav = ({ isOpen, openFunc }) => {
                             }}
                             bgcolor={"rightSideNav.cardBackground"}
                         >
-                            <MenuItem color={"rightSideNav.textColor"} onClick={handleClose}>Share Your Profile</MenuItem>
+                            {/* <MenuItem color={"rightSideNav.textColor"} onClick={handleClose}>Share Your Profile</MenuItem> */}
                             <MenuItem color={"rightSideNav.textColor"} onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </Grid>

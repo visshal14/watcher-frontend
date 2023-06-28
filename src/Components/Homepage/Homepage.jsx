@@ -8,13 +8,18 @@ import { Helmet } from 'react-helmet'
 const Homepage = () => {
 
 
+
+
+
+
     return (
         <Stack spacing={2} py={{
             xxs: 12,
             md: 12
         }}
             px={{
-                xxs: 4,
+                xxs: 1,
+                sm: 5,
                 md: 8
             }}
         >

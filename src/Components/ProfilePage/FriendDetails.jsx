@@ -27,7 +27,7 @@ const FriendDetails = () => {
 
 
     const [friendExpand, setFriendExpand] = useState(false)
-    const [pendingRequestEmail, setPendingRequestEmail] = useState()
+    const [pendingRequestEmail, setPendingRequestEmail] = useState("")
     const friendClicked = (e) => {
         console.log(e.currentTarget.id)
         setCurrentFriend(e.currentTarget.id)
@@ -60,47 +60,29 @@ const FriendDetails = () => {
 
 
     const pendingRequestSend = () => {
-        // console.log(pendingRequestEmail)
-        backendAxios.post(`addFriend`, {
+        backendAxios.post(`/addFriend`, {
             friendEmail: pendingRequestEmail
         }).then((response) => {
-            if (response.data.errMsg) {
+            if (response.data === "Unauthorized") {
+                return window.location.reload();
+            }
+            if (response.data.errMsg || response.data.err) {
                 dispatch(setAlert({
                     type: "error",
-                    data: response.data.errMsg,
+                    data: response.data.errMsg || response.data.err,
                     isOpen: true
                 }))
-
-
                 return
-                // return alert(response.data.errMsg)
             }
             dispatch(setAlert({
-                type: "sucess",
+                type: "success",
                 data: response.data.msg,
                 isOpen: true
             }))
-
-            // alert(response.data.msg)
             dispatchSetData(response.data.data)
-            // dispatch(
-            //     setData({
-            //         first_name: response.data.data.first_name,
-            //         last_name: response.data.data.last_name,
-            //         email: response.data.data.email,
-            //         profile_photo: response.data.data.profile_photo,
-            //         playlists: response.data.data.playlists,
-            //         friends: response.data.data.friends,
-            //         pending_requests: response.data.data.pending_requests,
-            //         watch_later: response.data.data.watch_later,
-            //         liked: response.data.data.liked,
-            //         watched: response.data.data.watched,
-            //         shared: response.data.data.shared
-            //     })
-            // )
             setPendingRequestEmail("")
-
-
+        }).catch(() => {
+            return window.location.reload();
         })
     }
 
@@ -215,13 +197,16 @@ const FriendDetails = () => {
 
 
             <Grid item xxs={12} sm={6} sx={{
-                p: 2,
+                p: {
+                    xxs: "10px 10px 5px 10px",
+                    sm: "10px 5px 10px 10px"
+                },
                 height: "100%"
             }}>
                 <Stack sx={{
                     bgcolor: "friends.background",
                     height: "100%",
-                    borderRadius: "20px",
+                    borderRadius: "10px",
                     p: "10px"
                 }} >
                     <Grid container justifyContent={"space-between"} px={2} color={"friends.textColor"} >
@@ -259,7 +244,7 @@ const FriendDetails = () => {
 
                             <ListItem key={`friend${i}`} id={ele.email} onClick={friendClicked}>
                                 <ListItemAvatar>
-                                    <Avatar />
+                                    <Avatar src={ele.profile_photo} />
                                 </ListItemAvatar>
                                 <ListItemText primary={ele.name} />
                             </ListItem>
@@ -273,15 +258,16 @@ const FriendDetails = () => {
             </Grid>
             {!friendExpand && <Grid item xxs={12} sm={6} sx={{
                 p: {
-                    xxs: "0 16px 16px 16px",
-                    sm: 2
+                    xxs: "0 10px 10px 10px",
+                    sm: "10px 10px 10px 5px"
                 }
             }}>
                 <Box sx={{
                     bgcolor: "friends.background",
                     p: "10px",
                     borderRadius: '10px',
-                    mb: "16px",
+                    // mb: "16px",
+                    mb: pendingRequest ? "10px" : "",
                     color: "friends.textColor"
                 }}>
                     <Typography>Add Friend</Typography>
@@ -294,19 +280,37 @@ const FriendDetails = () => {
                             "& input:focus": {
                                 outline: "none"
                             },
-                            "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
-                                content: '""'
+                            "& .MuiInputBase-root": {
+                                borderRadius: "8px"
                             },
-                            "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
-                                content: '""',
-                                position: "static"
-                            },
-                            m: "10px 0",
-                            borderRadius: "8px",
+
+                            // "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
+                            //     content: '""'
+                            // },
+                            // "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
+                            //     content: '""',
+                            //     position: "static"
+                            // },
+
+                            m: "10px 0 0 ",
+                            borderRadius: "8px ",
                             bgcolor: "friends.inputColor"
                         }}
+                        value={pendingRequestEmail}
                         onChange={(e) => setPendingRequestEmail(e.target.value)}
                         InputProps={{
+                            sx: {
+                                "&:before": {
+                                    content: "''",
+                                    borderBottom: "none !important"
+                                },
+                                "&:after": {
+                                    content: "''",
+                                    borderBottom: "none "
+                                }
+                            },
+
+
                             endAdornment: (
 
                                 <InputAdornment position="end">
@@ -357,7 +361,7 @@ const FriendDetails = () => {
 
                                 }>
                                 <ListItemAvatar>
-                                    <Avatar />
+                                    <Avatar src={ele.profile_photo} />
                                 </ListItemAvatar>
                                 <ListItemText primary={ele.name} />
                             </ListItem>
@@ -372,7 +376,11 @@ const FriendDetails = () => {
 
 
             {
-                friendExpand && <Grid item xxs={12} p={2} sm={6}>
+                friendExpand && <Grid item xxs={12} p={{
+
+                    xxs: "5px 10px 10px 10px",
+                    sm: "10px 10px 0 5px"
+                }} sm={6}>
                     <AFriendDetail email={currentFriend} friendRemoveFunc={pendingRequestAddRemove} currentSharedList={currentSharedList} playlists={currentFriendPlaylist} />
                 </Grid>
 
@@ -390,7 +398,11 @@ const AFriendDetail = ({ email, friendRemoveFunc, currentSharedList, playlists }
         <Box sx={{
             bgcolor: "friends.background",
             padding: "10px",
-            borderRadius: "20px",
+            borderRadius: "10px",
+            mb: {
+                xxs: "0",
+                sm: "10px"
+            },
             color: "friends.textColor"
         }}>
             <Grid container mb={1} justifyContent={"space-between"} alignItems={"center"}>

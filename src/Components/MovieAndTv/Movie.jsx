@@ -33,8 +33,9 @@ const Movie = () => {
 
     return (
         <Grid container justifyContent={"center"} py={10} px={{
-            xxs: 5,
-            sm: 10
+            xxs: 1,
+            sm: 5,
+            md: 8
         }} height={"100vh"} >
             <DetailCard watch_provider={watch_provider} details={details} cast={cast} />
         </Grid >
