@@ -77,6 +77,10 @@ const FeaturedPosts = () => {
             }])
         }, 3000)
 
+
+
+
+
     }, [featurePost])
 
 

@@ -145,14 +145,14 @@ const Navbar = () => {
                             "&:hover": {
                                 borderRadius: "0.5rem"
                             }
-                        }} onClick={() => navigate("/discover/movie")}>
+                        }} onClick={() => navigate("/discover/movie?page=1")}>
                             <ListItemText>Movies</ListItemText>
                         </ListItemButton>
                         <ListItemButton sx={{
                             "&:hover": {
                                 borderRadius: "0.5rem"
                             }
-                        }} onClick={() => navigate("/discover/tv")}>
+                        }} onClick={() => navigate("/discover/tv?page=1")}>
                             <ListItemText>TV</ListItemText>
                         </ListItemButton>
                     </List>

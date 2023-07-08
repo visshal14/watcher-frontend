@@ -1,9 +1,11 @@
 
 import { Box, Button, FormControlLabel, Checkbox, Grid, Menu, Stack, Typography, Pagination, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import countryList from "./countryList.json"
 import movieGenres from "./movieGenres.json"
+import tvGenres from "./tvGenres.json"
+import allGenres from "./allGenres.json"
 import { apiKey } from '../../tmdb'
 import axios from 'axios'
 import { Helmet } from "react-helmet";
@@ -18,6 +20,88 @@ const Discover = () => {
     const [country, setcountry] = useState("")
     // eslint-disable-next-line
     const [mediaType, setMediaType] = useState(type)
+    const [searchParams] = useSearchParams()
+    const [movieData, setMovieData] = useState([])
+    const [page, setPage] = useState(1)
+    const navigate = useNavigate()
+
+
+
+    let pageNo = searchParams.get('page')
+    let genre = searchParams.get('genre')
+    // let type = searchParams.get('type')
+    let countryParams = searchParams.get('country')
+
+
+    useEffect(() => {
+
+        setMediaType(type)
+        clearAllGenreCountry("genre")
+        getData(pageNo, genre, countryParams)
+        setGenres(genre)
+        setcountry(countryParams)
+        // eslint-disable-next-line
+    }, [searchParams, type])
+
+
+    async function getData(pageNo, genre, country) {
+
+
+        const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+
+        if (type === "all") {
+
+            let tv = []
+            let movie = []
+
+            // let bothGenres = [10759, 10765, 10768]
+            // let uniqueMovieGenre = [28, 12, 14, 36, 27, 10402, 10749, 878, 10770, 53, 10752]
+            // let uniqueTvGenre = [10759, 10762, 10763, 10764, 10765, 10766, 10767, 10768]
+            // let tempGenres = genre.split(",")
+
+
+
+
+            const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+
+            console.log(tvUrl)
+            const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            console.log(movieUrl)
+
+            setMovieData()
+            await axios.get(movieUrl).then((response) => {
+                movie.push(response.data.results)
+            }).catch((e) => {
+                console.log("error in axios ", e)
+            })
+            await axios.get(tvUrl).then((response) => {
+                tv.push(response.data.results)
+            }).catch((e) => {
+                console.log("error in axios ", e)
+            })
+
+            let result = []
+            for (let i = 0; i < 20; i++) {
+                result.push(movie[0][i])
+                result.push(tv[0][i])
+            }
+            setMovieData(result)
+
+        } else {
+            axios.get(url).then((response) => {
+                setMovieData(response.data.results)
+            }).catch((e) => {
+                console.log("error in axios ", e)
+            })
+        }
+    }
+
+
+
+
+
+
+
 
     const genreCheckBox = (e) => {
         let tempGenres = genres
@@ -48,7 +132,6 @@ const Discover = () => {
             if (mediaType === "") {
                 mediaType("all")
             } else {
-
                 e.currentTarget.value === "movie" ? setMediaType("tv") : setMediaType("movie")
             }
         }
@@ -57,9 +140,6 @@ const Discover = () => {
     }
 
 
-    // useEffect(() => {
-    //     console.log(mediaType + "   mediaType")
-    // }, [mediaType])
 
 
     const countryCheckBox = (e) => {
@@ -79,56 +159,7 @@ const Discover = () => {
     }
 
 
-    // useEffect(() => {
 
-    //     console.log(country)
-
-    // }, [mediaType, genres, country])
-
-    // const movieData = {
-    //     "adult": false,
-    //     "backdrop_path": "/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg",
-    //     "genre_ids": [
-    //         16,
-    //         12,
-    //         10751,
-    //         14,
-    //         35
-    //     ],
-    //     "id": 502356,
-    //     "original_language": "en",
-    //     "original_title": "The Super Mario Bros",
-    //     "overview": "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
-    //     "popularity": 10312.202,
-    //     "poster_path": "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
-    //     "release_date": "2023-04-05",
-    //     "title": "The Super Mario Bros. Movie",
-    //     "video": false,
-    //     "vote_average": 7.6,
-    //     "vote_count": 823
-    // }
-
-    // const tvData = {
-    //     "backdrop_path": "/nYJRdNtrT8nYdoXHJboNFGWwS5z.jpg",
-    //     "first_air_date": "2019-10-18",
-    //     "genre_ids": [
-    //         99
-    //     ],
-    //     "id": 94667,
-    //     "name": "Traveling with the Derbez",
-    //     "origin_country": [
-    //         "MX"
-    //     ],
-    //     "no_of_seasons": 2,
-    //     "no_of_episodes": 18,
-    //     "original_language": "es",
-    //     "original_name": "De viaje con los Derbez",
-    //     "overview": "The series revolves around the Derbez family on their trip to Morocco, the family is made up of Eugenio Derbez, the patriarch of the family, Alessandra Rosaldo, his wife, Aitana Derbez, their daughter, Vadhir and José Eduardo Derbez, their children, and Aislinn Derbez, his eldest daughter. , along with Mauricio Ochmann and his daughter Kailani.",
-    //     "popularity": 325.982,
-    //     "poster_path": "/eBbRM16FR79GfpMsd5pXwm36J3s.jpg",
-    //     "vote_average": 7.5,
-    //     "vote_count": 1233
-    // }
     const [anchorEl, setAnchorEl] = useState([{
         genre: null,
         type: null,
@@ -151,133 +182,31 @@ const Discover = () => {
 
 
 
-    const [movieData, setMovieData] = useState([])
-    const [page, setPage] = useState(1)
+
     const pageChange = (e, value) => {
+
         setPage(value)
+        navigate(`/discover/${mediaType}?page=${value}`)
+
     }
-    useEffect(() => {
-        filterClicked()
-        // eslint-disable-next-line
-    }, [page])
-    useEffect(() => {
-        setMediaType(type)
-
-        // eslint-disable-next-line
-    }, [type])
-    const navigate = useNavigate()
-    useEffect(() => {
-        filterClicked()
-
-        if (mediaType === "all") {
-            navigate("/discover/all")
-        } else if (mediaType === "movie") {
-            navigate("/discover/movie")
-
-        } else if (mediaType === "tv") {
-            navigate("/discover/tv")
-
-        }
-        // eslint-disable-next-line
-    }, [mediaType])
-
-    useEffect(() => {
-        // console.log(mediaType)
-        // const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate`
-        const url = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-
-
-
-        if (mediaType === "all") {
-            async function temp() {
-                let tv = []
-                let movie = []
-                const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-                const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-                setMovieData()
-                await axios.get(movieUrl).then((response) => {
-                    movie.push(response.data.results)
-                }).catch((e) => {
-                    console.log("error in axios ", e)
-                })
-                await axios.get(tvUrl).then((response) => {
-                    tv.push(response.data.results)
-                }).catch((e) => {
-                    console.log("error in axios ", e)
-                })
-
-                let result = []
-                for (let i = 0; i < 20; i++) {
-                    result.push(movie[0][i])
-                    result.push(tv[0][i])
-                }
-                setMovieData(result)
-            }
-            temp()
-        } else {
-
-            axios.get(url).then((response) => {
-                setMovieData(response.data.results)
-            }).catch((e) => {
-                console.log("error in axios ", e)
-            })
-        }
-
-
-
-        // eslint-disable-next-line
-    }, [])
-
-
 
 
     const filterClicked = () => {
-        // console.log(page)
-        const url = `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+
+        navigate(`/discover/${mediaType}?page=${page}${genres ? `&genre=${genres}` : ""}${country ? `&country=${country}` : ""}`)
 
 
-
-        if (mediaType === "all") {
-            async function temp() {
-                let tv = []
-                let movie = []
-                const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-                const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate${genres ? `&with_genres=${genres}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-                setMovieData()
-                await axios.get(movieUrl).then((response) => {
-                    movie.push(response.data.results)
-                }).catch((e) => {
-                    console.log("error in axios ", e)
-                })
-                await axios.get(tvUrl).then((response) => {
-                    tv.push(response.data.results)
-                }).catch((e) => {
-                    console.log("error in axios ", e)
-                })
-
-                let result = []
-                for (let i = 0; i < 20; i++) {
-                    result.push(movie[0][i])
-                    result.push(tv[0][i])
-                }
-                setMovieData(result)
-            }
-            temp()
-        } else {
-
-            axios.get(url).then((response) => {
-                setMovieData(response.data.results)
-            }).catch((e) => {
-                console.log("error in axios ", e)
-            })
-        }
-        // setPage(1)
-        // console.log("filterClicked")
     }
 
     const clearAllGenreCountry = (data) => {
-        data === "genre" ? setGenres("") : setcountry("")
+        data === "genre" || data === "genres" ? setGenres("") : setcountry("")
     }
+
+    const genresList = mediaType === "movie" ? movieGenres : mediaType === "tv" ? tvGenres : allGenres
+
+
+
+
 
     return (
         <Stack px={{
@@ -313,7 +242,7 @@ const Discover = () => {
                         mr: "-0.5rem"
                     }}>  {genres ? `${genres.split(",").length} selected` : ""}</Typography>}
                 </Button>
-                <GenresPopover anchorEl={anchorEl} handleClose={handleClose} genres={genres} removeFun={clearAllGenreCountry} checkBoxFunc={genreCheckBox} />
+                <GenresPopover anchorEl={anchorEl} handleClose={handleClose} genres={genres} removeFun={clearAllGenreCountry} checkBoxFunc={genreCheckBox} list={genresList} />
                 {/* type */}
                 <Button
                     onClick={handleClick("type")}
@@ -387,8 +316,6 @@ const Discover = () => {
                 </Button>
 
             </Grid>
-
-
             <Grid container >
                 {movieData?.map((ele, i) =>
                     <SingleTiles key={i} data={ele} />
@@ -470,11 +397,11 @@ const TypePopover = ({ anchorEl, handleClose, type, checkBoxFunc }) => {
 }
 
 
-const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc }) => {
+const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc, list }) => {
 
     genres = genres.split(",")
 
-
+    // console.log(list)
     return (
         <Menu
             anchorEl={anchorEl["genre"]}
@@ -493,7 +420,7 @@ const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc 
                 onClick={() => removeFun("genre")}
             >Clear all</Button>
 
-            {movieGenres?.map((ele, i) =>
+            {list?.map((ele, i) =>
                 <FormControlLabel key={i} sx={{
                     ml: 0,
                     "& .MuiFormControlLabel-label": {
@@ -501,7 +428,7 @@ const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc 
                     },
                     minWidth: "130px"
                 }} control={<Checkbox onChange={checkBoxFunc} style={{
-                    color: "#ffffff", borderRadius: "50%"
+                    color: "#ffffff",
                 }} value={ele.id} checked={genres.includes(`${ele.id}`)} />} label={ele.name} />
             )}
         </Menu>

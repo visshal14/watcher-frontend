@@ -15,7 +15,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
 
     useEffect(() => {
         setIsWatch_later(false)
-        if (watch_later.length !== 0) {
+        if (watch_later?.length !== 0) {
 
             watch_later?.every((ele) => {
                 if (mediaData === `${ele.type}/${ele.id}`) {

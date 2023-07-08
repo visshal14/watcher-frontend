@@ -2,11 +2,10 @@ import './App.css';
 import { useEffect } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Login from "./Components/Login/Login"
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material';
 import Register from './Components/Register/Register';
 import Homepage from './Components/Homepage/Homepage';
-// import MovieOverviewTip from './Components/MovieOverviewTip';
 import Movie from './Components/MovieAndTv/Movie';
 import TvDetails from './Components/MovieAndTv/TvDetails';
 import Profilepage from './Components/ProfilePage/Profilepage';
@@ -74,7 +73,9 @@ function App() {
           </>}>
             <Route path="/" element={<Homepage />} />
             <Route path="/movie/:id" element={<Movie />} />
-            <Route path="/tv/:id" element={<TvDetails />} />
+            <Route path="/tv/:id" element={<TvDetails />} >
+              <Route path="season/:epino" element={<TvDetails />} />
+            </Route>
             <Route exact path="/profile" element={<Profilepage />} />
             <Route exact path="/playlist/:id" element={<Playlist />} />
             <Route path="/watchlater" element={<WatchLater />} />
@@ -86,6 +87,8 @@ function App() {
           <Route exact path="/login" element={<Login />} />
           <Route path="/forgetpassword/:id" element={<ForgetPassword />} />
           <Route exact path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+
         </Routes>
       </BrowserRouter>
       <AlertBox />

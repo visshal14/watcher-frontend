@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Button, TextField, Typography, Link } from '@mui/material';
+import React, { useState } from 'react'
+import { Box, Button, TextField, Typography, Link, CircularProgress } from '@mui/material';
 import { ArrowBackIosNewRounded, } from '@mui/icons-material';
 
 import { useDispatch } from 'react-redux';
@@ -17,9 +17,12 @@ const EnterEmail = ({ email, setEmail }) => {
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
+    const [progressDisplay, setProgressDisplay] = useState(false)
+
+
     // const [email, setEmail] = useState("")
     const emailSend = async () => {
-
+        setProgressDisplay(true)
         backendAxios.post('/forgetpasswordsendemail', {
             email
         })
@@ -34,6 +37,8 @@ const EnterEmail = ({ email, setEmail }) => {
                     return
                     // return alert(response.data.errMsg)
                 }
+
+                setProgressDisplay(false)
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg || response.data,
@@ -178,6 +183,10 @@ const EnterEmail = ({ email, setEmail }) => {
                 >
                     Reset Password
                 </Button>
+
+                {progressDisplay && <Box sx={{ display: 'flex', width: "100%", justifyContent: "center", mt: 2 }}>
+                    <CircularProgress sx={{ color: "login.mainText" }} />
+                </Box>}
                 {/* <div id="signId"></div> */}
             </Box>
         </Box>

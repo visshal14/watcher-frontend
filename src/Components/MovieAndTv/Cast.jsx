@@ -5,8 +5,8 @@ import { Avatar, Grid, Typography } from '@mui/material'
 
 
 const Cast = ({ cast }) => {
-    return (
 
+    return (
         <Grid item sm={4} pl={1} xxs={12}>
             <Typography sx={{ fontSize: "15px", mb: "10px" }} color={"movieTv.smCastColor"}  >Cast</Typography>
 

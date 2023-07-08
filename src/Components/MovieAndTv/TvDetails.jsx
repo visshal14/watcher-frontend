@@ -1,7 +1,7 @@
 import { ExpandMore } from '@mui/icons-material'
 import { Grid, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
 import AddMenu from '../AddMenu'
 import DetailCard from './DetailCard'
@@ -10,15 +10,22 @@ const TvDetails = () => {
 
 
     const { id } = useParams()
+
+
+
+
     const [details, setDetails] = useState()
     const [cast, setCast] = useState()
     const [watch_provider, setWatch_provider] = useState()
     const [seasons, setSeasons] = useState([])
     const [noOfSeasons, setNoOfSeasons] = useState("")
-
+    const seasonUseRef = useRef(0)
+    const detailsRef = useRef(null)
+    // const [detailsHeight, setDetailsHeight] = useState(0)
+    const [isTrailer, setIsTrailer] = useState(false)
     useEffect(() => {
         setSeasons([])
-        axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en&append_to_response=credits`).then((response) => {
+        axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en&append_to_response=credits,videos`).then((response) => {
             setDetails(response.data)
             getSeasonsEpisodes(response.data.number_of_seasons)
             setNoOfSeasons(response.data.number_of_seasons)
@@ -33,6 +40,11 @@ const TvDetails = () => {
         // eslint-disable-next-line
     }, [])
 
+
+
+
+
+
     function compare(a, b) {
         if (a.season_number > b.season_number) return 1;
         if (a.season_number < b.season_number) return -1;
@@ -46,21 +58,16 @@ const TvDetails = () => {
                 setSeasons(prev => [...prev, response.data])
             })
         }
-
     }
     useEffect(() => {
-        // console.log(seasons.length)
-        if (seasons.length === noOfSeasons) {
+        // console.log("seasonRef " + seasonUseRef.current)
+        if (seasons.length === noOfSeasons && seasonUseRef.current === 0) {
+            seasonUseRef.current = 1
             const sorted = [...seasons].sort(compare);
             setSeasons(sorted);
-
         }
         // eslint-disable-next-line
     }, [seasons])
-    // useEffect(() => {
-    //     console.log(seasons)
-    // }, [seasons])
-
 
 
     function totalEpisodes() {
@@ -71,10 +78,24 @@ const TvDetails = () => {
         return count
     }
 
+
+    // useEffect(() => {
+    //     // setDetailsHeight(detailsRef.current.clientHeight)
+    //     console.log(isTrailer + "------>")
+    // }, [isTrailer])
+
     return (
 
 
-        <Grid container px={5} py={10} height={{ xxs: "auto", lg: "100vh" }}>
+        <Grid container px={{
+            xxs: 2,
+            sm: 5
+        }} py={10}
+            height=
+            {{ xxs: "auto", lg: !isTrailer ? "100vh" : "auto" }}
+        // height={"auto"}
+
+        >
             <Grid item lg={9} xxs={12} px={{
                 xxs: 0,
                 lg: 3
@@ -83,7 +104,7 @@ const TvDetails = () => {
                 lg: 0
             }}
             >
-                <DetailCard watch_provider={watch_provider} details={details} isTv cast={cast} />
+                <DetailCard watch_provider={watch_provider} tempDetails={details} isTv cast={cast} setIsTrailer={setIsTrailer} detailsRef={detailsRef} />
             </Grid>
 
 
@@ -93,13 +114,19 @@ const TvDetails = () => {
                     xxs: "fit-content",
                     lg: "auto"
                 },
-                maxHeight: "100%",
+                maxHeight: {
+                    xxs: "100%",
+                    lg: "calc(100vh - 160px)"
+                },
                 pt: "10px",
                 px: "10px",
                 pb: "20px",
                 borderRadius: "20px",
                 position: "relative",
-
+                // marginTop: {
+                //     xxs: isTrailer ? `${detailsHeight}px` : 0,
+                //     lg: 0
+                // }
             }}>
                 <Typography sx={{
                     position: "absolute",
@@ -134,6 +161,19 @@ const TvDetails = () => {
 }
 
 const SeasonsAccordion = ({ ele, id }) => {
+    const navigate = useNavigate()
+
+    const { epino } = useParams()
+
+    const seasonsClicked = (e) => {
+        if (id.split("/")[2] === epino) {
+            navigate("./")
+        } else {
+            navigate(`season/${id.split("/")[2]}`)
+        }
+        // navigate(`season/${id.split("/")[2]}`)
+        // console.log(id.split("/")[2])
+    }
 
 
     return (
@@ -159,14 +199,14 @@ const SeasonsAccordion = ({ ele, id }) => {
                     "& .Mui-expanded": {
                         minWidth: 0,
                     },
-                    "& .css-o4b71y-MuiAccordionSummary-content": {
+                    "& .MuiAccordionSummary-content": {
                         justifyContent: "space-between",
                         alignItems: "center"
                     },
                     // bgcolor: "movieTv.episodesBackground",
                 }}
             >
-                <Typography color={"movieTv.xxsTextColor"} component={"span"}>{ele.name}  <Typography component={"span"} fontSize={12}>({ele.episodes.length} epi)</Typography></Typography>
+                <Typography color={"movieTv.xxsTextColor"} component={"span"} onClick={seasonsClicked}>{ele.name}  <Typography component={"span"} fontSize={12}>({ele.episodes.length} epi)</Typography></Typography>
                 <AddMenu mr="10px" height="1rem" id={id} position={"normal"} />
             </AccordionSummary>
             <AccordionDetails sx={{
@@ -209,7 +249,8 @@ const SeasonsAccordion = ({ ele, id }) => {
                                 }}
                             >
                                 <Typography fontSize={"12px"}>
-                                    Episode {ep.episode_number}
+                                    {/* Episode {ep.episode_number} */}
+                                    {ep.episode_number} {ep.name}
                                 </Typography>
                                 <AddMenu position={"normal"} mr="10px" id={id + "/" + j} padding={{
                                     xxs: "2px 2px",
