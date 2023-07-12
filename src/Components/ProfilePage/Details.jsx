@@ -39,7 +39,6 @@ const Details = () => {
 
 
                 return
-                // return alert(response.data.errMsg)
             }
 
             dispatch(

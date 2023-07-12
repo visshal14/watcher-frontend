@@ -53,11 +53,6 @@ const Row = ({ titles, data, url }) => {
         document.getElementById(titles).scrollLeft += 300
     }
 
-    // const boxClick = (e) => {
-    //     // console.log(e.target)
-    //     window.location.href = `/${e.target.id}`
-
-    // }
 
 
     return (

@@ -1,27 +1,32 @@
-import './App.css';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import Login from "./Components/Login/Login"
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material';
-import Register from './Components/Register/Register';
-import Homepage from './Components/Homepage/Homepage';
-import Movie from './Components/MovieAndTv/Movie';
-import TvDetails from './Components/MovieAndTv/TvDetails';
-import Profilepage from './Components/ProfilePage/Profilepage';
-import Playlist from './Components/Playlist/Playlist';
 import Navbar from './Components/Navbar/Navbar';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTheme } from './userSlice';
 import { setTheme } from './userSlice';
 import lightMode from "./lightMode.json"
 import darkMode from "./darkMode.json"
-import WatchLater from './Components/WatchLaterLiked/WatchLater';
-import Liked from './Components/WatchLaterLiked/Liked';
-import AlertBox from './Components/AlertBox';
-import Discover from './Components/Discover/Discover';
-import ForgetPassword from './Components/Login/ForgetPassword';
+import LoadingComponent from './Components/LoadingComponent';
 
+
+
+
+
+
+const Login = lazy(() => import('./Components/Login/Login'));
+const Homepage = lazy(() => import('./Components/Homepage/Homepage'));
+const Movie = lazy(() => import('./Components/MovieAndTv/Movie'));
+const TvDetails = lazy(() => import('./Components/MovieAndTv/TvDetails'));
+const Profilepage = lazy(() => import('./Components/ProfilePage/Profilepage'));
+const WatchLater = lazy(() => import('./Components/WatchLaterLiked/WatchLater'));
+const Liked = lazy(() => import('./Components/WatchLaterLiked/Liked'));
+const AlertBox = lazy(() => import('./Components/AlertBox'));
+const Playlist = lazy(() => import('./Components/Playlist/Playlist'));
+const Discover = lazy(() => import('./Components/Discover/Discover'));
+const ForgetPassword = lazy(() => import('./Components/Login/ForgetPassword'));
+const Register = lazy(() => import('./Components/Register/Register'));
 
 function App() {
   const themeMode = useSelector(getTheme)
@@ -71,22 +76,67 @@ function App() {
             <Navbar />
             <Outlet />
           </>}>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/movie/:id" element={<Movie />} />
-            <Route path="/tv/:id" element={<TvDetails />} >
-              <Route path="season/:epino" element={<TvDetails />} />
+            <Route path="/" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Homepage />
+              </Suspense>} />
+
+            <Route path="/movie/:id" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Movie />
+              </Suspense>} />
+
+            <Route path="/tv/:id" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <TvDetails />
+              </Suspense>} >
+
+              <Route path="season/:epino" element={
+                <Suspense fallback={<LoadingComponent />}>
+                  <TvDetails />
+                </Suspense>} />
+
             </Route>
-            <Route exact path="/profile" element={<Profilepage />} />
-            <Route exact path="/playlist/:id" element={<Playlist />} />
-            <Route path="/watchlater" element={<WatchLater />} />
-            <Route path="/liked" element={<Liked />} />
-            <Route path="/discover/:type" element={<Discover />} />
-            {/* <Route exact path="/addmenu" element={<AddMenu />} /> */}
+
+            <Route exact path="/profile" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Profilepage />
+              </Suspense>} />
+
+            <Route exact path="/playlist/:id" element={<Suspense fallback={<LoadingComponent />}>
+              <Playlist />
+            </Suspense>} />
+
+            <Route path="/watchlater" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <WatchLater />
+              </Suspense>} />
+
+            <Route path="/liked" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Liked />
+              </Suspense>} />
+
+            <Route path="/discover/:type" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Discover />
+              </Suspense>} />
           </Route>
-          {/* <Route exact path="/m" element={<MovieOverviewTip />} /> */}
-          <Route exact path="/login" element={<Login />} />
-          <Route path="/forgetpassword/:id" element={<ForgetPassword />} />
-          <Route exact path="/register" element={<Register />} />
+
+          <Route exact path="/login" element={<Suspense fallback={<LoadingComponent />}>
+            <Login />
+          </Suspense>} />
+
+          <Route path="/forgetpassword/:id" element={<Suspense fallback={<LoadingComponent />}>
+            <ForgetPassword />
+          </Suspense>} />
+
+          <Route exact path="/register" element={
+            <Suspense fallback={<LoadingComponent />}>
+              <Register />
+            </Suspense>
+          } />
+
           <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>

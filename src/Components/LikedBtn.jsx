@@ -45,21 +45,6 @@ const Liked = ({ data }) => {
                     // return alert("error in saving")
                 }
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,
@@ -80,21 +65,7 @@ const Liked = ({ data }) => {
                     // return alert("error in saving")
                 }
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
+
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,

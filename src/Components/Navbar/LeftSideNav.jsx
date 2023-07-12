@@ -52,8 +52,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
         }))
 
 
-        // return
-        // alert("Logout")
+
         openFunc(false)
     }
 

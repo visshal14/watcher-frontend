@@ -3,17 +3,16 @@ import { Avatar, Box, Button, Drawer, Grid, Menu, MenuItem, Stack, Typography } 
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getFirstName, getProfilePhoto, getPlaylists, getWatch_later, setData, setAlert } from '../../userSlice'
-// import axios from 'axios'
+
 import { Link, useNavigate } from 'react-router-dom'
 import knowMore from '../KnowMore'
-// import { apiKey } from '../../tmdb'
+
 const RightSideNav = ({ isOpen, openFunc }) => {
 
     const firstName = useSelector(getFirstName)
     const profilePhoto = useSelector(getProfilePhoto)
     const playlists = useSelector(getPlaylists)
     const watchLater = useSelector(getWatch_later)
-    // const watched = useSelector(getWatched)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -136,7 +135,6 @@ const RightSideNav = ({ isOpen, openFunc }) => {
                             }}
                             bgcolor={"rightSideNav.cardBackground"}
                         >
-                            {/* <MenuItem color={"rightSideNav.textColor"} onClick={handleClose}>Share Your Profile</MenuItem> */}
                             <MenuItem color={"rightSideNav.textColor"} onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </Grid>

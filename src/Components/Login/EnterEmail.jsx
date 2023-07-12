@@ -18,9 +18,6 @@ const EnterEmail = ({ email, setEmail }) => {
 
     const navigate = useNavigate()
     const [progressDisplay, setProgressDisplay] = useState(false)
-
-
-    // const [email, setEmail] = useState("")
     const emailSend = async () => {
         setProgressDisplay(true)
         backendAxios.post('/forgetpasswordsendemail', {
@@ -28,13 +25,12 @@ const EnterEmail = ({ email, setEmail }) => {
         })
             .then(function (response) {
                 if (response.data.errMsg || response.data.err) {
-
-                    dispatch(setAlert({
+                    return dispatch(setAlert({
                         type: "error",
                         data: response.data.errMsg || response.data.err,
                         isOpen: true
                     }))
-                    return
+
                     // return alert(response.data.errMsg)
                 }
 
@@ -53,10 +49,6 @@ const EnterEmail = ({ email, setEmail }) => {
                         data: error.code,
                         isOpen: true
                     }))
-
-
-                    // return
-                    // alert(error.code)
                 }
                 console.log("Error in login Frontend: ", error);
             });
@@ -187,7 +179,6 @@ const EnterEmail = ({ email, setEmail }) => {
                 {progressDisplay && <Box sx={{ display: 'flex', width: "100%", justifyContent: "center", mt: 2 }}>
                     <CircularProgress sx={{ color: "login.mainText" }} />
                 </Box>}
-                {/* <div id="signId"></div> */}
             </Box>
         </Box>
 

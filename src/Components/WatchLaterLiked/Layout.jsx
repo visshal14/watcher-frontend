@@ -28,7 +28,6 @@ const Layout = ({ data, title }) => {
                     color: "playlists.textColor"
                 }}>
                     <Typography variant={"h4"}>{title}</Typography>
-                    {/* <Typography variant={"h6"}>Watch Later</Typography> */}
                     <Typography variant={"h6"}>{data?.length} items</Typography>
                 </Box>
             </Grid>

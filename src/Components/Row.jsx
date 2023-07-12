@@ -14,7 +14,6 @@ const Row = ({ titles, fetchUrl, type }) => {
         axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
             setTiles(response.data.results)
         })
-        // console.log(type)
         // eslint-disable-next-line
     }, [])
 
@@ -25,12 +24,6 @@ const Row = ({ titles, fetchUrl, type }) => {
         document.getElementById(titles).scrollLeft += 300
     }
 
-
-    // const boxClick = (e) => {
-    //     // console.log(e.target)
-    //     window.location.href = `/${e.target.id}`
-
-    // }
     const navigate = useNavigate()
 
     return (
@@ -135,8 +128,7 @@ const Row = ({ titles, fetchUrl, type }) => {
 
                             "&:hover": {
                                 cursor: "pointer"
-                                // bgcolor: "white",
-                                // color: "red"
+
                             }
                         }}>
 

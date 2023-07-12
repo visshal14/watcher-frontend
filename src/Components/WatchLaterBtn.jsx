@@ -48,22 +48,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                     data: response.data.msg,
                     isOpen: true
                 }))
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
-                // alert(response.data.msg)
+
             })
         } else {
             backendAxios.post(`/saveForWatchLater/watch-later/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -76,7 +61,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
 
 
                     return
-                    // return alert("error in saving")
+
                 }
                 dispatchSetData(response.data.data)
                 dispatch(setAlert({
@@ -84,23 +69,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                     data: response.data.msg,
                     isOpen: true
                 }))
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
-                // alert(response.data.msg)
-                // UpdateUserData(response.data.data)
+
             })
         }
 
@@ -160,11 +129,6 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
             startIcon={!isWatch_later ? <BookmarkBorder /> : <BookmarkAdded />}
             onClick={watchLater}
         > Watch Later</Button>
-
-
-
-
-
 
     )
 }

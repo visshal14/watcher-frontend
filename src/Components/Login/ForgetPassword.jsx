@@ -22,19 +22,15 @@ const ForgetPassword = () => {
 
 
     //email //check/ password //done
-    // const [element, setElement] = useState("email")
     const { id } = useParams()
     const [email, setEmail] = useState("")
 
     const navigate = useNavigate()
     useEffect(() => {
-        // setElement(id)
-        if (id === "email" || id === "check" || id === "done" || id.split("_")[0] === "password") {
+        // if (id === "email" || id === "check" || id === "done" || id.split("_")[0] === "password") {
+        // } else navigate("/login")
 
-
-        } else {
-            navigate("/login")
-        }
+        if (id !== "email" || id !== "check" || id !== "done" || id.split("_")[0] !== "password") navigate("/login")
         if (id === "check") if (alertBox.data !== "Check Your Mail") navigate("/login")
         if (id.split("_").length < 2 && id.split("_")[0] === "password") navigate("/login")
         if (id === "done") if (alertBox.data !== "Password Updated") navigate("/login")
@@ -46,21 +42,13 @@ const ForgetPassword = () => {
                 .then(function (response) {
 
                     if (response.data.errMsg || response.data.err) {
-
                         dispatch(setAlert({
                             type: "error",
                             data: response.data.errMsg || response.data.err,
                             isOpen: true
                         }))
                         return
-                        // return alert(response.data.errMsg)
                     }
-                    // dispatch(setAlert({
-                    //     type: "success",
-                    //     data: response.data.msg || response.data,
-                    //     isOpen: true
-                    // }))
-                    // navigate("/forgetpassword/done")
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -70,23 +58,11 @@ const ForgetPassword = () => {
                             data: error.code,
                             isOpen: true
                         }))
-
-                        // return
-                        // alert(error.code)
                     }
                     navigate("/login")
-                    // console.log("Error in login Frontend: ", error);
                 });
 
         }
-
-
-        // if (id === "check") {
-        //     if (alertBox.data !== "Check Your Mail") {
-        //         navigate("/login")
-        //     }
-        // }
-
         // eslint-disable-next-line
     }, [id])
 
@@ -152,16 +128,6 @@ const ForgetPassword = () => {
                 {id === "check" && <CheckEmail email={email} />}
                 {id.split("_")[0] === "password" && <ResetPassword id={id.replace("password_", "")} />}
                 {id === "done" && <PasswordDone />}
-
-
-
-
-
-
-
-
-
-
 
 
                 <IconButton sx={{

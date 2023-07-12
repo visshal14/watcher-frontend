@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import { Provider } from 'react-redux';
 import reduxStore from './reduxStore';
-// 135648070728-6odnu4geph64ues3ahla9q0d6ffdu0r7.apps.googleusercontent.com
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 

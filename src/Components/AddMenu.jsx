@@ -78,10 +78,9 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
         //watched
 
         if (mediaData?.split("/")[0] === "tv") {
-            // console.log(mediaData + "Media Data")
+
             data[2].series.every((ele) => {
                 if (ele.details.id === mediaData?.split("/")[1]) {
-                    // console.log(ele.details.id + "  " + mediaData.split("/")[1] + "  if")
                     if (ele.episode_list.length === 0) {
                         setIfWatched("Add To")
                         return true
@@ -99,18 +98,11 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     })
                     return false
                 } else {
-                    // console.log(ele.details.id + "  " + mediaData.split("/")[1] + "  else")
-
                     setIfWatched("Add To")
                     return true
                 }
 
             })
-
-
-
-
-
         } else {
             data[2]?.movies.every((ele) => {
                 if (`${ele.type}/${ele.id}` === mediaData) {
@@ -123,9 +115,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
             })
         }
 
-
         //liked
-
         data[3]?.every((ele) => {
             if (`${ele.type}/${ele.id}` === `${mediaData?.split("/")[0]}/${mediaData?.split("/")[1]}`) {
                 setIfLiked("Remove From")
@@ -162,36 +152,11 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
 
-
-        // data[4]?.map((ele) => {
-        //     if (`${ele.mediaType}/${ele.mediaId}` === mediaData) {
-        //         friends.map((x, i) => {
-        //             if (x.email === ele.email) {
-        //                 setIfShareFriends((prev) =>
-        //                     prev.map((x, j) =>
-        //                         j === i ? "UnShare To " : "Share To "
-        //                     ))
-        //             }
-        //         })
-        //     }
-        // })
-
-
-
-
-
-
-
     }
 
 
 
-    // useEffect(() => {
-    //     console.log(ifShareFriends.length + "   " + friends.length)
-    //     if (ifShareFriends.length > friends.length + 1) {
-    //         setIfShareFriends([])
-    //     }
-    // }, [ifShareFriends])
+
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -223,24 +188,10 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                     return
-                    // return alert("error in saving")
+
                 }
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
+
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,
@@ -248,8 +199,6 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 }))
 
 
-                // return
-                // alert(response.data.msg)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/${type}/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -267,31 +216,12 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
                 dispatchSetData(response.data.data)
 
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,
                     isOpen: true
                 }))
 
-
-                // return
-                // alert(response.data.msg)
-                // UpdateUserData(response.data.data)
             })
         }
     }
@@ -311,35 +241,17 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                     return
-                    // return alert("error in saving")
+
                 }
 
                 dispatchSetData(response.data.data)
 
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,
                     isOpen: true
                 }))
 
-
-                // return
-                // alert(response.data.msg)
             })
         } else if (mediaData.split("/")[0] === "tv") {
             const season = mediaData.split("/")[2] || "all"
@@ -356,30 +268,12 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                     return
-                    // return alert("error in saving")
+
                 }
 
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
-                // if (response.data.msg === "Added To Watched") {
-                //     setIfWatched("Remove From")
-                // } else {
-                //     setIfWatched("Add To")
-                // }
+                setIfWatched("Add To")
+
                 dispatch(setAlert({
                     type: "success",
                     data: response.data.msg,
@@ -388,7 +282,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                 return
-                // alert(response.data.msg)
+
 
             })
         }
@@ -405,7 +299,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
         let tempMediaData = mediaData.split("/")[0] + "/" + mediaData.split("/")[1]
 
-        // console.log(friendEmail + "   " + mediaData)
+
         backendAxios.post(`shareToFriend`, {
             friendEmail: friendEmail,
             mediaData: tempMediaData
@@ -419,26 +313,11 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                 return
-                // return alert(response.data.errMsg)
+
             }
 
             dispatchSetData(response.data.data)
 
-            // dispatch(
-            //     setData({
-            //         first_name: response.data.data.first_name,
-            //         last_name: response.data.data.last_name,
-            //         email: response.data.data.email,
-            //         profile_photo: response.data.data.profile_photo,
-            //         playlists: response.data.data.playlists,
-            //         friends: response.data.data.friends,
-            //         pending_requests: response.data.data.pending_requests,
-            //         watch_later: response.data.data.watch_later,
-            //         liked: response.data.data.liked,
-            //         watched: response.data.data.watched,
-            //         shared: response.data.data.shared
-            //     })
-            // )
 
             dispatch(setAlert({
                 type: "success",
@@ -447,10 +326,8 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
             }))
 
 
-            // return
-            // alert(response.data.msg)
         })
-        // setShowFriends(!showFriends)
+
     }
 
 
@@ -470,7 +347,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
     const addToPlaylist = (e) => {
-        // console.log(e.currentTarget.id)
+
         backendAxios.post(`/addMediaToPlaylist`, {
             _id: e.currentTarget.id.split("_")[1],
             media_id: mediaData.split("/")[1],
@@ -488,31 +365,12 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 // return alert(response.data.errMsg)
             }
             dispatchSetData(response.data.data)
-            // dispatch(
-            //     setData({
-            //         first_name: response.data.data.first_name,
-            //         last_name: response.data.data.last_name,
-            //         email: response.data.data.email,
-            //         profile_photo: response.data.data.profile_photo,
-            //         playlists: response.data.data.playlists,
-            //         friends: response.data.data.friends,
-            //         pending_requests: response.data.data.pending_requests,
-            //         watch_later: response.data.data.watch_later,
-            //         liked: response.data.data.liked,
-            //         watched: response.data.data.watched,
-            //         shared: response.data.data.shared
-            //     })
-            // )
-
             dispatch(setAlert({
                 type: "success",
                 data: response.data.msg,
                 isOpen: true
             }))
 
-
-            // return
-            // alert(response.data.msg)
         })
 
 
@@ -557,34 +415,17 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
                             return
-                            // return alert(res.data.errMsg)
+
                         }
 
                         dispatchSetData(res.data.data)
-                        // dispatch(
-                        //     setData({
-                        //         first_name: res.data.data.first_name,
-                        //         last_name: res.data.data.last_name,
-                        //         email: res.data.data.email,
-                        //         profile_photo: res.data.data.profile_photo,
-                        //         playlists: res.data.data.playlists,
-                        //         friends: res.data.data.friends,
-                        //         pending_requests: res.data.data.pending_requests,
-                        //         watch_later: res.data.data.watch_later,
-                        //         liked: res.data.data.liked,
-                        //         watched: res.data.data.watched,
-                        //         shared: res.data.data.shared
-                        //     })
-                        // )
+
                         dispatch(setAlert({
                             type: "success",
                             data: res.data.msg,
                             isOpen: true
                         }))
 
-
-                        // return
-                        // alert(res.data.msg)
 
                     })
                 }
@@ -631,7 +472,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     minWidth: 0,
                     bgcolor: "black",
                     color: "white",
-                    // border: "1px solid white",
+
                     position: position ? "static" : "absolute",
                     top: position ? "" : "10px",
                     right: position ? "" : "10px",
@@ -642,7 +483,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     "&:hover": {
                         bgcolor: "white",
                         color: "black",
-                        // border: "1px solid black",
+
                     }
                 }}
 
@@ -895,7 +736,6 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                             </Grid>
                         </Box>
                     }
-
                 </Box>
             </Modal>
         </>

@@ -14,12 +14,6 @@ const ResetPassword = ({ id }) => {
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPasword] = useState("")
     const navigate = useNavigate()
-    // const [email, setEmail] = useState("")
-    // useEffect(() => {
-
-    //     console.log(id)
-    // }, [id])
-
 
     const resetPassword = async () => {
 
@@ -45,7 +39,6 @@ const ResetPassword = ({ id }) => {
                         isOpen: true
                     }))
                     return
-                    // return alert(response.data.errMsg)
                 }
                 dispatch(setAlert({
                     type: "success",
@@ -61,11 +54,8 @@ const ResetPassword = ({ id }) => {
                         data: error.code,
                         isOpen: true
                     }))
-                    // return
-                    // alert(error.code)
                 }
                 navigate("/login")
-                // console.log("Error in login Frontend: ", error);
             });
 
     }
@@ -206,7 +196,6 @@ const ResetPassword = ({ id }) => {
                 >
                     Reset Password
                 </Button>
-                {/* <div id="signId"></div> */}
             </Box>
         </Box>
 

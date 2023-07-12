@@ -109,23 +109,8 @@ const FriendDetails = () => {
                     data: response.data.msg,
                     isOpen: true
                 }))
-                // alert(response.data.msg)
+
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
             })
         } else {
             backendAxios.post(`/removeFriend/${e.currentTarget.id.split("_")[0]}`, {
@@ -150,21 +135,7 @@ const FriendDetails = () => {
                 // alert(response.data.msg)
 
                 dispatchSetData(response.data.data)
-                // dispatch(
-                //     setData({
-                //         first_name: response.data.data.first_name,
-                //         last_name: response.data.data.last_name,
-                //         email: response.data.data.email,
-                //         profile_photo: response.data.data.profile_photo,
-                //         playlists: response.data.data.playlists,
-                //         friends: response.data.data.friends,
-                //         pending_requests: response.data.data.pending_requests,
-                //         watch_later: response.data.data.watch_later,
-                //         liked: response.data.data.liked,
-                //         watched: response.data.data.watched,
-                //         shared: response.data.data.shared
-                //     })
-                // )
+
             })
         }
     }
@@ -283,15 +254,6 @@ const FriendDetails = () => {
                             "& .MuiInputBase-root": {
                                 borderRadius: "8px"
                             },
-
-                            // "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
-                            //     content: '""'
-                            // },
-                            // "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
-                            //     content: '""',
-                            //     position: "static"
-                            // },
-
                             m: "10px 0 0 ",
                             borderRadius: "8px ",
                             bgcolor: "friends.inputColor"
@@ -309,10 +271,7 @@ const FriendDetails = () => {
                                     borderBottom: "none "
                                 }
                             },
-
-
                             endAdornment: (
-
                                 <InputAdornment position="end">
                                     <IconButton edge="end" onClick={pendingRequestSend}>
                                         <Send color={"friends.textColor"} />
@@ -339,11 +298,8 @@ const FriendDetails = () => {
                         },
                         bgcolor: "friends.innerBoxBackground",
                         borderRadius: "10px",
-                        // color: "friends.textColor"
                     }}>
-
                         {pendingRequest?.map((ele, i) =>
-
                             <ListItem key={`pendingFriend${i}`}
                                 secondaryAction={
                                     <Box>

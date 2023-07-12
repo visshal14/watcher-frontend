@@ -29,64 +29,109 @@ const Discover = () => {
 
     let pageNo = searchParams.get('page')
     let genre = searchParams.get('genre')
-    // let type = searchParams.get('type')
     let countryParams = searchParams.get('country')
-
+    const [genresList, setGenresList] = useState()
+    useEffect(() => {
+        setGenresList(mediaType === "movie" ? movieGenres : mediaType === "tv" ? tvGenres : allGenres)
+    }, [mediaType])
 
     useEffect(() => {
 
         setMediaType(type)
         clearAllGenreCountry("genre")
         getData(pageNo, genre, countryParams)
-        setGenres(genre)
-        setcountry(countryParams)
+        setGenres(genre || "")
+        setcountry(countryParams || "")
         // eslint-disable-next-line
     }, [searchParams, type])
 
+    // useEffect(() => {
+    //     console.log(movieData)
+    // }, [movieData])
+
 
     async function getData(pageNo, genre, country) {
-
-
-        const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-
+        let date = new Date()
+        const todayDate = date.getFullYear() + "-" + ((date.getMonth() + 1) > 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`) + "-" + date.getDate()
+        const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&primary_release_date.lte=${todayDate}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo || 1}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
         if (type === "all") {
+            let tvGenres = []
+            let movieGenres = []
+
+            let sameButDifferent = [{
+                movie: "28",
+                tv: "10759"
+            }, {
+                movie: "10752",
+                tv: "10768"
+            }, {
+                movie: "878",
+                tv: "10765"
+            }, {
+                movie: "14",
+                tv: "10765"
+            }, {
+                movie: "12",
+                tv: "10759"
+            }]
+
+            let bothSame = ["16", "35", "80", "99", "18", "10751", "9648", "37"]
+            let uniqueTv = ["10762", "10764", "10766", "10767", "10763"]
+            let uniqueMovie = ["36", "27", "10402", "10749", "10770", "53"]
+
+            let tempGenres = genre?.split(",")
+            tempGenres?.forEach(ele => {
+
+                if (uniqueMovie.includes(ele)) {
+                    movieGenres.push(ele)
+                } else if (uniqueTv.includes(ele)) {
+
+                    tvGenres.push(ele)
+                } else if (bothSame.includes(ele)) {
+
+                    movieGenres.push(ele)
+                    tvGenres.push(ele)
+                } else {
+                    sameButDifferent.forEach((i) => {
+                        if (i.movie === ele || i.tv === ele) {
+                            // console.log(ele)
+                            movieGenres.push(i.movie)
+                            tvGenres.push(i.tv)
+                        }
+                    })
+                }
+            });
+
+
+
+            const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${tvGenres ? `&with_genres=${tvGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+
+            // console.log(tvUrl)
+            const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            // console.log(movieUrl)
+
 
             let tv = []
             let movie = []
 
-            // let bothGenres = [10759, 10765, 10768]
-            // let uniqueMovieGenre = [28, 12, 14, 36, 27, 10402, 10749, 878, 10770, 53, 10752]
-            // let uniqueTvGenre = [10759, 10762, 10763, 10764, 10765, 10766, 10767, 10768]
-            // let tempGenres = genre.split(",")
-
-
-
-
-            const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-
-            console.log(tvUrl)
-            const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-            console.log(movieUrl)
-
             setMovieData()
             await axios.get(movieUrl).then((response) => {
-                movie.push(response.data.results)
+                if (response.data.results.length > 1) movie = response.data.results
             }).catch((e) => {
                 console.log("error in axios ", e)
             })
             await axios.get(tvUrl).then((response) => {
-                tv.push(response.data.results)
+                if (response.data.results.length > 1) tv = response.data.results
             }).catch((e) => {
                 console.log("error in axios ", e)
             })
 
             let result = []
             for (let i = 0; i < 20; i++) {
-                result.push(movie[0][i])
-                result.push(tv[0][i])
+                if (movie[i]) result.push(movie[i])
+                if (tv[i]) result.push(tv[i])
             }
             setMovieData(result)
-
         } else {
             axios.get(url).then((response) => {
                 setMovieData(response.data.results)
@@ -184,29 +229,23 @@ const Discover = () => {
 
 
     const pageChange = (e, value) => {
-
         setPage(value)
         navigate(`/discover/${mediaType}?page=${value}`)
-
     }
 
 
     const filterClicked = () => {
-
         navigate(`/discover/${mediaType}?page=${page}${genres ? `&genre=${genres}` : ""}${country ? `&country=${country}` : ""}`)
-
-
     }
 
     const clearAllGenreCountry = (data) => {
         data === "genre" || data === "genres" ? setGenres("") : setcountry("")
     }
 
-    const genresList = mediaType === "movie" ? movieGenres : mediaType === "tv" ? tvGenres : allGenres
 
-
-
-
+    const resetFilter = () => {
+        navigate(`/discover/${mediaType}?page=1`)
+    }
 
     return (
         <Stack px={{
@@ -317,9 +356,12 @@ const Discover = () => {
 
             </Grid>
             <Grid container >
-                {movieData?.map((ele, i) =>
-                    <SingleTiles key={i} data={ele} />
-                )}
+                {movieData && movieData.length !== 0 ? movieData?.map((ele, i) => <SingleTiles key={i} data={ele} />
+                ) :
+                    <Grid container mt={3} justifyContent={"center"}>
+                        <Typography onClick={resetFilter}> No Data Found. Click here To reset the filter </Typography>
+                    </Grid>
+                }
             </Grid>
             <Grid container justifyContent={"center"} sx={{
                 mt: 5
@@ -333,7 +375,6 @@ const Discover = () => {
 
 const CountryPopover = ({ anchorEl, handleClose, countries, removeFun, checkBoxFunc }) => {
     countries = countries?.split(",")
-    // console.log(countries)
     return (
         <Menu
             anchorEl={anchorEl["country"]}
@@ -376,8 +417,6 @@ const CountryPopover = ({ anchorEl, handleClose, countries, removeFun, checkBoxF
 
 
 const TypePopover = ({ anchorEl, handleClose, type, checkBoxFunc }) => {
-
-
     return (
         <Menu
             anchorEl={anchorEl["type"]}
@@ -398,10 +437,7 @@ const TypePopover = ({ anchorEl, handleClose, type, checkBoxFunc }) => {
 
 
 const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc, list }) => {
-
-    genres = genres.split(",")
-
-    // console.log(list)
+    genres = genres?.split(",")
     return (
         <Menu
             anchorEl={anchorEl["genre"]}
@@ -429,32 +465,25 @@ const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc,
                     minWidth: "130px"
                 }} control={<Checkbox onChange={checkBoxFunc} style={{
                     color: "#ffffff",
-                }} value={ele.id} checked={genres.includes(`${ele.id}`)} />} label={ele.name} />
+                }} value={ele.id} checked={genres?.includes(`${ele.id}`)} />} label={ele.name} />
             )}
         </Menu>
     )
 }
 
 const SingleTiles = ({ data }) => {
-    // console.log(data)
-    // console.log()
+
     return (
         <Grid item xxs={6} sm={4} md={2} lg={1.5} sx={{
             maxWidth: "200px",
             minWidth: "100px",
-            // m: 0.5,
-
             borderRadius: 1,
             position: "relative",
             cursor: "pointer",
-
-            // bgcolor: "grey"
         }} p={1}>
 
-            <AddMenu mt="8px" mr="8px" id={`${data?.first_air_date ? "tv" : "movie"}/${data.id}`} name={data?.name || data?.title || data?.original_title} />
+            {data?.id && <AddMenu mt="8px" mr="8px" id={`${data?.first_air_date ? "tv" : "movie"}/${data.id}`} name={data?.name || data?.title || data?.original_title} />}
             <Tooltip title={<MovieOverviewTip ele={data} bgcolor={"red"} type={`${data?.first_air_date ? "tv" : "movie"}`} />} enterDelay={500} placement="right">
-
-
                 <Box p={1} sx={{
                     borderRadius: 1,
                     bgcolor: "discover.tilesBack",
@@ -463,28 +492,22 @@ const SingleTiles = ({ data }) => {
                     height: "100%",
 
                 }}
-
                     onClick={() => knowMore(`${data?.first_air_date ? "tv" : "movie"}/${data.id}`)}
                 >
-
-                    <img src={`https://image.tmdb.org/t/p/original${data.poster_path}`} loading="lazy" style={{ height: "auto", width: "100%", objectFit: "contain", borderRadius: "8px" }} alt="poster" />
+                    <img src={`https://image.tmdb.org/t/p/original${data?.poster_path}`} loading="lazy" style={{ height: "auto", width: "100%", objectFit: "contain", borderRadius: "8px" }} alt="poster" />
                     <Typography sx={{
                         width: "100%",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                     }}>
-                        {data.title || data.original_title || data.name}
+                        {data?.title || data?.original_title || data?.name}
                     </Typography>
                     <Grid container justifyContent={"space-between"}>
                         <Typography >
-                            {data.release_date?.split("-")[0] || data?.first_air_date?.split("-")[0]}
+                            {data?.release_date?.split("-")[0] || data?.first_air_date?.split("-")[0]}
                         </Typography>
-
                         <Typography sx={{ width: "fit-content", display: "inline-block", border: "1px solid #fcba4e", padding: "0 0.25rem", borderRadius: "0.25rem" }}>{data?.first_air_date ? "TV" : "Movie"}</Typography>
-                        {/* <Typography>
-                            {data?.first_air_date ? "TV" : "Movie"}
-                        </Typography> */}
                     </Grid>
 
                 </Box>

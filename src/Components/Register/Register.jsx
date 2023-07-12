@@ -56,9 +56,9 @@ const Register = () => {
                         navigate("/login")
                     }
                     return
-                    // return alert(response.data.errMsg)
+
                 }
-                // alert(response.data)
+
 
                 navigate("/login")
 

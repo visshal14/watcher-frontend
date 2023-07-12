@@ -58,7 +58,6 @@ const FeaturedPosts = () => {
                     }
                 }
             }
-            // console.log(x)
             setfeaturePost([{
                 spot: x[0].spot,
                 series: x[0].series
@@ -76,11 +75,6 @@ const FeaturedPosts = () => {
                 series: x[3].series
             }])
         }, 3000)
-
-
-
-
-
     }, [featurePost])
 
 

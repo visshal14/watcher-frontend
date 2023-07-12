@@ -35,13 +35,9 @@ const Login = () => {
                         data: response.data.errMsg,
                         isOpen: true
                     }))
-
-
                     return
-                    // return alert(response.data.errMsg)
                 }
                 const data = response.data
-                // UpdateUserData(response.data)
                 dispatch(setData({
                     first_name: data.first_name,
                     last_name: data.last_name,
@@ -65,10 +61,6 @@ const Login = () => {
                         data: error.code,
                         isOpen: true
                     }))
-
-
-                    // return
-                    // alert(error.code)
                 }
                 console.log("Error in login Frontend: ", error);
             });

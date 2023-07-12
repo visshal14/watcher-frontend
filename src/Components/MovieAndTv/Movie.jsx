@@ -5,14 +5,13 @@ import axios from "axios"
 import DetailCard from './DetailCard'
 import { apiKey } from '../../tmdb'
 const Movie = () => {
-    // 100088 tv
-    //804150 movie
+
     const { id } = useParams()
 
     const [details, setDetails] = useState()
     const [cast, setCast] = useState()
     const [watch_provider, setWatch_provider] = useState()
-    // const [details, setDetails] = useState()
+
     const detailsRef = useRef(null)
     useEffect(() => {
 

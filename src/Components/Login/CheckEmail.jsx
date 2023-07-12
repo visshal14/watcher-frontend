@@ -2,20 +2,11 @@
 import React from 'react'
 import { Box, Button, Typography, Link } from '@mui/material';
 import { ArrowBackIosNewRounded, } from '@mui/icons-material';
-
 import { useNavigate } from 'react-router-dom';
 
-
-
 const CheckEmail = ({ email }) => {
-
     const navigate = useNavigate()
-
-
-
     return (
-
-
         <Box
             sx={{
                 display: "flex",
@@ -44,15 +35,11 @@ const CheckEmail = ({ email }) => {
                 },
                 color: "login.secondaryText"
             }}>
-
                 We sent a password rest link to <br></br>
                 {email}
-
             </Typography>
-
             <Box
                 sx={{ textAlign: "center" }}>
-
                 <Button type="submit"
                     fullWidth
                     variant='contained'
@@ -72,7 +59,6 @@ const CheckEmail = ({ email }) => {
                 >
                     Didn't receive the email? Click To resend
                 </Button>
-
                 <Link href="/login" component="a" sx={{
                     mt: 1,
                     wordWrap: "wrap",
@@ -89,9 +75,6 @@ const CheckEmail = ({ email }) => {
                 }}>
                     <ArrowBackIosNewRounded sx={{ fontSize: 10, mr: 1 }} /> Back to Sign in
                 </Link>
-
-
-                {/* <div id="signId"></div> */}
             </Box>
         </Box>
 

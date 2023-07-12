@@ -540,20 +540,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                 mt={"5px"}
                                 data={isTv ? `tv/${id}` : `movie/${id}`}
                             />
-                            {/* <Button sx={{
-                                bgcolor: "gray",
-                                color: "white",
-                                fontSize: {
-                                    xxs: "10px",
-                                    md: "12px"
-                                },
-                                mr: "10px",
-                                mt: "5px",
-                                padding: {
-                                    xxs: "4px 4px",
-                                    md: "6px 8px"
-                                }
-                            }} startIcon={<BookmarkBorder />}>Watch Later </Button> */}
+
 
                             <AddMenu position={"normal"} padding={{
                                 xxs: "4px 4px",
@@ -584,11 +571,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                     color: "red"
                                 }
 
-                                // padding: {
-                                //     xxs: "2px 6px",
-                                //     xs: "3px 8px",
-                                //     sm: "6px 16px"
-                                // }
+
                             }}
 
                                 startIcon={<YouTube />}
@@ -598,7 +581,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                 aria-controls={open ? 'composition-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
                                 aria-haspopup="true"
-                            // onClick={handleToggle}
+
 
 
 
@@ -634,7 +617,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                                     autoFocusItem={open}
                                                     id="composition-menu"
                                                     aria-labelledby="composition-button"
-                                                    // onKeyDown={handleListKeyDown}
+
                                                     sx={{
                                                         "&.MuiList-root": {
                                                             pt: 0
@@ -651,9 +634,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                                         bgcolor: "red",
                                                         color: "white",
 
-                                                        // whiteSpace: "nowrap",
-                                                        // overflow: "hidden",
-                                                        // textOverflow: "ellipsis"
                                                     }}
                                                     ><Typography
                                                         sx={{
@@ -675,9 +655,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                                                 width: "100%",
                                                                 px: 1,
                                                                 py: 0.5
-                                                                // whiteSpace: "nowrap",
-                                                                // overflow: "hidden",
-                                                                // textOverflow: "ellipsis"
+
                                                             }}><Typography
                                                                 sx={{
                                                                     fontSize: "12px",
@@ -707,8 +685,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                                                         )
                                                     }
 
-                                                    {/* <MenuItem onClick={handleClose}>My account</MenuItem>
-                                                    <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+
                                                 </MenuList>
                                             </ClickAwayListener>
                                         </Paper>

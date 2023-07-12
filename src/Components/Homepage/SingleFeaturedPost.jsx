@@ -51,14 +51,7 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                         xs: "2rem",
                         md: "3rem"
                     }}>{data?.name || data?.original_title}</Typography>
-                    <Typography sx={{
-                        // fontSize: {
-                        //     xxs: "0.5rem",
-                        //     xs: "0.7rem",
-                        //     md: "1rem"
-                        // },
-
-                    }}
+                    <Typography
                         fontSize={{
                             xxs: "0.5rem",
                             xs: "0.7rem",
@@ -67,8 +60,6 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                         color={"white"}
                     >  {truncate(data?.overview, 80)}</Typography>
                     <Box>
-
-
                         <Button variant='contained'
                             sx={{
                                 bgcolor: "red", color: "white",
@@ -104,20 +95,6 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                             xxs: "1.2rem",
                             sm: "1em"
                         }} position="normal" id={`${data.media_type}/${data.id}`} name={data?.name || data?.title || data?.original_title} />
-
-                        {/* <Button variant='contained' sx={{
-                            bgcolor: "red", color: "white", fontSize: {
-                                xxs: "10px",
-                                md: "0.875rem"
-                            },
-                            padding: {
-                                xxs: "2px 6px",
-                                xs: "3px 8px",
-                                sm: "6px 16px"
-                            }
-                        }} startIcon={!isWatch_later ? <BookmarkBorder /> : <BookmarkAdded />}
-                            onClick={watchLater}
-                        > Watch Later</Button> */}
                         <WatchLater data={`${data.media_type}/${data.id}`} />
                     </Box>
                 </Box>
