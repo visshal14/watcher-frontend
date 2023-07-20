@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
+import { Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import { setAlert } from '../../userSlice'
 import backendAxios from "../../backendAxios"
@@ -8,17 +8,51 @@ const PasswordSecurity = () => {
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const dispatch = useDispatch()
+    const [resetPasswordText, setResetPasswordText] = useState("Reset Password")
+    const [isProgress, setIsProgress] = useState(false)
+    const [errors, setErrors] = useState({
+        newPassword: false,
+        confirmPassword: false
+    })
+
 
 
     useEffect(() => {
+        const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+
+        if (newPassword.length > 1) {
+            // eslint-disable-next-line
+
+            if (errors.newPassword !== passwordRegex.test(newPassword) && errors.confirmPassword !== (confirmPassword === newPassword)) {
+                setErrors({ ...errors, newPassword: passwordRegex.test(newPassword), confirmPassword: confirmPassword !== newPassword ? false : true })
+            }
+            else if (errors.newPassword !== passwordRegex.test(newPassword)) {
+                setErrors({ ...errors, newPassword: passwordRegex.test(newPassword) })
+            }
+        }
+
+        // eslint-disable-next-line
+    }, [newPassword])
+
+    useEffect(() => {
+        if (confirmPassword.length > 1) {
+
+
+            if (errors.confirmPassword !== (confirmPassword === newPassword))
+                setErrors({ ...errors, confirmPassword: confirmPassword !== newPassword ? false : true })
+
+        }
+        // eslint-disable-next-line
+    }, [confirmPassword])
+
+    useEffect(() => {
         if (window.localStorage.getItem("accessToken") === "") {
-
             window.location.reload();
-
-
             backendAxios.interceptors.request.use(request => {
                 console.log('Starting Request', JSON.stringify(request, null, 2))
                 return request
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
     }, [])
@@ -32,27 +66,25 @@ const PasswordSecurity = () => {
             }))
             return
         }
-
+        setResetPasswordText("Please Wait")
+        setIsProgress(true)
 
 
         backendAxios.post(`/updatePassword`, {
             password: newPassword
         }).then((response) => {
-            if (response.data.errMsg || response.data.err) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg || response.data.err,
-                    isOpen: true
-                }))
-                return
-            }
             dispatch(setAlert({
-                type: "success",
-                data: response.data.msg || response.data,
+                type: response.data.errMsg || response.data.err ? "error" : "success",
+                data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                 isOpen: true
             }))
+            setResetPasswordText("Reset Password")
+            setIsProgress(false)
+            if (response.data.errMsg || response.data.err) return
             setNewPassword("")
             setConfirmPassword("")
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
     }
 
@@ -92,6 +124,7 @@ const PasswordSecurity = () => {
 
                 <TextField id="newPassword" type="password" label="" placeholder='Enter New Password' variant="filled"
                     sx={{
+                        color: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                         minWidth: "200px",
                         width: {
                             xxs: "100%",
@@ -118,6 +151,8 @@ const PasswordSecurity = () => {
                         bgcolor: "friends.inputColor"
                     }}
                     value={newPassword}
+                    error={!errors.newPassword && newPassword.length > 0}
+                    helperText={!errors.newPassword && newPassword.length > 0 ? "Password must contain One Capital Letter and a special character" : ""}
                     onChange={(e) => setNewPassword(e.target.value)}
                     InputProps={{
                         sx: {
@@ -156,8 +191,9 @@ const PasswordSecurity = () => {
                     }
                 }}>Confirm Password: </Typography>
 
-                <TextField id="confirmPassword" type="email" label="" placeholder='Enter Confirm Password' variant="filled"
+                <TextField id="confirmPassword" type="password" label="" placeholder='Enter Confirm Password' variant="filled"
                     sx={{
+                        color: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                         minWidth: "200px",
                         width: {
                             xxs: "100%",
@@ -174,8 +210,6 @@ const PasswordSecurity = () => {
                             borderRadius: "8px"
                         },
 
-
-
                         m: {
                             xxs: "0",
                             xsm: "0px 16px "
@@ -184,8 +218,11 @@ const PasswordSecurity = () => {
                         bgcolor: "friends.inputColor"
                     }}
                     value={confirmPassword}
+                    error={!errors.confirmPassword && confirmPassword.length > 0}
+                    helperText={!errors.confirmPassword && confirmPassword.length > 0 ? "Passwords doesn't match" : ""}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     InputProps={{
+
                         sx: {
                             "&:before": {
                                 content: "''",
@@ -214,7 +251,11 @@ const PasswordSecurity = () => {
                     width: "fit-content"
                 }}
                 onClick={submitButton}
-            >Continue</Button>
+                disabled={!(errors.newPassword && errors.confirmPassword)}
+            >
+                {resetPasswordText} {isProgress && <CircularProgress sx={{ color: "login.signButtonText", ml: 1 }} />}
+
+            </Button>
         </Stack>
     )
 }

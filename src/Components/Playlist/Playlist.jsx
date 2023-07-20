@@ -1,6 +1,6 @@
 import { Create, Sort } from '@mui/icons-material'
-import { Grid, Typography, Box, Button, IconButton, TextField, InputLabel, Select, MenuItem } from '@mui/material'
-import { } from '@mui/system'
+import { Grid, Typography, Box, Button, IconButton, TextField, Select, MenuItem, Stack, FormControl } from '@mui/material'
+
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getEmail, setAlert } from '../../userSlice'
@@ -20,30 +20,44 @@ const Playlist = () => {
     const email = useSelector(getEmail)
     const [isOwner, setIsOwner] = useState(false)
     const dispatch = useDispatch()
+    const [newPlaylistName, setNewPlaylistName] = useState()
+    const [newDes, setNewDes] = useState()
+    const [isNameChanging, setIsNamechanging] = useState(false)
+    const [isDesChanging, setIsDesChanging] = useState(false)
+    const [visibilty, setVisibilty] = useState(false)
+
+
+
     useEffect(() => {
-        backendAxios.post(`/getPlaylist/${id}`, {
-            email: email
-        }).then((response) => {
-            if (response.data.errMsg) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg,
-                    isOpen: true
-                }))
+        setIsNamechanging(false)
+        setIsDesChanging(false)
+
+        if (id && email) {
+            backendAxios.post(`/getPlaylist/${id}`, {
+                email: email
+            }).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
 
 
-                return
-                // return alert(response.data.errMsg)
-            }
-            setData(response.data.data)
+                    return
+                }
 
-            setNewPlaylistName(response.data.data.name)
-            setNewDes(response.data.data.description)
-            setVisibilty(response.data.data.shareable)
-            if (response.data.data.owner.split("_")[1] === email) {
-                setIsOwner(true)
-            }
-        })
+                setData(response.data.data)
+                setNewPlaylistName(response.data.data.name)
+                setNewDes(response.data.data.description)
+                setVisibilty(response.data.data.shareable)
+                if (response.data.data.owner.split("_")[1] === email) {
+                    setIsOwner(true)
+                }
+            }).catch((e) => {
+                console.log("error in axios ", e)
+            })
+        }
         // eslint-disable-next-line
     }, [id, email])
 
@@ -55,11 +69,9 @@ const Playlist = () => {
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
     }
 
-    const [newPlaylistName, setNewPlaylistName] = useState()
-    const [newDes, setNewDes] = useState()
-    const [isNameChanging, setIsNamechanging] = useState(false)
-    const [isDesChanging, setIsDesChanging] = useState(false)
-    const [visibilty, setVisibilty] = useState(false)
+
+
+
 
     const visiblityChange = (e) => {
 
@@ -69,9 +81,16 @@ const Playlist = () => {
             vis: e.target.value
         }).then((response) => {
             if (response.data.errMsg) {
-                return alert(response.data.errMsg)
+                return dispatch(setAlert({
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                    isOpen: true
+                }))
             }
+
             setData(response.data.data)
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
 
@@ -86,10 +105,16 @@ const Playlist = () => {
                     name: newPlaylistName
                 }).then((response) => {
                     if (response.data.errMsg) {
-                        return alert(response.data.errMsg)
+                        return dispatch(setAlert({
+                            type: response.data.errMsg || response.data.err ? "error" : "success",
+                            data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                            isOpen: true
+                        }))
                     }
                     setData(response.data.data)
                     setIsNamechanging(false)
+                }).catch((e) => {
+                    console.log("error in axios ", e)
                 })
             } else {
                 setIsNamechanging(false)
@@ -101,10 +126,16 @@ const Playlist = () => {
                     des: newDes
                 }).then((response) => {
                     if (response.data.errMsg) {
-                        return alert(response.data.errMsg)
+                        return dispatch(setAlert({
+                            type: response.data.errMsg || response.data.err ? "error" : "success",
+                            data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                            isOpen: true
+                        }))
                     }
                     setData(response.data.data)
                     setIsDesChanging(false)
+                }).catch((e) => {
+                    console.log("error in axios ", e)
                 })
 
 
@@ -121,7 +152,10 @@ const Playlist = () => {
             xxs: 1,
             sm: 5,
             md: 8
-        }} py={"100px"}>
+        }} py={{
+            xxs: "68px",
+            sm: "100px"
+        }}>
 
 
             <Helmet>
@@ -132,16 +166,17 @@ const Playlist = () => {
                 px: 2,
                 pb: 2
             }}>
-                <Box sx={{
+                <Stack sx={{
                     bgcolor: "playlists.background",
                     borderRadius: "10px",
-                    p: "10px",
+                    p: 3,
                     color: "playlists.textColor"
                 }}>
 
+
                     {isNameChanging ? <>
 
-                        <TextField fullWidth id="filled-basic" type="email" label="" value={newPlaylistName} placeholder='Enter Name' variant="filled"
+                        <TextField autoFocus fullWidth id="filled-basic" type="email" label="" value={newPlaylistName} placeholder='Enter Name' variant="filled"
                             sx={{
                                 "& input": {
                                     padding: "5px 5px ",
@@ -150,10 +185,20 @@ const Playlist = () => {
                                 "& input:focus": {
                                     outline: "none"
                                 },
-                                "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
-                                    content: '""'
+                                "&.MuiInputBase-input:after": {
+                                    content: '""',
+
                                 },
-                                "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
+                                "&.MuiInputBase-input:before": {
+                                    content: '""',
+                                    position: "static"
+
+                                },
+                                "& .MuiInputBase-root:before": {
+                                    content: '""',
+                                    position: "static"
+                                },
+                                "& .MuiInputBase-root:after": {
                                     content: '""',
                                     position: "static"
                                 },
@@ -165,50 +210,82 @@ const Playlist = () => {
                         <Button sx={{ color: "playlists.textColor" }} onClick={() => saveCancelBtn("name", "save")}>Cancel</Button>
                     </>
 
-                        : <Typography variant={"h4"}>{data?.name}
-                            {isOwner && <IconButton onClick={() => setIsNamechanging(!isNameChanging)}>
+                        :
+                        <Grid container justifyContent={"space-between"}>
+                            <Typography variant={"h4"} sx={{ fontWeight: "700" }}>{data?.name}</Typography>
+                            {isOwner && <IconButton onClick={() =>
+                                setIsNamechanging(!isNameChanging)
+                            }>
                                 <Create />
                             </IconButton>}
-                        </Typography>}
-                    <Typography variant={"h6"}>Made By {data?.owner.split("_")[0]}</Typography>
-                    <Typography variant={"h6"}>{data?.contents.length} items</Typography>
-
-                    {isOwner &&
-                        <>
-                            <InputLabel id="demo-simple-select-standard-label">Visibilty</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-standard-label"
-                                id="demo-simple-select-standard"
-                                value={visibilty}
-                                onChange={visiblityChange}
-                                label="Age"
-                            >
-                                <MenuItem value={false}>
-                                    <em>Private</em>
-                                </MenuItem>
-                                <MenuItem value={true}>Public</MenuItem>
-                            </Select></>
+                        </Grid>
 
                     }
 
+
+                    <Typography variant={"h6"} sx={{ fontSize: "16px", fontWeight: "600", mt: 1 }}>{data?.owner.split("_")[0]}</Typography>
+                    <Typography variant={"h6"} sx={{ fontSize: "12px", fontWeight: "400", mt: 1 }}>{data?.contents.length} items  Updated On {data?.contents[data?.contents.length - 1].saved_on}</Typography>
+
+                    {isOwner &&
+                        <>
+                            {/* <InputLabel id="demo-simple-select-standard-label">Visibilty</InputLabel> */}
+                            <FormControl variant="filled" sx={{ width: "fit-content" }}>
+
+                                <Select
+                                    labelId="select-filled-label"
+                                    id="simple-select-filled"
+                                    value={visibilty}
+                                    onChange={visiblityChange}
+                                    label="Visibility"
+                                    displayEmpty
+                                    disableUnderline={true}
+                                    sx={{
+
+                                        "& .MuiInputBase-input": {
+                                            paddingTop: "8px",
+                                            paddingRight: "48px !important",
+                                            pl: 1
+                                        },
+                                        bgcolor: "transparent"
+                                    }}
+                                >
+                                    <MenuItem value={false}>
+                                        <em>Private</em>
+                                    </MenuItem>
+                                    <MenuItem value={true}>Public</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </>
+                    }
 
 
 
                     {isDesChanging ? <>
 
-                        <TextField fullWidth id="filled-basic" type="email" label="" value={newDes} placeholder='Enter description' variant="filled"
+                        <TextField fullWidth autoFocus id="filled-basic" label="" value={newDes} placeholder='Enter description' variant="filled"
                             sx={{
                                 "& input": {
                                     padding: "5px 5px ",
                                     fontSize: "13px",
                                 },
+
                                 "& input:focus": {
                                     outline: "none"
                                 },
-                                "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
-                                    content: '""'
+                                "&.MuiInputBase-input:after": {
+                                    content: '""',
+
                                 },
-                                "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
+                                "&.MuiInputBase-input:before": {
+                                    content: '""',
+                                    position: "static"
+
+                                },
+                                "& .MuiInputBase-root:before": {
+                                    content: '""',
+                                    position: "static"
+                                },
+                                "& .MuiInputBase-root:after": {
                                     content: '""',
                                     position: "static"
                                 },
@@ -219,13 +296,20 @@ const Playlist = () => {
                         <Button sx={{ color: "playlists.textColor" }} onClick={() => saveCancelBtn("des", "save")}>Save</Button>
                         <Button sx={{ color: "playlists.textColor" }} onClick={() => saveCancelBtn("ses", "save")}>Cancel</Button>
                     </>
-                        : <Typography variant={"h6"}>{data?.description}
-                            {isOwner && <IconButton onClick={() => setIsDesChanging(true)}>
+                        :
+                        <Grid container justifyContent={"space-between"}>
+
+                            <Typography variant={"h6"} sx={{ fontSize: "16px", fontWeight: "400", mt: 1 }}>{data?.description.length < 2 ? "No Description" : data?.description} </Typography>
+                            {isOwner && <IconButton onClick={() => setIsDesChanging(true)} >
                                 <Create />
                             </IconButton>}
-                        </Typography>}
-                </Box>
+                        </Grid>
+
+                    }
+                </Stack>
             </Grid>
+
+
             <Grid item md={8} sx={{
                 px: 2,
             }}>
@@ -268,7 +352,7 @@ const Playlist = () => {
                                         }} />
                                     </Grid>
                                     <Grid item xxs={12} sm={8} px={1}>
-                                        <Typography variant={"h5"} sx={{ mr: 2 }}>{ele.name} </Typography>
+                                        <Typography variant={"h5"} sx={{ mr: 4, cursor: "pointer", fontWeight: "700" }}>{ele.name} </Typography>
                                         <Typography>{truncate(ele.description, 100)} </Typography>
                                         <Typography>{ele.release_date.split("-")[0]}</Typography>
 
@@ -277,9 +361,9 @@ const Playlist = () => {
 
 
 
-                                <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-                                    <AddMenu id={`${ele.media_type}/${ele.media_id}`} name={ele?.name} />
-                                </Box>
+
+                                <AddMenu id={`${ele.media_type}/${ele.media_id}`} name={ele?.name} mr={0.5} mt={0.5} />
+
                             </Grid>
 
 
@@ -295,7 +379,7 @@ const Playlist = () => {
                 </Box>
 
             </Grid>
-        </Grid>
+        </Grid >
 
     )
 }

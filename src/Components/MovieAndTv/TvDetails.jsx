@@ -21,7 +21,6 @@ const TvDetails = () => {
     const [noOfSeasons, setNoOfSeasons] = useState("")
     const seasonUseRef = useRef(0)
     const detailsRef = useRef(null)
-    // const [detailsHeight, setDetailsHeight] = useState(0)
     const [isTrailer, setIsTrailer] = useState(false)
     useEffect(() => {
         setSeasons([])
@@ -30,11 +29,16 @@ const TvDetails = () => {
             getSeasonsEpisodes(response.data.number_of_seasons)
             setNoOfSeasons(response.data.number_of_seasons)
             setCast(response.data.credits.cast)
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
         axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${apiKey}`).then((response) => {
-            if (response.data.results.US.flatrate) {
+
+            if (response.data.results?.US?.flatrate) {
                 setWatch_provider(response.data.results.US.flatrate[0])
             }
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
         // eslint-disable-next-line
@@ -56,11 +60,12 @@ const TvDetails = () => {
         for (let i = 1; i <= n; i++) {
             axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${apiKey}`).then((response) => {
                 setSeasons(prev => [...prev, response.data])
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
     }
     useEffect(() => {
-        // console.log("seasonRef " + seasonUseRef.current)
         if (seasons.length === noOfSeasons && seasonUseRef.current === 0) {
             seasonUseRef.current = 1
             const sorted = [...seasons].sort(compare);
@@ -79,11 +84,6 @@ const TvDetails = () => {
     }
 
 
-    // useEffect(() => {
-    //     // setDetailsHeight(detailsRef.current.clientHeight)
-    //     console.log(isTrailer + "------>")
-    // }, [isTrailer])
-
     return (
 
 
@@ -93,7 +93,7 @@ const TvDetails = () => {
         }} py={10}
             height=
             {{ xxs: "auto", lg: !isTrailer ? "100vh" : "auto" }}
-        // height={"auto"}
+
 
         >
             <Grid item lg={9} xxs={12} px={{
@@ -123,10 +123,7 @@ const TvDetails = () => {
                 pb: "20px",
                 borderRadius: "20px",
                 position: "relative",
-                // marginTop: {
-                //     xxs: isTrailer ? `${detailsHeight}px` : 0,
-                //     lg: 0
-                // }
+
             }}>
                 <Typography sx={{
                     position: "absolute",
@@ -142,7 +139,7 @@ const TvDetails = () => {
 
                 <Box
                     sx={{
-                        // bgcolor: "movieTv.aSeasonBackground",
+
                         maxHeight: "100%",
                         overflow: "scroll",
                         "&::-webkit-scrollbar": {
@@ -171,8 +168,7 @@ const SeasonsAccordion = ({ ele, id }) => {
         } else {
             navigate(`season/${id.split("/")[2]}`)
         }
-        // navigate(`season/${id.split("/")[2]}`)
-        // console.log(id.split("/")[2])
+
     }
 
 
@@ -203,7 +199,7 @@ const SeasonsAccordion = ({ ele, id }) => {
                         justifyContent: "space-between",
                         alignItems: "center"
                     },
-                    // bgcolor: "movieTv.episodesBackground",
+
                 }}
             >
                 <Typography color={"movieTv.xxsTextColor"} component={"span"} onClick={seasonsClicked}>{ele.name}  <Typography component={"span"} fontSize={12}>({ele.episodes.length} epi)</Typography></Typography>

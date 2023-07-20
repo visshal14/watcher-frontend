@@ -20,9 +20,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
         return `${h.toString()[0]}h ${min}min`
     }
     const { id, epino } = useParams()
-    // useEffect(() => {
-    //     console.log(epino + "---->")
-    // }, [epino])
+
 
     const [details, setDetails] = useState(tempDetails)
     const [open, setOpen] = useState(false);
@@ -36,15 +34,11 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
 
     useEffect(() => {
-        // console.log("tempDetails")
-        // console.log(tempDetails)
         setDetails(tempDetails)
     }, [tempDetails])
 
 
     useEffect(() => {
-        // console.log('details')
-        // console.log(details)
         details?.videos?.results.length > 0 ? setIsVideos(true) : setIsVideos(false)
     }, [details])
 
@@ -59,8 +53,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                 } else {
                     setSeasonVideos(details)
                 }
-                // console.log("detailsEpino")
-                // console.log(details)
 
 
                 setDetails({
@@ -68,10 +60,11 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                     current_season_overview: response.data.overview,
                     current_season_no_of_episodes: response.data.episodes.length,
                     current_season_air_date: response.data.air_date,
-                    // current_season_vote_average: response.data.vote_average,
                     current_season_poster_path: response.data.poster_path
                 })
 
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
 
@@ -96,9 +89,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
     useEffect(() => {
 
-        // console.log("epi")
 
-        // if (epino && !details?.current_season_overview) {
         if (epino) {
             // eslint-disable-next-line
             details?.seasons.map((ele) => {
@@ -155,15 +146,11 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
     }
 
-    // useEffect(() => {
-    //     // console.log("player")
-    //     console.log(player)
-    // }, [player])
 
 
     useEffect(() => {
         if (!videoID) return
-        // console.log(videoID)
+
 
 
         var tag = document.createElement("script");
@@ -201,11 +188,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
     }, [videoID]);
 
 
-    // function temp(p) {
-    //     console.log("p")
-    //     p?.loadVideoById(videoID)
-    // }
-
 
 
 
@@ -219,7 +201,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
     };
 
 
-    // return focus to the button when we transitioned from !open -> open
+
     const prevOpen = useRef(open);
     useEffect(() => {
         if (prevOpen.current === true && open === false) {
@@ -231,9 +213,9 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
     const playYoutubeVideo = (key) => {
 
-        // console.log(typeof (key))
+
         if (player) {
-            // console.log(player)
+
             player.loadVideoById(key)
         }
 
@@ -243,9 +225,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
             return
         }
 
-        // setIsPlayTrailer(false)
-        // setIsPlayTrailer(!isPlayTrailer)
-        // setDetailDisplay(!detailsDisplay)
+
         setIsPlayTrailer(false)
         setDetailDisplay(false)
     }
@@ -253,19 +233,8 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
     const stopYoutube = () => {
         setIsPlayTrailer(true)
         setDetailDisplay(true)
-        // setIsPlayTrailer(true)
-        // setDetailDisplay(!detailsDisplay)
+
     }
-
-
-
-
-    // useEffect(() => {
-    //     console.log(!epino)
-    //     console.log(seasonVideos)
-    //     console.log(!epino && !seasonVideos)
-    // }, [epino, seasonVideos])
-
 
 
     return (
@@ -274,7 +243,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
             borderRadius: "20px",
             backgroundSize: "cover",
             backgroundPosition: "center center",
-            // backgroundImage: `url(https://image.tmdb.org/t/p/original${details.backdrop_path})`,
             position: "relative",
             cursor: "default"
         }}>
@@ -338,7 +306,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                 background: details?.backdrop_path ? "none" : "rgba(0,0,0)",
                 borderRadius: "20px"
             }}>
-                {details?.backdrop_path && <img src={details?.backdrop_path ? `https://image.tmdb.org/t/p/original${epino ? details?.current_season_poster_path : details?.backdrop_path}` : ""} loading="lazy" alt={`background of ${details?.original_title || details?.name}`} style={{
+                {(details?.backdrop_path || details?.poster_path) && <img src={details?.backdrop_path || details?.poster_path ? `https://image.tmdb.org/t/p/original${epino ? details?.current_season_poster_path : details?.backdrop_path || details?.poster_path}` : ""} loading="lazy" alt={`background of ${details?.original_title || details?.name}`} style={{
                     width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px"
                 }} />}
             </Box>
@@ -352,7 +320,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
 
             <Stack ref={detailsRef} sx={{
-                // display: detailsDisplay ? "initial" : "none",
+
                 padding: {
                     xxs: 2,
                     md: "30px 30px 20px 30px"
@@ -471,7 +439,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                             : details?.release_date.split("-")[0]
                         }
 
-                        {/* <Typography component={"span"} sx={{ fontSize: "12px" }}>{details?.release_date.split("-")[0]}</Typography> */}
                     </Grid>
 
                 </Grid>
@@ -488,7 +455,6 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                             xxs: "movieTv.xxsTextColor",
                             sm: "movieTv.smTextColor"
                         }} >
-                            {/* {truncate(details?.overview, 150)} */}
                             {!epino ? truncate(details?.overview, 250) : truncate(details?.current_season_overview || details?.overview, 250)}
                         </Typography>
                         <Grid container justifyContent={{ xxs: "center", sm: "flex-start" }} mt={"10px"}>

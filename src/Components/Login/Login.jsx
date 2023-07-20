@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Grid, IconButton, InputAdornment, Link, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, IconButton, InputAdornment, Link, Paper, TextField, Typography } from '@mui/material';
 import { DarkMode, LightMode, Visibility, VisibilityOff } from '@mui/icons-material';
 import jwt_decode from "jwt-decode"
 import backendAxios from "../../backendAxios"
@@ -17,19 +17,54 @@ const Login = () => {
     const theme = useSelector(getTheme)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const [OAuth, setOAuth] = useState(false)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [isOAuth, setIsOAuth] = useState(false)
+    const [signInText, setSignInText] = useState("Sign In")
+    const [isProgress, setIsProgress] = useState(false)
+    const [errors, setErrors] = useState({
+
+        password: false,
+        email: false
+    })
     const handleClick = () => {
         setShowPassword(prev => !prev);
     }
+
+    useEffect(() => {
+
+        if (!isOAuth) {
+            // eslint-disable-next-line
+            const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+            if (email.length > 1)
+                setErrors({ ...errors, email: emailRegex.test(email) })
+        }
+        // eslint-disable-next-line
+    }, [email, isOAuth])
+
+    useEffect(() => {
+
+        const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+        if (!isOAuth)
+            if (password.length > 1)
+                setErrors({ ...errors, password: passwordRegex?.test(password) })
+
+        // eslint-disable-next-line
+    }, [password, isOAuth])
+
     const submitButton = () => {
+
+        setSignInText("Please Wait")
+        setIsProgress(true)
         backendAxios.post('/login', {
             email, password
         })
             .then(function (response) {
-                if (response.data.errMsg) {
 
+                if (response.data.errMsg) {
+                    setSignInText("Sign In")
+                    setIsProgress(false)
                     dispatch(setAlert({
                         type: "error",
                         data: response.data.errMsg,
@@ -37,25 +72,16 @@ const Login = () => {
                     }))
                     return
                 }
-                const data = response.data
-                dispatch(setData({
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                    email: data.email,
-                    profile_photo: data.profile_photo,
-                    friends: data.friends,
-                    pending_requests: data.pending_requests,
-                    playlists: data.playlists,
-                    watch_later: data.watch_later,
-                    liked: data.liked,
-                    watched: data.watched,
-                    shared: data.shared
-                }))
+
+
+                dispatch(setData(response.data))
                 localStorage.setItem("accessToken", response.data.accessToken)
                 navigate("/")
             })
             .catch(function (error) {
                 if (error.code) {
+                    setSignInText("Sign In")
+                    setIsProgress(false)
                     dispatch(setAlert({
                         type: "error",
                         data: error.code,
@@ -65,6 +91,7 @@ const Login = () => {
                 console.log("Error in login Frontend: ", error);
             });
 
+
     }
 
 
@@ -72,15 +99,15 @@ const Login = () => {
         const userObj = jwt_decode(response.credential)
         setEmail(userObj.email)
         setPassword(userObj.iss + "-" + userObj.sub)
-        setOAuth(true)
+        setIsOAuth(true)
 
     }
     useEffect(() => {
-        if (OAuth) {
+        if (isOAuth) {
             submitButton()
         }
         // eslint-disable-next-line
-    }, [OAuth])
+    }, [isOAuth])
 
 
 
@@ -122,13 +149,28 @@ const Login = () => {
 
     return (
         <Grid container component={Paper} sx={{
-            height: "100vh", width: "100vw",
-            bgcolor: "background.default"
+
+            // minHeight: "100vh",
+            height: "100vh",
+            width: "100vw",
+            bgcolor: "background.default",
+            minHeight: "700px"
         }}>
 
             <Helmet>
                 <title>Watcher</title>
             </Helmet>
+
+
+            <IconButton sx={{
+                position: "absolute",
+                top: 10,
+                left: 10
+            }} href="/">
+                <img src={"/watcherlogo.png"} alt="logo" style={{ width: "30px", height: "30px" }} />
+
+            </IconButton>
+
             <Grid item xxs={12} md={6} order={{ xxs: 2, md: 1 }}
                 sx={{
                     display: "flex",
@@ -136,8 +178,9 @@ const Login = () => {
                     alignItems: "center",
                     py: 6,
                     px: {
-                        xxs: 2,
-                        xs: 6,
+                        xxs: 1,
+                        xs: 2,
+                        sm: 6
                     },
                     height: {
                         xxs: "70%",
@@ -198,29 +241,31 @@ const Login = () => {
                             name="email"
                             autoComplete='email'
                             autoFocus
+                            error={!errors.email && email.length > 0}
+                            helperText={!errors.email && email.length > 0 ? "Please Enter Correct Email" : ""}
                             onChange={(e) => { setEmail(e.target.value) }}
                             sx={{
-                                bgcolor: "login.input",
-                                color: "login.mainText",
+                                color: !errors.email && email.length > 0 ? "login.mainText" : "red",
                                 borderRadius: "15px",
                                 " & .MuiInputBase-root": {
+                                    bgcolor: "login.input",
                                     borderRadius: "15px"
                                 },
                                 '& label.Mui-focused': {
-                                    color: 'login.labelText',
+                                    color: !errors.email && email.length > 0 ? "red " : 'login.labelText',
                                 },
                                 '& .MuiInput-underline:after': {
-                                    borderBottomColor: 'login.labelText',
+                                    borderBottomColor: !errors.email && email.length > 0 ? "red " : 'login.labelText',
                                 },
                                 '& .MuiOutlinedInput-root': {
                                     '& fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.email && email.length > 0 ? "red " : 'login.labelText',
                                     },
                                     '&:hover fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.email && email.length > 0 ? "red " : 'login.labelText',
                                     },
                                     '&.Mui-focused fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.email && email.length > 0 ? "red " : 'login.labelText',
                                     },
                                 }
                             }}
@@ -250,35 +295,37 @@ const Login = () => {
                             onChange={(e) => { setPassword(e.target.value) }}
                             type={showPassword ? 'text' : 'password'}
                             autoComplete='current-password'
+                            error={!errors.password && password.length > 0 && !isOAuth}
+                            helperText={!errors.password && password.length > 0 && !isOAuth ? "Password must contain One Capital Letter and a special character" : " "}
                             variant="outlined"
                             sx={{
-                                bgcolor: "login.input",
-                                color: "login.mainText",
+                                color: !errors.password && password.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                 borderRadius: "15px",
                                 " & .MuiInputBase-root": {
+                                    bgcolor: "login.input",
                                     borderRadius: "15px"
                                 },
                                 '& label.Mui-focused': {
                                     color: 'login.labelText',
                                 },
                                 '& .MuiInput-underline:after': {
-                                    borderBottomColor: 'login.labelText',
+                                    borderBottomColor: !errors.password && password.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                 },
                                 '& .MuiOutlinedInput-root': {
                                     '& fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.password && password.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                     },
                                     '&:hover fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.password && password.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                     },
                                     '&.Mui-focused fieldset': {
-                                        borderColor: 'login.labelText',
+                                        borderColor: !errors.password && password.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                     },
                                 }
                             }}
                         />
                         <Link href="/forgetpassword/email" component="a"
-                            sx={{ color: "login.mainText" }}
+                            sx={{ color: "login.mainText", textDecoration: "underline !important" }}
                         >Forget Password</Link>
                         <Button type="submit"
                             fullWidth
@@ -295,9 +342,10 @@ const Login = () => {
                                     transform: "scale(1.01)"
                                 },
                             }}
-                            onClick={submitButton}
-                        >
-                            Sign In
+
+                            disabled={!(errors.email && errors.password && !isOAuth)}
+                            onClick={submitButton}>
+                            {signInText} {isProgress && <CircularProgress sx={{ color: "login.signButtonText", ml: 1 }} />}
                         </Button>
                         {/* <div id="signId"></div> */}
                     </Box>

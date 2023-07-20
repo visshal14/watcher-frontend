@@ -27,10 +27,9 @@ const ForgetPassword = () => {
 
     const navigate = useNavigate()
     useEffect(() => {
-        // if (id === "email" || id === "check" || id === "done" || id.split("_")[0] === "password") {
-        // } else navigate("/login")
+        if (id === "email" || id === "check" || id === "done" || id.split("_")[0] === "password") {
+        } else navigate("/login")
 
-        if (id !== "email" || id !== "check" || id !== "done" || id.split("_")[0] !== "password") navigate("/login")
         if (id === "check") if (alertBox.data !== "Check Your Mail") navigate("/login")
         if (id.split("_").length < 2 && id.split("_")[0] === "password") navigate("/login")
         if (id === "done") if (alertBox.data !== "Password Updated") navigate("/login")
@@ -41,17 +40,17 @@ const ForgetPassword = () => {
             })
                 .then(function (response) {
 
-                    if (response.data.errMsg || response.data.err) {
-                        dispatch(setAlert({
-                            type: "error",
-                            data: response.data.errMsg || response.data.err,
-                            isOpen: true
-                        }))
-                        return
-                    }
+
+                    dispatch(setAlert({
+                        type: response.data.errMsg || response.data.err ? "error" : "success",
+                        data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                        isOpen: true
+                    }))
+
+                    if (response.data.errMsg || response.data.err) return
+
                 })
                 .catch(function (error) {
-                    console.log(error)
                     if (error.code) {
                         dispatch(setAlert({
                             type: "error",

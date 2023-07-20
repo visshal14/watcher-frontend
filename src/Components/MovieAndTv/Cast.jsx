@@ -1,5 +1,6 @@
 
 import { Avatar, Grid, Typography } from '@mui/material'
+import knowMore from '../KnowMore'
 
 
 
@@ -24,8 +25,17 @@ const Cast = ({ cast }) => {
                         justifyContent: "center",
                         alignItems: "center",
                         textAlign: "center",
-                        padding: "0 5px"
-                    }}  >
+                        p: "5px",
+                        cursor: "pointer",
+                        "&:hover": {
+                            bgcolor: "rgba(0,0,0,0.3)",
+                            borderRadius: "5px",
+                            transform: "scale(1.04)",
+                            transition: "all 0.5s"
+                        }
+                    }}
+                        onClick={() => knowMore(`person/${ele.id}`)}
+                    >
                         <Avatar src={ele.profile_path ? `https://image.tmdb.org/t/p/original${ele.profile_path}` : ""}
                             sx={{
                                 width: {

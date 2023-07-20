@@ -10,15 +10,18 @@ const Layout = ({ data, title }) => {
     return (
         <Grid container spacing={{
             xxs: 0,
-            sm: 2
+            sm: 1
         }} px={{
             xxs: 1,
             sm: 5,
             md: 8
-        }} py={"100px"}>
+        }} py={{
+            xxs: "68px",
+            sm: "100px"
+        }}>
 
             <Grid item xxs={12} sm={4} sx={{
-                px: 2,
+                px: 1,
                 mb: 2,
             }}>
                 <Box sx={{
@@ -32,7 +35,7 @@ const Layout = ({ data, title }) => {
                 </Box>
             </Grid>
             <Grid item sm={8} sx={{
-                px: 2,
+                px: 1,
                 pb: 2
             }}>
                 <Box sx={{

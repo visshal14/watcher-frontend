@@ -18,6 +18,8 @@ const Movie = () => {
         axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US&append_to_response=casts,videos`).then((response) => {
             setDetails(response.data)
             setCast(response.data.casts.cast)
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
         axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${apiKey}&append_to_response=watch_providers`).then((response) => {
@@ -25,6 +27,8 @@ const Movie = () => {
                 setWatch_provider(response.data.results.US.buy[0])
             }
 
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
 

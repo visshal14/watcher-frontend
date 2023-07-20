@@ -3,7 +3,8 @@ import React from 'react'
 import AddMenu from '../AddMenu'
 import WatchLater from '../WatchLaterBtn'
 import knowMore from '../KnowMore'
-const SingleFeaturedPost = ({ data, series, spot }) => {
+import { ReadMore } from '@mui/icons-material'
+const SingleFeaturedPost = ({ data, series, spot, tileClicked, postNo }) => {
 
 
     function truncate(str, n) {
@@ -22,8 +23,11 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                 xxs: series === 0 ? "block" : "none",
                 md: "block"
             },
+            cursor: series !== 0 ? "pointer" : "default"
             // transition: "width 1s, height 1s, transform 2s"
-        }}>
+        }}
+            onClick={() => tileClicked(postNo, series, spot)}
+        >
 
             <Box
                 sx={{
@@ -34,7 +38,8 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                     backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,
                     position: "relative",
                     borderRadius: 3,
-                    cursor: "default",
+                    // cursor: "pointer",
+
 
                 }}>
                 <Box
@@ -83,6 +88,8 @@ const SingleFeaturedPost = ({ data, series, spot }) => {
                                 }
 
                             }}
+
+                            endIcon={<ReadMore />}
                             onClick={() => knowMore(`${data.media_type}/${data.id}`)}>Know More</Button>
 
                         <AddMenu mr={{

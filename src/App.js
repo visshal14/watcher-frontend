@@ -12,9 +12,6 @@ import LoadingComponent from './Components/LoadingComponent';
 
 
 
-
-
-
 const Login = lazy(() => import('./Components/Login/Login'));
 const Homepage = lazy(() => import('./Components/Homepage/Homepage'));
 const Movie = lazy(() => import('./Components/MovieAndTv/Movie'));
@@ -27,18 +24,35 @@ const Playlist = lazy(() => import('./Components/Playlist/Playlist'));
 const Discover = lazy(() => import('./Components/Discover/Discover'));
 const ForgetPassword = lazy(() => import('./Components/Login/ForgetPassword'));
 const Register = lazy(() => import('./Components/Register/Register'));
+const Person = lazy(() => import("./Components/Person/Person"))
+const Search = lazy(() => import("./Components/Search/Search"))
 
 function App() {
   const themeMode = useSelector(getTheme)
 
   const dispatch = useDispatch()
   useEffect(() => {
+
+
+
+
     if (window.localStorage.getItem("theme")) {
       dispatch(setTheme({
         theme: window.localStorage.getItem("theme")
       }))
     } else {
-      window.localStorage.setItem("theme", themeMode)
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        window.localStorage.setItem("theme", "dark")
+        dispatch(setTheme({
+          theme: "dark"
+        }))
+      } else {
+        window.localStorage.setItem("theme", "light")
+        dispatch(setTheme({
+          theme: "light"
+        }))
+      }
+
     }
     // eslint-disable-next-line
   }, [])
@@ -60,7 +74,7 @@ function App() {
         xs: 300, // phone
         xsm: 450,
         sm: 600, // tablets
-        xmd: 800,
+        xmd: 830,
         md: 900, // small laptop
         lg: 1200, // desktop
       }
@@ -121,6 +135,18 @@ function App() {
               <Suspense fallback={<LoadingComponent />}>
                 <Discover />
               </Suspense>} />
+            <Route path="/search" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Search />
+              </Suspense>} />
+
+
+            <Route path="/person/:id" element={
+              <Suspense fallback={<LoadingComponent />}>
+                <Person />
+              </Suspense>} />
+
+
           </Route>
 
           <Route exact path="/login" element={<Suspense fallback={<LoadingComponent />}>
@@ -140,10 +166,34 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
+
+
+
+        {/* <Routes path="/temp" element={<TempPrivate/>}>
+            <Route path="dashboard" element={<TempPrivateComponent/>}/>
+          </Routes> */}
+
       </BrowserRouter>
       <AlertBox />
     </ThemeProvider>
   );
 }
+
+// const TempPrivateComponent = ()=>{
+//   return<>TempPrivateComponent</>
+// }
+// const TempPrivate = ()=>{
+
+
+
+//   useEffect(()=>{
+//     if(localStorage.getItem("accessToken")){
+//       return <Outlet/>
+//     }else{
+//       Navigate("?")
+//     }
+//   },[])
+//   return <>TempPrivate</>
+// }
 
 export default App;

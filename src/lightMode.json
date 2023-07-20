@@ -70,7 +70,8 @@
     "playlists": {
         "background": "#FFFFFF",
         "textColor": "#000000",
-        "titleBackground": "#E9EBF7"
+        "titleBackground": "#E9EBF7",
+        "editButtonBack": "rgba(146,146,148,0.6)"
     },
     "addMenu": {
         "border": "#484848",
@@ -84,5 +85,15 @@
         "filterFore": "#484848",
         "tilesBack": "#ffffff",
         "color": "#484848"
+    },
+    "toolTip": {
+        "foreBackground": "#E9EBF7",
+        "textColor": "#171717",
+        "background": "#ffffff"
+    },
+    "person": {
+        "tilesBackground": "#ffffff",
+        "discoverBackground": "#E9EBF7",
+        "textColor": "#484848"
     }
 }

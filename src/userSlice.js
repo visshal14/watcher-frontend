@@ -2,6 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 // import tempData from "./tempData.json"
 
 
+const initialTheme = window.localStorage.getItem("theme")
+    ? window.localStorage.getItem("theme") : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"
+
+
 const initialState = {
     first_name: "",
     last_name: "",
@@ -14,7 +18,7 @@ const initialState = {
     liked: "",
     watched: "",
     shared: "",
-    theme: "light",
+    theme: initialTheme,
     mediaIdAndType: "",
     alertBox: {
         type: "",
@@ -50,7 +54,6 @@ const userSlice = createSlice({
             state.shared = action.payload.shared
             state.isOAuth = action.payload.isOAuth
         },
-
         setMedia: (state, action) => {
             state.mediaIdAndType = action.payload.media
         },
@@ -58,11 +61,14 @@ const userSlice = createSlice({
             state.alertBox.type = !action.payload.type ? state.alertBox.type : action.payload.type
             state.alertBox.data = !action.payload.data ? state.alertBox.data : action.payload.data
             state.alertBox.isOpen = action.payload.isOpen
+        },
+        setInitialState: () => {
+            return initialState
         }
     }
 })
 
-export const { setTheme, setData, setAlert } = userSlice.actions
+export const { setTheme, setData, setAlert, setInitialState } = userSlice.actions
 
 export const getTheme = (state) => state.user.theme
 export const getFirstName = (state) => state.user.first_name

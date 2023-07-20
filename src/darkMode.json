@@ -26,7 +26,7 @@
         "searchBarGrid": "#484848"
     },
     "leftSideNav": {
-        " background": "#121212",
+        "background": "#121212",
         "textColor": "#F4F5F8"
     },
     "rightSideNav": {
@@ -70,7 +70,8 @@
     "playlists": {
         "background": "#484848",
         "textColor": "#FFFFFF",
-        "titleBackground": "#929294"
+        "titleBackground": "#929294",
+        "editButtonBack": "rgba(146,146,148,0.6)"
     },
     "addMenu": {
         "border": "#ffffff",
@@ -84,5 +85,15 @@
         "filterFore": "#484848",
         "tilesBack": "#484848",
         "color": "#ffffff"
+    },
+    "toolTip": {
+        "foreBackground": "#171717",
+        "textColor": "#ffffff",
+        "background": "#929294"
+    },
+    "person": {
+        "tilesBackground": "#484848",
+        "discoverBackground": "#929294",
+        "textColor": "#ffffff"
     }
 }

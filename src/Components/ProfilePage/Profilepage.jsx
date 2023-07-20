@@ -1,5 +1,5 @@
 import { Box, Button, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material'
-import React from 'react'
+import React, { useRef } from 'react'
 
 import ProfileTabs from './ProfileTabs'
 import { useSelector } from 'react-redux'
@@ -27,15 +27,19 @@ const Profilepage = () => {
             xxs: 1,
             sm: 5,
             md: 8
-        }} py={10} sx={{
+        }} py={{
+            xxs: 8,
+            sm: 12,
+            // md: 12
+        }} sx={{
         }} >
 
             <ProfileTabs />
             <Stack>
                 <Row titles="Liked" url={"/liked"} data={liked} />
                 <Row titles="Watch Later" url={"/watchlater"} data={watchLater} />
-                <Row titles="Watched Movies" data={watched.movies} />
-                <Row titles="Watched Tv" data={watched.series} />
+                <Row titles="Watched Movies" data={watched?.movies} />
+                <Row titles="Watched Tv" data={watched?.series} />
                 {playlists && playlists?.map((ele, i) =>
                     <Row key={"playlist_" + i} titles={ele.name} url={"/playlist/" + ele.playlist_id} data={ele.contents} />
                 )}
@@ -46,11 +50,13 @@ const Profilepage = () => {
 }
 
 const Row = ({ titles, data, url }) => {
+
+    const rowRef = useRef(null)
     const scrollLeft = () => {
-        document.getElementById(titles).scrollLeft -= 300
+        rowRef.current.scrollLeft -= 300;
     }
     const scrollRight = () => {
-        document.getElementById(titles).scrollLeft += 300
+        rowRef.current.scrollLeft += 300;
     }
 
 
@@ -137,7 +143,7 @@ const Row = ({ titles, data, url }) => {
 
                 <title>Watcher</title>
             </Helmet>
-            <Grid id={titles} container flexWrap="nowrap" overflow="auto"
+            <Grid id={titles} ref={rowRef} container flexWrap="nowrap" overflow="auto"
                 sx={{
                     "&::-webkit-scrollbar": {
                         display: "none"
@@ -178,7 +184,14 @@ const Row = ({ titles, data, url }) => {
 
                             <AddMenu id={`${ele.type || ele.media_type || ele?.details?.type}/${ele.id || ele.media_id || ele.details?.id}`} name={ele.name || ele.title || ele?.original_title || ele?.details.title || ""} />
 
-                            <Tooltip title={<MovieOverviewTip ele={ele} bgcolor={"red"} />} enterDelay={500} placement="right">
+                            <Tooltip componentsProps={{
+                                tooltip: {
+                                    sx: {
+                                        p: 1,
+                                        bgcolor: "toolTip.background"
+                                    },
+                                },
+                            }} title={<MovieOverviewTip ele={ele} bgcolor={"red"} />} enterDelay={500} placement="right">
 
 
                                 <Box onClick={() => knowMore(`${ele.type || ele.media_type || ele.details?.type}/${ele.id || ele.media_id || ele.details?.id}`)} sx={{

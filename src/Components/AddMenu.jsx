@@ -1,8 +1,8 @@
 import { Add, Lock, Link, ExpandLess, ExpandMore, } from '@mui/icons-material';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, FormControl, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPlaylists, getFriends, setData, getShared, setAlert } from '../userSlice';
+import { getAllPlaylists, getFriends, setData, getShared, setAlert, getEmail } from '../userSlice';
 // import { getMediaData } from '../tmdb';
 import backendAxios from "../backendAxios"
 import LoginChecker from '../LoginChecker';
@@ -13,6 +13,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     const data = useSelector(getAllPlaylists)
     const friends = useSelector(getFriends)
     const shared = useSelector(getShared)
+    const currentEmail = useSelector(getEmail)
     const [mediaData, setMediaData] = useState()
     const [ifLiked, setIfLiked] = useState("Add To")
     const [ifWatchLater, setWatchLater] = useState("Add To")
@@ -21,24 +22,41 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     const [ifShareFriends, setIfShareFriends] = useState([])
     const [showFriends, setShowFriends] = useState(false)
     const dispatch = useDispatch()
+    const [likedProgress, setLikedProgress] = useState("")
+    const [watchLaterProgress, setWatchLaterProgress] = useState("")
+    const [watchedProgress, setWatchedProgress] = useState("")
+    const [sharedProgress, setSharedProgress] = useState([])
+    const [playlistProgress, setPlaylistProgress] = useState([])
 
+
+    // useEffect(() => {
+    //     // setLikedProgress(<CircularProgress size="15px" />)
+    //     setTimeout(() => {
+    //         setLikedProgress("")
+    //     }, 5000)
+    // }, [])
 
     useEffect(() => {
-        // console.log(mediaData)
+
         buttonUpdates()
         // eslint-disable-next-line
     }, [data, mediaData, showFriends])
 
     const buttonUpdates = () => {
 
-        if (!mediaData) {
+        if (!currentEmail || window.localStorage.getItem("accessToken") === "") {
+            setAnchorEl(null);
+
             return
         }
         //data[0] is playlists
         setIfPlaylist([])
-        data[0].map(() =>
+        setPlaylistProgress([])
+        // eslint-disable-next-line
+        data[0]?.map(() => {
+            setPlaylistProgress(prev => [...prev, " "])
             setIfPlaylist(prev => [...prev, "Add To"])
-        )
+        })
 
         data[0]?.forEach((ele, i) => {
             ele.contents?.every((e) => {
@@ -79,7 +97,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
         if (mediaData?.split("/")[0] === "tv") {
 
-            data[2].series.every((ele) => {
+            data[2]?.series.every((ele) => {
                 if (ele.details.id === mediaData?.split("/")[1]) {
                     if (ele.episode_list.length === 0) {
                         setIfWatched("Add To")
@@ -131,12 +149,20 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
         //shared
         setIfShareFriends([])
-        friends?.map(() =>
+        setSharedProgress([])
+
+
+        // eslint-disable-next-line
+        friends?.map(() => {
+            setSharedProgress(prev => [...prev, " "])
             setIfShareFriends(prev => [...prev, "Share To "])
-        )
+        })
+
         friends?.forEach((ele, i) => {
+
             shared?.every((e) => {
-                if (ele.email === e.email && `${mediaData?.split("/")[0]}/${mediaData.split("/")[1]}` === `${e.mediaType}/${e.mediaId}`) {
+                if (ele.id.email === e.email && `${mediaData?.split("/")[0]}/${mediaData.split("/")[1]}` === `${e.mediaType}/${e.mediaId}`) {
+
                     setIfShareFriends((prev) =>
                         prev.map((x, j) =>
                             j === i ? "UnShare To " : x
@@ -161,10 +187,20 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
+
+
+        if (!currentEmail) {
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is being some error, try after some time or login again",
+                isOpen: true
+            }))
+            return
+        }
+
         setAnchorEl(event.currentTarget);
         setMediaData(event.currentTarget.id)
-
-
         LoginChecker()
         buttonUpdates()
 
@@ -177,51 +213,69 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
     const addToLikedWatched = async (type, value) => {
 
+        if (type === "liked") {
+            setLikedProgress(<AddMenuProgress />)
+        } else {
+            setWatchLaterProgress(<AddMenuProgress />)
+        }
+
         if (value === "Remove From") {
             backendAxios.post(`/removeFromWatchLLiked/${type}/${mediaData.split("/")[1]}`).then((response) => {
+                dispatch(setAlert({
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                    isOpen: true
+                }))
+
                 if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
-
-
+                    if (type === "liked") {
+                        setLikedProgress("")
+                    } else {
+                        setWatchLaterProgress("")
+                    }
                     return
 
                 }
                 dispatchSetData(response.data.data)
 
-                dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
-                    isOpen: true
-                }))
 
-
+                if (type === "liked") {
+                    setLikedProgress("")
+                } else {
+                    setWatchLaterProgress("")
+                }
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/${type}/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
-
-
-                    return
-                    // return alert("error in saving")
-                }
-
-                dispatchSetData(response.data.data)
 
                 dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+                if (response.data.errMsg) {
 
+
+                    if (type === "liked") {
+                        setLikedProgress("")
+                    } else {
+                        setWatchLaterProgress("")
+                    }
+                    return
+
+                }
+                if (type === "liked") {
+                    setLikedProgress("")
+                } else {
+                    setWatchLaterProgress("")
+                }
+                dispatchSetData(response.data.data)
+
+
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
     }
@@ -229,29 +283,26 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
     const addTowatched = () => {
-
+        setWatchedProgress(<AddMenuProgress />)
         if (mediaData.split("/")[0] === "movie") {
             backendAxios.post(`/watchedMovie/${mediaData.split("/")[1]}`).then((response) => {
+                dispatch(setAlert({
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                    isOpen: true
+                }))
                 if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
 
-
+                    setWatchedProgress("")
                     return
 
                 }
 
                 dispatchSetData(response.data.data)
+                setWatchedProgress("")
 
-                dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
-                    isOpen: true
-                }))
-
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         } else if (mediaData.split("/")[0] === "tv") {
             const season = mediaData.split("/")[2] || "all"
@@ -259,31 +310,30 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
             backendAxios.post(`/watchedSeries/${mediaData.split("/")[1]}/${season}/${epi}`).then((response) => {
+                dispatch(setAlert({
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                    isOpen: true
+                }))
                 if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
 
+                    setWatchedProgress("")
 
                     return
 
                 }
-
+                setWatchedProgress("")
                 dispatchSetData(response.data.data)
                 setIfWatched("Add To")
 
-                dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
-                    isOpen: true
-                }))
+
 
 
                 return
 
 
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
     }
@@ -295,37 +345,31 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     }
 
     const shareToFriend = (e) => {
+        setSharedProgress(prev =>
+            prev.map((ele, i) =>
+                i === parseInt(e.currentTarget?.id?.split("_")[2]) ? <AddMenuProgress /> : ""
+                // (i === e.currentTarget?.id?.split("_")[2] ? <CircularProgress size="15px" /> : ele)
+            ))
         const friendEmail = e.currentTarget.id.split("_")[1]
-
         let tempMediaData = mediaData.split("/")[0] + "/" + mediaData.split("/")[1]
-
-
         backendAxios.post(`shareToFriend`, {
             friendEmail: friendEmail,
             mediaData: tempMediaData
         }).then((response) => {
-            if (response.data.errMsg) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg,
-                    isOpen: true
-                }))
+            dispatch(setAlert({
+                type: response.data.errMsg || response.data.err ? "error" : "success",
+                data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                isOpen: true
+            }))
 
-
-                return
-
-            }
+            if (response.data.errMsg) return
 
             dispatchSetData(response.data.data)
 
 
-            dispatch(setAlert({
-                type: "success",
-                data: response.data.msg,
-                isOpen: true
-            }))
 
-
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
     }
@@ -346,31 +390,33 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     }
 
 
-    const addToPlaylist = (e) => {
+    const addToPlaylist = (e, i) => {
+
+        setPlaylistProgress(prev =>
+            prev.map((ele, j) =>
+                j === parseInt(i) ? <AddMenuProgress /> : ""
+                // (i === e.currentTarget?.id?.split("_")[2] ? <CircularProgress size="15px" /> : ele)
+            ))
+
 
         backendAxios.post(`/addMediaToPlaylist`, {
             _id: e.currentTarget.id.split("_")[1],
             media_id: mediaData.split("/")[1],
             media_type: mediaData.split("/")[0]
         }).then((response) => {
-            if (response.data.errMsg) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg,
-                    isOpen: true
-                }))
 
-
-                return
-                // return alert(response.data.errMsg)
-            }
-            dispatchSetData(response.data.data)
             dispatch(setAlert({
-                type: "success",
-                data: response.data.msg,
+                type: response.data.errMsg || response.data.err ? "error" : "success",
+                data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                 isOpen: true
             }))
 
+            if (response.data.errMsg) return
+            dispatchSetData(response.data.data)
+
+
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
 
@@ -382,54 +428,46 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     const createNewPlaylist = (action) => {
         if (action === "show") {
             setIsCreatePlaylist(!isCreatePlaylist)
-        } else {
 
+
+        } else {
             backendAxios.post(`/addNewPlaylist`, {
                 name: newPlaylistName,
                 shareable: visibilty,
                 description: ""
             }).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
 
+                dispatch(setAlert({
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                    isOpen: true
+                }))
 
-                    return
-                    // return alert(response.data.errMsg)
-                }
+                if (response.data.errMsg) return
                 if (response.data.success) {
                     backendAxios.post("/addMediaToPlaylist", {
                         _id: response.data.playlist_id,
                         media_id: mediaData.split("/")[1],
                         media_type: mediaData.split("/")[0]
-                    }).then((res) => {
-                        if (res.data.errMsg) {
-                            dispatch(setAlert({
-                                type: "error",
-                                data: response.data.errMsg,
-                                isOpen: true
-                            }))
-
-
-                            return
-
-                        }
-
-                        dispatchSetData(res.data.data)
+                    }).then((response) => {
 
                         dispatch(setAlert({
-                            type: "success",
-                            data: res.data.msg,
+                            type: response.data.errMsg || response.data.err ? "error" : "success",
+                            data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                             isOpen: true
                         }))
+
+                        if (response.data.errMsg) return
+
+                        dispatchSetData(response.data.data)
+
 
 
                     })
                 }
 
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
             setNewPlaylistName("")
             setIsCreatePlaylist(!isCreatePlaylist)
@@ -439,24 +477,15 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
     const dispatchSetData = (data) => {
-        dispatch(
-            setData({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                profile_photo: data.profile_photo,
-                playlists: data.playlists,
-                friends: data.friends,
-                pending_requests: data.pending_requests,
-                watch_later: data.watch_later,
-                liked: data.liked,
-                watched: data.watched,
-                shared: data.shared
-            })
-        )
+        dispatch(setData(data))
+
 
 
     }
+
+
+
+
 
 
     return (
@@ -552,7 +581,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         }
                     }}
                         onClick={() => { addToLikedWatched("liked", ifLiked) }}
-                    >{ifLiked} Liked</Button>
+                    >{ifLiked} Liked {likedProgress}</Button>
                     <Button fullWidth sx={{
                         color: "addMenu.textColor", fontSize: {
                             xxs: "10px",
@@ -565,7 +594,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         }
                     }}
                         onClick={() => { addToLikedWatched("watch-later", ifWatchLater) }}
-                    >{ifWatchLater} Watch Later</Button>
+                    >{ifWatchLater} Watch Later {watchLaterProgress}</Button>
                     <Button fullWidth sx={{
                         color: "addMenu.textColor", fontSize: {
                             xxs: "10px",
@@ -578,7 +607,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         }
                     }}
                         onClick={addTowatched}
-                    >{ifWatched} Watched</Button>
+                    >{ifWatched} Watched {watchedProgress}</Button>
 
                     {/* shared accordian */}
                     <Button fullWidth sx={{
@@ -605,7 +634,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         }}>
                             {friends.map((ele, i) =>
 
-                                <Button fullWidth id={`shareTo_${ele.email}`} key={`friend${i}`} sx={{
+                                <Button fullWidth id={`shareTo_${ele.email}_${i}`} key={`friend${i}`} sx={{
                                     color: "white", fontSize: {
                                         xxs: "10px",
                                         md: "0.875rem"
@@ -617,7 +646,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                                     }
                                 }}
                                     onClick={shareToFriend}
-                                >{ifShareFriends[i]}{ele.name}</Button>
+                                >{ifShareFriends[i]}{`${ele.id.first_name} ${ele.id.last_name}`} {sharedProgress[i]}</Button>
                             )}
                             <Button fullWidth sx={{
                                 color: "white", fontSize: {
@@ -650,9 +679,9 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                                 sm: "6px 16px"
                             }
                         }}
-                            onClick={addToPlaylist}
+                            onClick={(e) => addToPlaylist(e, i)}
                             endIcon={ele.shareable === "false" ? <Lock /> : <Link />}
-                        >{`${ifPlaylist[i]} ${ele.name}`}</Button>)}
+                        >{`${ifPlaylist[i]} ${ele.name}`} {playlistProgress[i]}</Button>)}
 
                     {!isCreatePlaylist &&
                         <Button fullWidth sx={{
@@ -676,39 +705,61 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                             <TextField fullWidth id="filled-basic" type="text" label="" placeholder='Enter Playlist Name' variant="filled"
                                 sx={{
                                     "& input": {
-                                        padding: "7px 5px ",
+                                        padding: "7px 5px",
                                         fontSize: "13px",
-                                        color: "white"
+                                        color: "white",
+                                        borderRadius: "4px"
                                     },
                                     "& input:focus": {
                                         outline: "none"
                                     },
-                                    "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:after": {
-                                        content: '""'
+                                    "&.MuiInputBase-input:after": {
+                                        content: '""',
+
                                     },
-                                    "& .css-1906lwe-MuiInputBase-root-MuiFilledInput-root:before": {
+                                    "&.MuiInputBase-input:before": {
+                                        content: '""',
+                                        position: "static"
+
+                                    },
+                                    "& .MuiInputBase-root:before": {
+                                        content: '""',
+                                        position: "static"
+                                    },
+                                    "& .MuiInputBase-root:after": {
                                         content: '""',
                                         position: "static"
                                     },
                                     m: "10px 0",
                                     bgcolor: "grey",
-                                    color: "white"
+                                    color: "white",
+                                    borderRadius: "4px"
                                 }}
                                 value={newPlaylistName}
-
+                                autoFocus
                                 onChange={(e) => setNewPlaylistName(e.target.value)}
                             />
 
                             <Grid container justifyContent={"space-between"} alignItems={"center"}>
 
-                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                    <InputLabel id="demo-simple-select-standard-label">Visibilty</InputLabel>
+                                <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                                    {/* <InputLabel id="standard">Visibilty</InputLabel> */}
                                     <Select
-                                        labelId="demo-simple-select-standard-label"
-                                        id="demo-simple-select-standard"
+                                        labelId="select-standard"
+                                        id="select-standard"
                                         value={visibilty}
                                         onChange={(e) => setVisibilty(e.target.value)}
-                                        label="Age"
+                                        label="visibilty"
+                                        displayEmpty
+                                        disableUnderline={true}
+                                        sx={{
+                                            "& .MuiInputBase-input": {
+                                                paddingTop: "8px",
+                                                paddingRight: "48px !important",
+                                                pl: 1
+                                            },
+                                            bgcolor: "transparent"
+                                        }}
                                     >
                                         <MenuItem value={false}>
                                             <em>Private</em>
@@ -740,6 +791,11 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
             </Modal>
         </>
     )
+}
+
+
+const AddMenuProgress = () => {
+    return <CircularProgress size="15px" sx={{ ml: "10px", color: "addMenu.textColor" }} />
 }
 
 

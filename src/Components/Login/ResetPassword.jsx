@@ -1,21 +1,62 @@
-import React, { useState } from 'react'
-import { Box, Button, TextField, Typography } from '@mui/material';
-
-
+import React, { useEffect, useState } from 'react'
+import { Box, Button, CircularProgress, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setAlert } from '../../userSlice';
-
 import backendAxios from "../../backendAxios"
 import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 
 const ResetPassword = ({ id }) => {
+    const [showPassword, setShowPassword] = useState(false);
+
     const dispatch = useDispatch()
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPasword] = useState("")
     const navigate = useNavigate()
+    const [resetPasswordText, setResetPasswordText] = useState("Reset Password")
+    const [isProgress, setIsProgress] = useState(false)
+
+    const [errors, setErrors] = useState({
+        newPassword: false,
+        confirmPassword: false
+    })
+    const handleClick = () => {
+        setShowPassword(prev => !prev);
+    }
+    useEffect(() => {
+        const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+
+        if (newPassword.length > 1) {
+            // eslint-disable-next-line
+            if (errors.newPassword !== passwordRegex.test(newPassword) && errors.confirmPassword !== (confirmPassword === newPassword)) {
+                setErrors({ ...errors, newPassword: passwordRegex.test(newPassword), confirmPassword: confirmPassword !== newPassword ? false : true })
+            }
+            else if (errors.newPassword !== passwordRegex.test(newPassword)) {
+                setErrors({ ...errors, newPassword: passwordRegex.test(newPassword) })
+            }
+        }
+        // eslint-disable-next-line
+    }, [newPassword])
+
+
+    useEffect(() => {
+
+        if (confirmPassword.length > 1) {
+            // eslint-disable-next-line
+            if (errors.confirmPassword !== (confirmPassword === newPassword))
+                setErrors({ ...errors, confirmPassword: confirmPassword !== newPassword ? false : true })
+        }
+        // eslint-disable-next-line
+    }, [confirmPassword])
+
+
+
 
     const resetPassword = async () => {
+
+        setResetPasswordText("Please Wait")
+        setIsProgress(true)
 
         if (newPassword !== confirmPassword) {
             return dispatch(setAlert({
@@ -31,24 +72,30 @@ const ResetPassword = ({ id }) => {
             headers: { 'authorization': `Bearer ${id}` }
         })
             .then(function (response) {
-                if (response.data.errMsg || response.data.err) {
 
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg || response.data.err,
-                        isOpen: true
-                    }))
-                    return
-                }
                 dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg || response.data,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+                if (response.data.errMsg || response.data.err) {
+
+
+                    setResetPasswordText("Reset Password")
+                    setIsProgress(false)
+
+                    return
+                }
+                setResetPasswordText("Reset Password")
+                setIsProgress(false)
+
                 navigate("/forgetpassword/done")
             })
             .catch(function (error) {
+
                 if (error.code) {
+                    setResetPasswordText("Reset Password")
+                    setIsProgress(true)
                     dispatch(setAlert({
                         type: "error",
                         data: error.code,
@@ -109,66 +156,86 @@ const ResetPassword = ({ id }) => {
                     type="password"
                     autoComplete='email'
                     value={newPassword}
+                    error={!errors.newPassword && newPassword.length > 0}
+                    helperText={!errors.newPassword && newPassword.length > 0 ? "Password must contain One Capital Letter and a special character" : " "}
                     onChange={(e) => { setNewPassword(e.target.value) }}
                     sx={{
-                        bgcolor: "login.input",
-                        color: "login.mainText",
+                        color: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                         borderRadius: "15px",
                         " & .MuiInputBase-root": {
-                            borderRadius: "15px"
+                            borderRadius: "15px",
+                            bgcolor: "login.input",
                         },
                         '& label.Mui-focused': {
-                            color: 'login.labelText',
+                            color: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiInput-underline:after': {
-                            borderBottomColor: 'login.labelText',
+                            borderBottomColor: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                             },
                             '&:hover fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                             },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.newPassword && newPassword.length > 0 ? "red " : 'login.labelText',
                             },
                         }
                     }}
                 />
 
+
                 <TextField
+
+                    InputProps={{
+                        endAdornment:
+                            (< InputAdornment position="end" >
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClick}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff sx={{ color: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText' }} /> : <Visibility sx={{ color: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText' }} />}
+                                </IconButton>
+                            </InputAdornment>)
+                    }}
+
                     margin="normal"
                     required
                     fullWidth
                     id="confrmPassword"
                     label="Confirm Password"
-                    name="email"
-                    autoComplete='email'
+                    name="confirmpassword"
+                    type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
+                    error={!errors.confirmPassword && confirmPassword.length > 0}
+                    helperText={!errors.confirmPassword && confirmPassword.length > 0 ? "Passwords doesn't match" : " "}
+
                     onChange={(e) => { setConfirmPasword(e.target.value) }}
                     sx={{
-                        bgcolor: "login.input",
-                        color: "login.mainText",
+                        color: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                         borderRadius: "15px",
                         " & .MuiInputBase-root": {
+                            bgcolor: "login.input",
                             borderRadius: "15px"
                         },
                         '& label.Mui-focused': {
-                            color: 'login.labelText',
+                            color: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiInput-underline:after': {
-                            borderBottomColor: 'login.labelText',
+                            borderBottomColor: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                             },
                             '&:hover fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                             },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors.confirmPassword && confirmPassword.length > 0 ? "red " : 'login.labelText',
                             },
                         }
                     }}
@@ -192,9 +259,11 @@ const ResetPassword = ({ id }) => {
                             transform: "scale(1.01)"
                         },
                     }}
+                    disabled={!(errors.newPassword && errors.confirmPassword)}
                     onClick={resetPassword}
                 >
-                    Reset Password
+
+                    {resetPasswordText} {isProgress && <CircularProgress sx={{ color: "login.signButtonText", ml: 1 }} />}
                 </Button>
             </Box>
         </Box>

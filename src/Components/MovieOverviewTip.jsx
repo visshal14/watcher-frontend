@@ -1,9 +1,11 @@
 import React from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
-import { StarRateRounded } from '@mui/icons-material'
+import { ReadMore, StarRateRounded } from '@mui/icons-material'
 import Liked from './LikedBtn'
 import knowMore from './KnowMore'
 const MovieOverviewTip = ({ ele, type }) => {
+
+
 
 
     function truncate(str, n) {
@@ -13,12 +15,12 @@ const MovieOverviewTip = ({ ele, type }) => {
     return (
         <Box sx={{
             width: "200px",
-            height: "220px",
-            py: 3,
-            px: 3,
-            bgcolor: "black",
+            height: "200px",
+            p: 2,
+            bgcolor: "toolTip.foreBackground",
             borderRadius: "5px",
-            cursor: "default"
+            cursor: "default",
+            color: "toolTip.textColor"
         }}>
 
             <Typography sx={{
@@ -34,7 +36,8 @@ const MovieOverviewTip = ({ ele, type }) => {
             </Grid>
 
             <Typography sx={{
-                fontSize: "12px"
+                fontSize: "12px",
+                wordBreak: "break-all"
             }}>{truncate(ele?.overview || ele?.description || ele?.details?.description, 100)}</Typography>
             <Typography sx={{
                 fontSize: "12px"
@@ -55,9 +58,11 @@ const MovieOverviewTip = ({ ele, type }) => {
                     color: "red"
                 }
             }}
-                onClick={() => knowMore(`${ele?.media_type || ele?.type || ele.details?.type || type}/${ele.id || ele.details?.id || ele.media_id}`)}
+
+                endIcon={<ReadMore />}
+                onClick={() => knowMore(`${ele?.media_type || ele?.type || ele?.details?.type || type}/${ele?.id || ele?.details?.id || ele?.media_id}`)}
             >Know More</Button>
-            <Liked data={(ele.media_type || ele.type || ele.details?.type) + "/" + (ele.id || ele.details?.id || ele.media_id)} />
+            <Liked data={(ele?.media_type || ele?.type || type || ele?.details?.type) + "/" + (ele?.id || ele?.details?.id || ele?.media_id)} />
         </Box>
     )
 }

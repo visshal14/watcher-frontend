@@ -1,4 +1,4 @@
-import { Grid, Avatar, Badge, Box, Stack, Typography, IconButton, TextField, Button, Input, InputLabel } from '@mui/material'
+import { Grid, Avatar, Badge, Box, Stack, Typography, IconButton, TextField, Button, Input, InputLabel, CircularProgress } from '@mui/material'
 import { CameraAlt, Create } from "@mui/icons-material"
 import React, { useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,6 +12,7 @@ const Details = () => {
     const [newFirstName, setNewFirstName] = useState("")
     const [newLastName, setNewLastName] = useState("")
     const [newProfilePhoto, setNewProfilePhoto] = useState()
+    const [isProgress, setIsProgress] = useState(false)
     const fileUploadRef = useRef()
     const dispatch = useDispatch()
     const changeStart = () => {
@@ -21,6 +22,7 @@ const Details = () => {
         if (newFirstName === "" && newLastName === "" && !newProfilePhoto) {
             return setChange(!change)
         }
+        setIsProgress(true)
         backendAxios.post(`/updatePersonalDetails`, {
             file: newProfilePhoto,
             first_name: newFirstName,
@@ -30,34 +32,21 @@ const Details = () => {
                 "Content-Type": "multipart/form-data"
             }
         }).then((response) => {
-            if (response.data.errMsg) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg,
-                    isOpen: true
-                }))
+            setIsProgress(false)
 
 
-                return
-            }
+            dispatch(setAlert({
+                type: response.data.errMsg || response.data.err ? "error" : "success",
+                data: response.data.errMsg || response.data.err || response.data.msg || response.data,
+                isOpen: true
+            }))
+            if (response.data.errMsg) return
+            
 
-            dispatch(
-                setData({
-                    first_name: response.data.data.first_name,
-                    last_name: response.data.data.last_name,
-                    email: response.data.data.email,
-                    profile_photo: response.data.data.profile_photo,
-                    playlists: response.data.data.playlists,
-                    friends: response.data.data.friends,
-                    pending_requests: response.data.data.pending_requests,
-                    watch_later: response.data.data.watch_later,
-                    liked: response.data.data.liked,
-                    watched: response.data.data.watched,
-                    shared: response.data.data.shared
-                })
-            )
-            alert(response.data.msg)
+            dispatch(setData(response.data.data))
             cancelChange()
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
     }
     const cancelChange = () => {
@@ -148,7 +137,10 @@ const Details = () => {
                                 bgcolor: "details.inputBackground"
                             }}
                                 onClick={doneChange}
-                            > Done</Button>
+                            > {isProgress ? <CircularProgress size="15px" sx={{ color: "addMenu.textColor" }} /> : "Done"}
+
+
+                            </Button>
                             <Button sx={{
                                 color: "details.headingColor", fontSize: {
                                     xxs: "10px",

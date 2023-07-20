@@ -1,19 +1,22 @@
 import { Clear, Search } from '@mui/icons-material'
-import { TextField, Box, InputAdornment, Stack, Grid, Typography, ClickAwayListener, IconButton } from '@mui/material'
+import { TextField, Box, InputAdornment, Stack, Grid, Typography, ClickAwayListener, Button } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import knowMore from '../KnowMore'
 import { apiKey } from '../../tmdb'
+import { useNavigate } from 'react-router-dom'
 const SearchBar = () => {
 
 
 
     const [value, setValue] = useState("")
 
+    const navigate = useNavigate()
+
     const [data, setData] = useState([])
 
     useEffect(() => {
-        // setValue(value.replace(" ", "+"))
+
         setData([])
         var timer = setTimeout(() => {
             axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${value}`).then((response) => {
@@ -25,6 +28,8 @@ const SearchBar = () => {
                 } else {
                     setData(response.data.results)
                 }
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }, 500)
         return () => {
@@ -34,12 +39,20 @@ const SearchBar = () => {
 
     }, [value])
 
+    const searchNavigate = () => {
 
+        navigate(`/search?type=multi&query=${value}&page=1`)
+        setValue("")
+    }
+
+    const searchKeyPressed = (e) => {
+        if (e.key === "Enter")
+            searchNavigate()
+    }
 
     return (
         <Box sx={{
 
-            // maxWidth: "350px",
             minWidth: {
                 xxs: "47px",
                 xmd: "300px",
@@ -61,6 +74,7 @@ const SearchBar = () => {
         }}>
             <TextField fullWidth id="outlined-basic" variant="outlined" placeholder='Search' autoFocus
                 value={value}
+                onKeyDown={searchKeyPressed}
                 onChange={(e) => { setValue(e.target.value) }}
                 sx={{
                     "&.MuiInputBase-input-MuiOutlinedInput-input": {
@@ -110,18 +124,11 @@ const SearchBar = () => {
                     },
                     startAdornment: (
                         <InputAdornment position="start">
-                            <Search sx={{ color: "navbar.searchBarOutline" }} />
+                            {!value && <Search sx={{ color: "navbar.searchBarOutline" }} />}
                         </InputAdornment>
 
                     ),
-                    endAdornment: (
-                        <InputAdornment position="start">
-                            {value && <IconButton>
-                                <Clear sx={{ color: "navbar.searchBarOutline" }} />
-                            </IconButton>}
-                        </InputAdornment>
 
-                    ),
                 }}
             />
 
@@ -132,10 +139,10 @@ const SearchBar = () => {
                         xxs: "calc(100% - 40px)",
                         sm: "100%"
                     },
-                    // height: "100px",
+
                     bgcolor: "navbar.searchBarBackground",
                     top: "100%",
-                    // bottom: { xxs: "-90px", sm: "-100px" },
+
                     left: 0,
                     ml: {
                         xxs: "20px",
@@ -156,7 +163,37 @@ const SearchBar = () => {
                 }}
                     spacing={1}
                 >
-
+                    {data.length > 0 && <><Button fullWidth sx={{
+                        color: "white", fontSize: {
+                            xxs: "10px",
+                            md: "0.875rem"
+                        },
+                        padding: {
+                            xxs: "2px 6px",
+                            xs: "3px 8px",
+                            sm: "6px 16px"
+                        },
+                        bgcolor: "grey"
+                    }}
+                        startIcon={<Search />}
+                        onClick={searchNavigate}
+                    >Search</Button>
+                        <Button fullWidth sx={{
+                            color: "white", fontSize: {
+                                xxs: "10px",
+                                md: "0.875rem"
+                            },
+                            padding: {
+                                xxs: "2px 6px",
+                                xs: "3px 8px",
+                                sm: "6px 16px"
+                            },
+                            bgcolor: "grey"
+                        }}
+                            startIcon={<Clear />}
+                            onClick={() => setValue("")}
+                        >Clear</Button></>
+                    }
                     {data?.map((ele, i) =>
 
                         <Grid flexWrap="nowrap" key={"grid" + i} id={`${ele.media_type}/${ele.id}`} container onClick={() => knowMore(`${ele.media_type}/${ele.id}`)} bgcolor={"grey.400"}
@@ -176,7 +213,7 @@ const SearchBar = () => {
                                 <img src={"https://image.tmdb.org/t/p/original" + ele?.poster_path} alt="moviePoster" style={{ height: "100%", objectFit: "cover", maxWidth: "100%", borderRadius: "5px" }} />
                             </Grid>}
                             <Grid container
-                                // sx={{ maxWidth: ele?.poster_path ? "70%" : "100%" }}
+
                                 flexDirection={"column"} justifyContent={"space-between"}>
                                 <Typography sx={{
                                     // wordBreak: "break-all"

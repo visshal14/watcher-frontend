@@ -2,7 +2,7 @@ import { ClearRounded, DoneRounded, ExpandMore, Send } from '@mui/icons-material
 import { Avatar, Divider, Grid, List, Button, ListItem, Box, TextField, ListItemAvatar, ListItemText, Stack, Typography, IconButton, Accordion, AccordionSummary, AccordionDetails, Card, CardActionArea, CardMedia, CardContent, InputAdornment } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getFriends, getPending_requests, setData, setAlert } from '../../userSlice'
+import { getFriends, getPending_requests, setData, setAlert, getEmail } from '../../userSlice'
 import backendAxios from "../../backendAxios"
 import { useNavigate } from 'react-router-dom'
 import knowMore from '../KnowMore'
@@ -11,13 +11,14 @@ const FriendDetails = () => {
 
     const pendingRequest = useSelector(getPending_requests)
     const friends = useSelector(getFriends)
+    const currentEmail = useSelector(getEmail)
     const [currentFriend, setCurrentFriend] = useState("")
     const dispatch = useDispatch()
     const sharedList = useSelector(getFriends)
     const [currentSharedList, setCurrentSharedList] = useState()
 
     useEffect(() => {
-        sharedList.forEach((ele) =>
+        sharedList && sharedList?.forEach((ele) =>
             ele.email === currentFriend ?
                 setCurrentSharedList(ele.shared_items)
                 : ""
@@ -25,11 +26,13 @@ const FriendDetails = () => {
 
     }, [sharedList, currentFriend])
 
+    // useEffect(() => {
+    //     console.log(friends)
+    // }, [friends])
 
     const [friendExpand, setFriendExpand] = useState(false)
     const [pendingRequestEmail, setPendingRequestEmail] = useState("")
     const friendClicked = (e) => {
-        console.log(e.currentTarget.id)
         setCurrentFriend(e.currentTarget.id)
         setFriendExpand(!friendExpand)
         getFriendPlaylist(e.currentTarget.id)
@@ -45,12 +48,12 @@ const FriendDetails = () => {
                     data: response.data.errMsg,
                     isOpen: true
                 }))
-
-
                 return
-                // return alert(response.data.errMsg)
+
             }
             setCurrentFriendPlaylist(response.data.data)
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
 
 
@@ -60,25 +63,27 @@ const FriendDetails = () => {
 
 
     const pendingRequestSend = () => {
+        if (pendingRequestEmail === currentEmail) {
+            return dispatch(setAlert({
+                type: "error",
+                data: "Cannot Send Request",
+                isOpen: true
+            }))
+        }
+
         backendAxios.post(`/addFriend`, {
             friendEmail: pendingRequestEmail
         }).then((response) => {
-            if (response.data === "Unauthorized") {
-                return window.location.reload();
-            }
-            if (response.data.errMsg || response.data.err) {
-                dispatch(setAlert({
-                    type: "error",
-                    data: response.data.errMsg || response.data.err,
-                    isOpen: true
-                }))
-                return
-            }
+            if (response.data === "Unauthorized") return window.location.reload();
+
             dispatch(setAlert({
-                type: "success",
-                data: response.data.msg,
+                type: response.data.errMsg || response.data.err ? "error" : "success",
+                data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                 isOpen: true
             }))
+
+            if (response.data.errMsg || response.data.err) return
+
             dispatchSetData(response.data.data)
             setPendingRequestEmail("")
         }).catch(() => {
@@ -93,70 +98,40 @@ const FriendDetails = () => {
             backendAxios.post("/acceptFriendRequest", {
                 friendEmail: e.currentTarget.id.split("_")[2]
             }).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
-
-
-                    return
-                    // return alert(response.data.errMsg)
-                }
                 dispatch(setAlert({
-                    type: "sucess",
-                    data: response.data.msg,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+                if (response.data.errMsg) return
 
                 dispatchSetData(response.data.data)
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/removeFriend/${e.currentTarget.id.split("_")[0]}`, {
                 friendEmail: e.currentTarget.id.split("_")[2]
             }).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
-
-
-                    return
-                    // return alert(response.data.errMsg)
-                }
                 dispatch(setAlert({
-                    type: "sucess",
-                    data: response.data.msg,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
-                // alert(response.data.msg)
+                if (response.data.errMsg) return
+
 
                 dispatchSetData(response.data.data)
 
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
     }
 
 
     const dispatchSetData = (data) => {
-        dispatch(
-            setData({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                profile_photo: data.profile_photo,
-                playlists: data.playlists,
-                friends: data.friends,
-                pending_requests: data.pending_requests,
-                watch_later: data.watch_later,
-                liked: data.liked,
-                watched: data.watched,
-                shared: data.shared
-            })
-        )
+        dispatch(setData(data))
 
 
     }
@@ -165,8 +140,6 @@ const FriendDetails = () => {
 
     return (
         <Grid container>
-
-
             <Grid item xxs={12} sm={6} sx={{
                 p: {
                     xxs: "10px 10px 5px 10px",
@@ -185,7 +158,7 @@ const FriendDetails = () => {
                             Friend
                         </Typography>
                         <Typography>
-                            {friends.length}
+                            {friends?.length}
                         </Typography>
                     </Grid>
                     <Divider />
@@ -211,13 +184,13 @@ const FriendDetails = () => {
                             </ListItem>
                         }
 
-                        {friends?.map((ele, i) =>
+                        {friends && friends?.map((ele, i) =>
 
-                            <ListItem key={`friend${i}`} id={ele.email} onClick={friendClicked}>
+                            <ListItem key={`friend${i}`} id={ele.id.email} onClick={friendClicked}>
                                 <ListItemAvatar>
-                                    <Avatar src={ele.profile_photo} />
+                                    <Avatar src={ele.id.profile_photo} />
                                 </ListItemAvatar>
-                                <ListItemText primary={ele.name} />
+                                <ListItemText primary={`${ele.id.first_name} ${ele.id.last_name}`} />
                             </ListItem>
                         )}
 
@@ -303,12 +276,12 @@ const FriendDetails = () => {
                             <ListItem key={`pendingFriend${i}`}
                                 secondaryAction={
                                     <Box>
-                                        <IconButton edge="end" id={`pending_add_${ele.email}`} aria-label="delete" onClick={pendingRequestAddRemove}>
+                                        <IconButton edge="end" id={`pending_add_${ele.id.email}`} aria-label="delete" onClick={pendingRequestAddRemove}>
                                             <DoneRounded sx={{
                                                 color: "#009545"
                                             }} />
                                         </IconButton>
-                                        <IconButton edge="end" id={`pending_remove_${ele.email}`} aria-label="delete" onClick={pendingRequestAddRemove}>
+                                        <IconButton edge="end" id={`pending_remove_${ele.id.email}`} aria-label="delete" onClick={pendingRequestAddRemove}>
                                             <ClearRounded sx={{
                                                 color: "#AA0404"
                                             }} />
@@ -317,9 +290,9 @@ const FriendDetails = () => {
 
                                 }>
                                 <ListItemAvatar>
-                                    <Avatar src={ele.profile_photo} />
+                                    <Avatar src={ele.id.profile_photo} />
                                 </ListItemAvatar>
-                                <ListItemText primary={ele.name} />
+                                <ListItemText primary={`${ele.id.first_name} ${ele.id.last_name}`} />
                             </ListItem>
                         )}
 

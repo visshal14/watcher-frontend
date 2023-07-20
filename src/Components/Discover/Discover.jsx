@@ -1,4 +1,3 @@
-
 import { Box, Button, FormControlLabel, Checkbox, Grid, Menu, Stack, Typography, Pagination, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
@@ -24,7 +23,7 @@ const Discover = () => {
     const [movieData, setMovieData] = useState([])
     const [page, setPage] = useState(1)
     const navigate = useNavigate()
-
+    const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page')) || 1)
 
 
     let pageNo = searchParams.get('page')
@@ -35,6 +34,11 @@ const Discover = () => {
         setGenresList(mediaType === "movie" ? movieGenres : mediaType === "tv" ? tvGenres : allGenres)
     }, [mediaType])
 
+
+
+
+
+
     useEffect(() => {
 
         setMediaType(type)
@@ -42,12 +46,11 @@ const Discover = () => {
         getData(pageNo, genre, countryParams)
         setGenres(genre || "")
         setcountry(countryParams || "")
+        setCurrentPage(parseInt(searchParams.get('page')) || 1)
         // eslint-disable-next-line
     }, [searchParams, type])
 
-    // useEffect(() => {
-    //     console.log(movieData)
-    // }, [movieData])
+
 
 
     async function getData(pageNo, genre, country) {
@@ -106,9 +109,9 @@ const Discover = () => {
 
             const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${tvGenres ? `&with_genres=${tvGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
 
-            // console.log(tvUrl)
+
             const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
-            // console.log(movieUrl)
+
 
 
             let tv = []
@@ -230,7 +233,7 @@ const Discover = () => {
 
     const pageChange = (e, value) => {
         setPage(value)
-        navigate(`/discover/${mediaType}?page=${value}`)
+        navigate(`/discover/${mediaType}?page=${value}${genres ? `&genre=${genres}` : ""}${country ? `&country=${country}` : ""}`)
     }
 
 
@@ -252,7 +255,9 @@ const Discover = () => {
             xxs: 1,
             sm: 5,
             md: 8
-        }} py={10}>
+        }} py={10} sx={{
+            minHeight: "700px"
+        }}>
 
             <Helmet>
                 <title>Watcher | Discover</title>
@@ -366,7 +371,7 @@ const Discover = () => {
             <Grid container justifyContent={"center"} sx={{
                 mt: 5
             }}>
-                <Pagination count={100} onChange={pageChange} size="large" />
+                <Pagination count={100} page={currentPage} onChange={pageChange} size="large" />
             </Grid>
         </Stack>
     )
@@ -471,22 +476,30 @@ const GenresPopover = ({ anchorEl, handleClose, genres, removeFun, checkBoxFunc,
     )
 }
 
-const SingleTiles = ({ data }) => {
+export const SingleTiles = ({ data, discoverBackground }) => {
 
     return (
         <Grid item xxs={6} sm={4} md={2} lg={1.5} sx={{
             maxWidth: "200px",
-            minWidth: "100px",
+            minWidth: "150px",
             borderRadius: 1,
             position: "relative",
             cursor: "pointer",
+            scrollSnapAlign: "start",
         }} p={1}>
 
             {data?.id && <AddMenu mt="8px" mr="8px" id={`${data?.first_air_date ? "tv" : "movie"}/${data.id}`} name={data?.name || data?.title || data?.original_title} />}
-            <Tooltip title={<MovieOverviewTip ele={data} bgcolor={"red"} type={`${data?.first_air_date ? "tv" : "movie"}`} />} enterDelay={500} placement="right">
+            <Tooltip componentsProps={{
+                tooltip: {
+                    sx: {
+                        p: 1,
+                        bgcolor: "toolTip.background"
+                    },
+                },
+            }} title={<MovieOverviewTip ele={data} bgcolor={"red"} type={`${data?.first_air_date ? "tv" : "movie"}`} />} enterDelay={500} placement="right">
                 <Box p={1} sx={{
                     borderRadius: 1,
-                    bgcolor: "discover.tilesBack",
+                    bgcolor: discoverBackground || "discover.tilesBack",
                     color: "discover.color",
                     width: "100%",
                     height: "100%",
@@ -507,15 +520,18 @@ const SingleTiles = ({ data }) => {
                         <Typography >
                             {data?.release_date?.split("-")[0] || data?.first_air_date?.split("-")[0]}
                         </Typography>
-                        <Typography sx={{ width: "fit-content", display: "inline-block", border: "1px solid #fcba4e", padding: "0 0.25rem", borderRadius: "0.25rem" }}>{data?.first_air_date ? "TV" : "Movie"}</Typography>
+                        <Typography sx={{ width: "fit-content", display: "inline-block", border: "1px solid #fcba4e", padding: "0 0.25rem", borderRadius: "0.25rem" }}>{data?.media_type ? data?.media_type : data?.first_air_date ? "TV" : "Movie"}</Typography>
                     </Grid>
 
                 </Box>
             </Tooltip>
 
 
-        </Grid>
+        </Grid >
     )
 }
 
 export default Discover
+
+
+

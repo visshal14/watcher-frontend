@@ -1,8 +1,8 @@
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded, MoreVert } from '@mui/icons-material'
 import { Avatar, Box, Button, Drawer, Grid, Menu, MenuItem, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFirstName, getProfilePhoto, getPlaylists, getWatch_later, setData, setAlert } from '../../userSlice'
+import { getFirstName, getProfilePhoto, getPlaylists, getWatch_later, setAlert, setInitialState } from '../../userSlice'
 
 import { Link, useNavigate } from 'react-router-dom'
 import knowMore from '../KnowMore'
@@ -30,21 +30,8 @@ const RightSideNav = ({ isOpen, openFunc }) => {
 
         window.localStorage.setItem("accessToken", "")
 
-        dispatch(
-            setData({
-                first_name: "",
-                last_name: "",
-                email: "",
-                profile_photo: "",
-                playlists: "",
-                friends: "",
-                pending_requests: "",
-                watch_later: "",
-                liked: "",
-                watched: "",
-                shared: ""
-            })
-        )
+        dispatch(setInitialState())
+        
         openFunc(false)
         navigate("/")
         handleClose()
@@ -298,11 +285,16 @@ const RightSideNav = ({ isOpen, openFunc }) => {
 
 
 const Row = ({ name, data, id }) => {
+
+    const rowRef = useRef(null)
+
     const scrollLeft = () => {
-        document.getElementById(id).scrollLeft -= 150
+        rowRef.current.scrollLeft -= 150;
+        
     }
     const scrollRight = () => {
-        document.getElementById(id).scrollLeft += 150
+        rowRef.current.scrollLeft += 150;
+        
     }
     return (
         <Stack sx={{
@@ -369,7 +361,7 @@ const Row = ({ name, data, id }) => {
                 "&::-webkit-scrollbar": {
                     display: "none"
                 },
-            }} id={id} my={1}>
+            }} ref={rowRef} my={1}>
                 <Grid container sx={{ width: "fit-content", flexWrap: "nowrap" }}>
                     {data && data?.map((ele, i) =>
                         <Box key={ele.id || i} onClick={() => knowMore(`${ele.media_type || ele.type}/${ele.media_id || ele.id}`)} sx={{

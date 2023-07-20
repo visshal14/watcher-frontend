@@ -15,7 +15,7 @@ const ProfileTabs = () => {
     return (
         <Stack sx={{
             bgcolor: "profileTabs.background",
-            minHeight: "300px",
+            minHeight: "200px",
             height: "fit-content",
             maxHeight: {
                 xxs: "auto",
@@ -23,7 +23,12 @@ const ProfileTabs = () => {
             },
             borderRadius: "20px"
         }}>
-            <Box sx={{ p: "20px 40px 5px 40px" }}>
+            <Box sx={{
+                p: {
+                    xxs: "20px 8px 5px 8px",
+                    sm: "20px 40px 5px 40px"
+                }
+            }}>
                 <Button sx={{ color: current === "details" ? "profileTabs.activHeading" : "profileTabs.inActivHeading" }} onClick={() => {
                     setCurrent("details")
                 }}>
@@ -38,7 +43,7 @@ const ProfileTabs = () => {
                 {!isOAuth && <Button sx={{ color: current === "security" ? "profileTabs.activHeading" : "profileTabs.inActivHeading" }} onClick={() => {
                     setCurrent("security")
                 }}>
-                    Password & Security
+                    Security
                 </Button>}
             </Box>
             <Divider sx={{ color: "profileTabs.divider" }} />

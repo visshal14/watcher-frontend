@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded, PlayArrowRounded } from '@mui/icons-material'
 import { Box, Button, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import axios from 'axios'
@@ -9,19 +9,31 @@ import { useNavigate } from 'react-router-dom'
 
 const Row = ({ titles, fetchUrl, type }) => {
 
+
     const [tiles, setTiles] = useState([])
+    // eslint-disable-next-line
+    const [genre, setGenre] = useState(fetchUrl.split("&").filter(ele => ele.includes("with_genres")).join().replace("with_genres=", ""))
+
     useEffect(() => {
         axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
             setTiles(response.data.results)
+        }).catch((e) => {
+            console.log("error in axios ", e)
         })
-        // eslint-disable-next-line
+
+
     }, [])
 
+
+    const rowRef = useRef(null)
+
     const scrollLeft = () => {
-        document.getElementById(titles).scrollLeft -= 300
+        rowRef.current.scrollLeft -= 300;
+
     }
     const scrollRight = () => {
-        document.getElementById(titles).scrollLeft += 300
+        rowRef.current.scrollLeft += 300;
+
     }
 
     const navigate = useNavigate()
@@ -35,9 +47,10 @@ const Row = ({ titles, fetchUrl, type }) => {
                         xxs: "0.8rem",
                         sm: "1.5rem"
                     },
+                    fontWeight: "700",
                     cursor: "pointer"
 
-                }} onClick={() => navigate("/discover/movie")}> {titles} </Typography>
+                }} onClick={() => navigate(`/discover/${type || 'movie'}?genre=${genre}`)}> {titles} </Typography>
                 <Box>
                     <Button sx={{
                         bgcolor: "scrollBtn.background",
@@ -88,10 +101,13 @@ const Row = ({ titles, fetchUrl, type }) => {
                 </Box>
             </Grid>
 
-            <Grid id={titles} container flexWrap="nowrap" overflow="auto"
+            <Grid ref={rowRef} container flexWrap="nowrap" overflow="auto"
                 sx={{
                     "&::-webkit-scrollbar": {
-                        display: "none"
+                        display: "none",
+                        width: "10px",
+                        // bgcolor: "transparent"
+
                     },
                     overflowY: "hidden",
                     scrollSnapType: "x mandatory",
@@ -134,7 +150,17 @@ const Row = ({ titles, fetchUrl, type }) => {
 
                             <AddMenu id={`${ele.media_type || type}/${ele.id}`} name={ele?.name || ele?.title || ele?.original_title} />
 
-                            <Tooltip title={<MovieOverviewTip ele={ele} bgcolor={"red"} type={type} />} enterDelay={500} placement="right">
+                            <Tooltip
+                                componentsProps={{
+                                    tooltip: {
+                                        sx: {
+                                            p: 1,
+                                            bgcolor: "toolTip.background"
+                                        },
+                                    },
+                                }}
+                                // followCursor
+                                title={<MovieOverviewTip ele={ele} bgcolor={"red"} type={type} />} enterDelay={500} placement="right">
 
 
                                 <Box onClick={() => knowMore(`${ele.media_type || type}/${ele.id}`)} sx={{
@@ -159,10 +185,9 @@ const Row = ({ titles, fetchUrl, type }) => {
                                     </Box>
 
 
-                                    <img src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt={ele.name || ele.title || ele.original_title} loading="lazy" style={{
+                                    <img className='row-image-border' src={`https://image.tmdb.org/t/p/original${ele.backdrop_path}`} alt={ele.name || ele.title || ele.original_title} loading="lazy" style={{
                                         width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                     }} />
-
 
 
 
@@ -217,18 +242,9 @@ const Row = ({ titles, fetchUrl, type }) => {
                                     </Grid>
                                 </Box>
                             </Tooltip>
-
-
-
-
-
                         </Box>
-
-
-
                     ))
                 }
-
             </Grid >
 
         </Box >

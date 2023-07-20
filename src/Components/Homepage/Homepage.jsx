@@ -14,7 +14,8 @@ const Homepage = () => {
 
     return (
         <Stack spacing={2} py={{
-            xxs: 12,
+            xxs: 8,
+            sm: 12,
             md: 12
         }}
             px={{
@@ -22,6 +23,7 @@ const Homepage = () => {
                 sm: 5,
                 md: 8
             }}
+
         >
             <FeaturedPosts />
             <Stack>

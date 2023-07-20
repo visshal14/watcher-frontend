@@ -50,11 +50,17 @@ const Navbar = () => {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
             let data = response.data
+            // console.log(data)
             dispatch(setData(data))
+        }).catch((e) => {
+
         })
     }
     useEffect(() => {
         getUserData()
+
+
+
         // eslint-disable-next-line
     }, [])
 
@@ -82,7 +88,8 @@ const Navbar = () => {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar sx={{ zIndex: "9", bgcolor: "navbar.background" }}>
                 <Toolbar sx={{
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
+
                 }}>
 
                     <Grid container alignItems={"center"} sx={{
@@ -103,9 +110,12 @@ const Navbar = () => {
                             <MenuIcon sx={{ color: "navbar.leftDrawerToggle" }} />
                         </IconButton>
                         <Link to="/">
-                            <img src={watcherLogo} alt="logo" height={"35px"} style={{
+
+                            <Avatar src={watcherLogo} variant="square" alt="logo" sx={{ height: 35, objectFit: "contain", marginTop: "-5px" }} />
+
+                            {/* <img src={watcherLogo} alt="logo" height={"35px"} style={{
                                 objectFit: "contain", marginTop: "-5px"
-                            }} />
+                            }} /> */}
                         </Link>
 
                         {isMobile ?

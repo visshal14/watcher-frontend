@@ -8,6 +8,7 @@ import LoginChecker from '../LoginChecker'
 
 const Liked = ({ data }) => {
 
+
     // eslint-disable-next-line
     const [mediaData, setMediaData] = useState(data)
     const likedList = useSelector(getLiked)
@@ -15,6 +16,7 @@ const Liked = ({ data }) => {
     const [isLiked, setIsLiked] = useState(false)
 
     useEffect(() => {
+
         setIsLiked(false)
         if (likedList.length > 0) {
 
@@ -33,46 +35,33 @@ const Liked = ({ data }) => {
         console.log(isLiked)
         if (isLiked === true) {
             backendAxios.post(`/removeFromWatchLLiked/liked/${mediaData.split("/")[1]}`).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
 
-
-                    return
-                    // return alert("error in saving")
-                }
-                dispatchSetData(response.data.data)
                 dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+
+                if (response.data.errMsg) return
+                dispatchSetData(response.data.data)
+
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/liked/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
-                if (response.data.errMsg) {
-                    dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg,
-                        isOpen: true
-                    }))
-
-
-                    return
-                    // return alert("error in saving")
-                }
-                dispatchSetData(response.data.data)
 
                 dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+                if (response.data.errMsg) return
+                dispatchSetData(response.data.data)
 
-                // UpdateUserData(response.data.data)
+
+            }).catch((e) => {
+                console.log("error in axios ", e)
             })
         }
 
@@ -81,21 +70,8 @@ const Liked = ({ data }) => {
     }
 
     const dispatchSetData = (data) => {
-        dispatch(
-            setData({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                profile_photo: data.profile_photo,
-                playlists: data.playlists,
-                friends: data.friends,
-                pending_requests: data.pending_requests,
-                watch_later: data.watch_later,
-                liked: data.liked,
-                watched: data.watched,
-                shared: data.shared
-            })
-        )
+        dispatch(setData(data))
+
 
 
     }

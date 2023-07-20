@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, TextField, Typography, Link, CircularProgress } from '@mui/material';
 import { ArrowBackIosNewRounded, } from '@mui/icons-material';
 
@@ -17,33 +17,51 @@ const EnterEmail = ({ email, setEmail }) => {
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
-    const [progressDisplay, setProgressDisplay] = useState(false)
+    const [isProgress, setIsProgress] = useState(false)
+    const [resetText, setResetText] = useState("Reset Password")
+
+    const [errors, setErrors] = useState(false)
+
+    useEffect(() => {
+
+        // eslint-disable-next-line
+        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+        if (email.length > 1)
+            setErrors(emailRegex.test(email))
+
+        // eslint-disable-next-line
+    }, [email])
+
+
     const emailSend = async () => {
-        setProgressDisplay(true)
+        setResetText("Please Wait")
+        setIsProgress(true)
         backendAxios.post('/forgetpasswordsendemail', {
             email
         })
             .then(function (response) {
-                if (response.data.errMsg || response.data.err) {
-                    return dispatch(setAlert({
-                        type: "error",
-                        data: response.data.errMsg || response.data.err,
-                        isOpen: true
-                    }))
 
-                    // return alert(response.data.errMsg)
-                }
-
-                setProgressDisplay(false)
                 dispatch(setAlert({
-                    type: "success",
-                    data: response.data.msg || response.data,
+                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
+
+                if (response.data.errMsg || response.data.err) {
+                    setIsProgress(false)
+                    setResetText("Reset Password")
+                    return
+
+                }
+                setResetText("Reset Password")
+                setIsProgress(false)
                 navigate("/forgetpassword/check")
             })
             .catch(function (error) {
                 if (error.code) {
+                    setResetText("Reset Password")
+                    setIsProgress(false)
                     dispatch(setAlert({
                         type: "error",
                         data: error.code,
@@ -111,29 +129,31 @@ const EnterEmail = ({ email, setEmail }) => {
                     name="email"
                     autoComplete='email'
                     value={email}
+                    error={!errors && email.length > 0}
+                    helperText={!errors && email.length > 0 ? "Please Enter Correct Email" : ""}
                     onChange={(e) => { setEmail(e.target.value) }}
                     sx={{
-                        bgcolor: "login.input",
                         color: "login.mainText",
                         borderRadius: "15px",
                         " & .MuiInputBase-root": {
+                            bgcolor: "login.input",
                             borderRadius: "15px"
                         },
                         '& label.Mui-focused': {
-                            color: 'login.labelText',
+                            color: !errors && email.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiInput-underline:after': {
-                            borderBottomColor: 'login.labelText',
+                            borderBottomColor: !errors && email.length > 0 ? "red " : 'login.labelText',
                         },
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors && email.length > 0 ? "red " : 'login.labelText',
                             },
                             '&:hover fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors && email.length > 0 ? "red " : 'login.labelText',
                             },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'login.labelText',
+                                borderColor: !errors && email.length > 0 ? "red " : 'login.labelText',
                             },
                         }
                     }}
@@ -172,13 +192,12 @@ const EnterEmail = ({ email, setEmail }) => {
                         },
                     }}
                     onClick={emailSend}
+                    disabled={!errors}
                 >
-                    Reset Password
+                    {resetText} {isProgress && <CircularProgress sx={{ color: "login.mainText" }} />}
                 </Button>
 
-                {progressDisplay && <Box sx={{ display: 'flex', width: "100%", justifyContent: "center", mt: 2 }}>
-                    <CircularProgress sx={{ color: "login.mainText" }} />
-                </Box>}
+
             </Box>
         </Box>
 
