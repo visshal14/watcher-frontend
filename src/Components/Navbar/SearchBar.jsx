@@ -5,15 +5,14 @@ import React, { useEffect, useState } from 'react'
 import knowMore from '../KnowMore'
 import { apiKey } from '../../tmdb'
 import { useNavigate } from 'react-router-dom'
-const SearchBar = () => {
+const SearchBar = ({ closeFunc }) => {
 
 
 
     const [value, setValue] = useState("")
-
     const navigate = useNavigate()
-
     const [data, setData] = useState([])
+
 
     useEffect(() => {
 
@@ -39,8 +38,13 @@ const SearchBar = () => {
 
     }, [value])
 
+
+
     const searchNavigate = () => {
 
+        if (closeFunc) {
+            closeFunc()
+        }
         navigate(`/search?type=multi&query=${value}&page=1`)
         setValue("")
     }

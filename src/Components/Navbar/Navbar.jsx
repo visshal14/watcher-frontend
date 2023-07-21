@@ -58,12 +58,8 @@ const Navbar = () => {
     }
     useEffect(() => {
         getUserData()
-
-
-
         // eslint-disable-next-line
     }, [])
-
 
 
     const searchBarShow = () => {
@@ -72,7 +68,6 @@ const Navbar = () => {
         } else {
             setIsSearchBar(false)
         }
-
     }
     const loginBtnClicked = () => {
         if (firstName) {
@@ -80,7 +75,6 @@ const Navbar = () => {
         } else {
             window.location.href = "/login"
         }
-
     }
 
     return (
@@ -187,7 +181,7 @@ const Navbar = () => {
 
                 </Toolbar>
                 {
-                    isSearchBar && isMobile && <SearchBar />
+                    isSearchBar && isMobile && <SearchBar closeFunc={searchBarShow} />
                 }
 
             </AppBar>

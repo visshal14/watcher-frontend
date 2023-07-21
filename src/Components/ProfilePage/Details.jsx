@@ -1,6 +1,6 @@
 import { Grid, Avatar, Badge, Box, Stack, Typography, IconButton, TextField, Button, Input, InputLabel, CircularProgress } from '@mui/material'
 import { CameraAlt, Create } from "@mui/icons-material"
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getAllData, setData, setAlert } from '../../userSlice'
 
@@ -15,9 +15,20 @@ const Details = () => {
     const [isProgress, setIsProgress] = useState(false)
     const fileUploadRef = useRef()
     const dispatch = useDispatch()
+    const [previewImage, setPreviewImage] = useState(null)
     const changeStart = () => {
         setChange(!change)
     }
+
+
+    useEffect(() => {
+
+        if (newProfilePhoto) {
+            setPreviewImage(URL.createObjectURL(newProfilePhoto));
+        }
+
+    }, [newProfilePhoto])
+
     const doneChange = () => {
         if (newFirstName === "" && newLastName === "" && !newProfilePhoto) {
             return setChange(!change)
@@ -41,7 +52,7 @@ const Details = () => {
                 isOpen: true
             }))
             if (response.data.errMsg) return
-            
+
 
             dispatch(setData(response.data.data))
             cancelChange()
@@ -100,7 +111,7 @@ const Details = () => {
 
 
                         <Box sx={{ width: "6rem", height: "6rem", border: "2px solid", borderColor: "details.profilePhotoBorder", borderRadius: "50%", p: "5px" }}>
-                            <Avatar sx={{ width: "100%", height: "100%" }} src={userData?.profile_photo} />
+                            <Avatar sx={{ width: "100%", height: "100%" }} src={previewImage || userData?.profile_photo} />
                         </Box>
                     </Badge>
 

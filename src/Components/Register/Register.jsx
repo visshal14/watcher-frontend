@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Button, CircularProgress, Grid, IconButton, Input, InputAdornment, InputLabel, Link, TextField, Typography, } from '@mui/material';
+import { Avatar, Box, Button, CircularProgress, Grid, IconButton, Input, InputAdornment, InputLabel, Link, TextField, Typography, } from '@mui/material';
 import { DarkMode, LightMode, Visibility, VisibilityOff } from '@mui/icons-material';
 import jwt_decode from "jwt-decode"
 import backendAxios from "../../backendAxios"
@@ -29,6 +29,13 @@ const Register = () => {
     const [signUpText, setSignUpText] = useState("Sign Up")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isProgress, setIsProgress] = useState(false)
+    const [previewImage, setPreviewImage] = useState(null)
+
+    useEffect(() => {
+        if (profilePhoto) {
+            setPreviewImage(URL.createObjectURL(profilePhoto));
+        }
+    }, [profilePhoto]);
 
     const [errors, setErrors] = useState({
         firstName: false,
@@ -399,11 +406,15 @@ const Register = () => {
                                 mb: 0.5,
                                 py: 1,
                                 borderRadius: "10px",
-                                fontSize: "20px",
+                                fontSize: {
+                                    xxs: "15px",
+                                    sm: "20px"
+                                },
                                 "&:hover ": {
                                     backgroundColor: "login.signButton",
                                     transform: "scale(1.01)"
                                 },
+                                position: "relative"
                             }}>
                             <Input
                                 ref={fileUploadRef}
@@ -412,7 +423,17 @@ const Register = () => {
                                 sx={{ display: "none" }}
                                 onChange={(e) => setProfilePhoto(e.target.files[0])}
                             />
-                            Upload Profile Photo
+                            Upload Profile Photo {profilePhoto &&
+                                // <img src={previewImage} alt="'" />
+                                <Avatar src={previewImage} alt="" sx={{
+                                    position: "absolute",
+                                    right: 5,
+                                    top: "50%",
+                                    transform: "translate(0,-50%)",
+                                    height: { xxs: "35px", sm: "40px" },
+                                    width: { xxs: "35px", sm: "40px" }
+                                }} />
+                            }
                         </InputLabel>
 
 
