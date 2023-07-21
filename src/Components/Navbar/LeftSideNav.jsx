@@ -58,7 +58,6 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                     p: "100px 20px",
                     borderRadius: "0 30px 30px 0",
                     bgcolor: "leftSideNav.background",
-
                     position: "relative"
                 },
             }}

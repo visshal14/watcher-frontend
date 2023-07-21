@@ -18,7 +18,7 @@ const Row = ({ titles, fetchUrl, type }) => {
         axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
             setTiles(response.data.results)
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
         // eslint-disable-next-line

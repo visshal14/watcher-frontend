@@ -28,7 +28,7 @@ const SearchBar = ({ closeFunc }) => {
                     setData(response.data.results)
                 }
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }, 500)
         return () => {
@@ -41,7 +41,6 @@ const SearchBar = ({ closeFunc }) => {
 
 
     const searchNavigate = () => {
-
         if (closeFunc) {
             closeFunc()
         }
@@ -56,7 +55,6 @@ const SearchBar = ({ closeFunc }) => {
 
     return (
         <Box sx={{
-
             minWidth: {
                 xxs: "47px",
                 xmd: "300px",

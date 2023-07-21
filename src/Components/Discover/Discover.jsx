@@ -121,12 +121,12 @@ const Discover = () => {
             await axios.get(movieUrl).then((response) => {
                 if (response.data.results.length > 1) movie = response.data.results
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
             await axios.get(tvUrl).then((response) => {
                 if (response.data.results.length > 1) tv = response.data.results
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
 
             let result = []
@@ -139,7 +139,7 @@ const Discover = () => {
             axios.get(url).then((response) => {
                 setMovieData(response.data.results)
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }

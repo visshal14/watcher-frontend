@@ -57,7 +57,7 @@ const Details = () => {
             dispatch(setData(response.data.data))
             cancelChange()
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
     }
     const cancelChange = () => {

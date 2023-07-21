@@ -64,7 +64,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                 })
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
 
@@ -79,6 +79,8 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
             axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${epino}?api_key=${apiKey}&append_to_response=videos`).then((response) => {
                 setSeasonVideos(response.data)
+            }).catch((e) => {
+
             })
         }
 

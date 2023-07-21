@@ -41,7 +41,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
 
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/watch-later/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -57,7 +57,7 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
 
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
 

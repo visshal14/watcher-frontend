@@ -46,7 +46,7 @@ const Liked = ({ data }) => {
                 dispatchSetData(response.data.data)
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/liked/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -61,7 +61,7 @@ const Liked = ({ data }) => {
 
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
 

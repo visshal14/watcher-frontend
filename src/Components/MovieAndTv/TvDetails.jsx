@@ -30,7 +30,7 @@ const TvDetails = () => {
             setNoOfSeasons(response.data.number_of_seasons)
             setCast(response.data.credits.cast)
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
         axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${apiKey}`).then((response) => {
 
@@ -38,7 +38,7 @@ const TvDetails = () => {
                 setWatch_provider(response.data.results.US.flatrate[0])
             }
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
         // eslint-disable-next-line
@@ -61,7 +61,7 @@ const TvDetails = () => {
             axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${apiKey}`).then((response) => {
                 setSeasons(prev => [...prev, response.data])
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }

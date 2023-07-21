@@ -156,7 +156,7 @@ const Register = () => {
                     data: error.message,
                     isOpen: true
                 }))
-                console.log("Error in login Frontend: ", error);
+                // console.log("Error in login Frontend: ", error);
             });
     }
 

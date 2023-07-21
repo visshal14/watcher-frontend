@@ -19,7 +19,7 @@ const Movie = () => {
             setDetails(response.data)
             setCast(response.data.casts.cast)
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
         axios.get(`https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${apiKey}&append_to_response=watch_providers`).then((response) => {
@@ -28,7 +28,7 @@ const Movie = () => {
             }
 
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
 

@@ -55,7 +55,7 @@ const Playlist = () => {
                     setIsOwner(true)
                 }
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
         // eslint-disable-next-line
@@ -90,7 +90,7 @@ const Playlist = () => {
 
             setData(response.data.data)
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
 
@@ -114,7 +114,7 @@ const Playlist = () => {
                     setData(response.data.data)
                     setIsNamechanging(false)
                 }).catch((e) => {
-                    console.log("error in axios ", e)
+                    // console.log("error in axios ", e)
                 })
             } else {
                 setIsNamechanging(false)
@@ -135,7 +135,7 @@ const Playlist = () => {
                     setData(response.data.data)
                     setIsDesChanging(false)
                 }).catch((e) => {
-                    console.log("error in axios ", e)
+                    // console.log("error in axios ", e)
                 })
 
 

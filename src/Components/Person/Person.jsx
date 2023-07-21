@@ -16,12 +16,12 @@ const Person = () => {
         axios.get(`https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}&append_to_response=combined_credits,images,external_ids`).then((response) =>
             setDetails(response.data)
         ).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
         axios.get(`https://api.themoviedb.org/3/person/popular?api_key=${apiKey}`).then((response) =>
             setPopular(response.data.results)
         ).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
 

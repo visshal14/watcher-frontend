@@ -53,7 +53,7 @@ const FriendDetails = () => {
             }
             setCurrentFriendPlaylist(response.data.data)
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
 
@@ -107,7 +107,7 @@ const FriendDetails = () => {
 
                 dispatchSetData(response.data.data)
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/removeFriend/${e.currentTarget.id.split("_")[0]}`, {
@@ -124,7 +124,7 @@ const FriendDetails = () => {
                 dispatchSetData(response.data.data)
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }

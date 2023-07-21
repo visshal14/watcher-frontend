@@ -245,7 +245,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     setWatchLaterProgress("")
                 }
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/${type}/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -275,7 +275,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }
@@ -302,7 +302,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 setWatchedProgress("")
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         } else if (mediaData.split("/")[0] === "tv") {
             const season = mediaData.split("/")[2] || "all"
@@ -333,7 +333,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }
@@ -369,7 +369,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
     }
@@ -416,7 +416,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
 
 
@@ -467,7 +467,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 }
 
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
             setNewPlaylistName("")
             setIsCreatePlaylist(!isCreatePlaylist)

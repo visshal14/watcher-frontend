@@ -52,7 +52,7 @@ const PasswordSecurity = () => {
                 console.log('Starting Request', JSON.stringify(request, null, 2))
                 return request
             }).catch((e) => {
-                console.log("error in axios ", e)
+                // console.log("error in axios ", e)
             })
         }
     }, [])
@@ -84,7 +84,7 @@ const PasswordSecurity = () => {
             setNewPassword("")
             setConfirmPassword("")
         }).catch((e) => {
-            console.log("error in axios ", e)
+            // console.log("error in axios ", e)
         })
     }
 

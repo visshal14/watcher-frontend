@@ -25,7 +25,6 @@ const Navbar = () => {
     const [isSearchBar, setIsSearchBar] = useState(window.innerWidth < 600 ? false : true)
 
     const dispatch = useDispatch()
-
     useEffect(() => {
         window.addEventListener("resize", () => {
             if (window.innerWidth < 600) {
@@ -73,7 +72,7 @@ const Navbar = () => {
         if (firstName) {
             setRightDrawerOpen(!leftDrawerOpen)
         } else {
-            window.location.href = "/login"
+            navigate("/login")
         }
     }
 
