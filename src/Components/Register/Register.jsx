@@ -9,6 +9,7 @@ import { getTheme } from '../../userSlice';
 import { useNavigate } from 'react-router-dom';
 import { googleClient_id } from '../../tmdb';
 import { Helmet } from 'react-helmet';
+
 const Register = () => {
 
     const dispatch = useDispatch()
@@ -37,9 +38,9 @@ const Register = () => {
         confirmPassword: false
     })
 
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
+    // useEffect(() => {
+    //     console.log(errors)
+    // }, [errors])
     const handleClick = () => {
         setShowPassword(prev => !prev);
     }
@@ -153,6 +154,10 @@ const Register = () => {
     }
 
     const fileUploadRef = useRef()
+
+
+
+
 
 
 

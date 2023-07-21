@@ -21,7 +21,7 @@ const Row = ({ titles, fetchUrl, type }) => {
             console.log("error in axios ", e)
         })
 
-
+        // eslint-disable-next-line
     }, [])
 
 
