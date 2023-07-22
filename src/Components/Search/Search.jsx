@@ -25,9 +25,7 @@ const Search = () => {
 
 
     useEffect(() => {
-        if (!query) {
-            navigate(navigate(`/discover/all?page=1`))
-        }
+        if (!query) navigate(navigate(`/discover/all?page=1`))
 
         setCurrentPage(parseInt(searchParams.get('page')))
         setType(searchParams.get("type") || "multi")
@@ -72,7 +70,8 @@ const Search = () => {
     }
 
     const typeChanged = (e) => {
-        setType(e.target.value)
+        // setType(e.target.value)
+        navigate(`/search?type=${e.target.value}&query=${query}&page=${page}`)
     }
 
 

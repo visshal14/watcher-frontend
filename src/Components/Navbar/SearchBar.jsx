@@ -74,7 +74,7 @@ const SearchBar = ({ closeFunc }) => {
             },
             position: "relative"
         }}>
-            <TextField fullWidth id="outlined-basic" variant="outlined" placeholder='Search' autoFocus
+            <TextField fullWidth variant="outlined" placeholder='Search' autoFocus
                 value={value}
                 onKeyDown={searchKeyPressed}
                 onChange={(e) => { setValue(e.target.value) }}
