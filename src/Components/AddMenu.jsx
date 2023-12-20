@@ -1,5 +1,5 @@
-import { Add, Lock, Link, ExpandLess, ExpandMore, } from '@mui/icons-material';
-import { Box, Button, CircularProgress, FormControl, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import { Add, Lock, Link, ExpandLess, ExpandMore, Close, } from '@mui/icons-material';
+import { Box, Button, CircularProgress, FormControl, Grid, IconButton, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPlaylists, getFriends, setData, getShared, setAlert, getEmail } from '../userSlice';
@@ -185,6 +185,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
     const [anchorEl, setAnchorEl] = useState(null);
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
 
@@ -471,7 +472,10 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
     }
 
 
-
+    const closeClicked = () => {
+        setAnchorEl(null)
+        // console.log("clicked")
+    }
 
 
 
@@ -536,6 +540,16 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         display: "none"
                     }
                 }}>
+
+                    <IconButton sx={{
+                        position: "absolute",
+                        top: "0.3rem",
+                        right: "0.3rem"
+                    }}
+                        onClick={closeClicked}
+                    >
+                        <Close sx={{ color: "addMenu.textColor" }} />
+                    </IconButton>
 
 
                     {name && <Typography variant="h2" component={"h2"} sx={{
