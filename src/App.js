@@ -9,7 +9,7 @@ import { setTheme } from './userSlice';
 import lightMode from "./lightMode.json"
 import darkMode from "./darkMode.json"
 import LoadingComponent from './Components/LoadingComponent';
-
+import { App as CapacitorApp } from '@capacitor/app';
 
 
 const Login = lazy(() => import('./Components/Login/Login'));
@@ -33,8 +33,17 @@ function App() {
   const dispatch = useDispatch()
   useEffect(() => {
 
+    CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      if (!canGoBack) {
+        CapacitorApp.exitApp();
+      } else {
+        window.history.back();
+      }
+    });
+  }, [])
 
 
+  useEffect(() => {
 
     if (window.localStorage.getItem("theme")) {
       dispatch(setTheme({
@@ -54,6 +63,12 @@ function App() {
       }
 
     }
+
+
+
+    var lang = navigator.language || navigator.userLanguage;
+    console.log(lang)
+
     // eslint-disable-next-line
   }, [])
 
@@ -162,6 +177,7 @@ function App() {
               <Register />
             </Suspense>
           } />
+
 
           <Route path="*" element={<Navigate to="/" replace />} />
 

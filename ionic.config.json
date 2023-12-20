@@ -1,0 +1,7 @@
+{
+  "name": "watcher-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

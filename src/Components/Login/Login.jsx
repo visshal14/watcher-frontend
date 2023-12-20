@@ -9,6 +9,12 @@ import { getTheme } from '../../userSlice';
 import { googleClient_id } from '../../tmdb';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+// eslint-disable-next-line
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { Capacitor } from '@capacitor/core';
+// import { Keyboard } from '@capacitor/keyboard';
+
+
 
 const Login = () => {
 
@@ -22,8 +28,8 @@ const Login = () => {
     const [isOAuth, setIsOAuth] = useState(false)
     const [signInText, setSignInText] = useState("Sign In")
     const [isProgress, setIsProgress] = useState(false)
+    const [keyboardHeight, setKeyboardHeight] = useState(0)
     const [errors, setErrors] = useState({
-
         password: false,
         email: false
     })
@@ -39,6 +45,8 @@ const Login = () => {
 
             if (email.length > 1)
                 setErrors({ ...errors, email: emailRegex.test(email) })
+        } else {
+            setErrors({ ...errors, email: true })
         }
         // eslint-disable-next-line
     }, [email, isOAuth])
@@ -54,15 +62,16 @@ const Login = () => {
     }, [password, isOAuth])
 
     const submitButton = () => {
-
+        // console.log("submit")
         setSignInText("Please Wait")
         setIsProgress(true)
         backendAxios.post('/login', {
             email, password
         })
             .then(function (response) {
-
+                // console.log(response.data)
                 if (response.data.errMsg) {
+
                     setSignInText("Sign In")
                     setIsProgress(false)
                     dispatch(setAlert({
@@ -97,6 +106,7 @@ const Login = () => {
 
     function handleCallbackResponse(response) {
         const userObj = jwt_decode(response.credential)
+        // console.log(userObj)
         setEmail(userObj.email)
         setPassword(userObj.iss + "-" + userObj.sub)
         setIsOAuth(true)
@@ -112,18 +122,48 @@ const Login = () => {
 
 
     useEffect(() => {
+
+
+        if (!window?.google?.accounts?.id) {
+            // console.log("capacitor12345")
+            // eslint-disable-next-line
+            try {
+
+                GoogleAuth?.init();
+                setTimeout(async () => {
+                    const x = await GoogleAuth.signIn();
+                    console.log(x)
+                    // console.log(x.email)
+                    setEmail(x.email)
+                    setPassword("https://accounts.google.com-" + x.id)
+                    // https://accounts.google.com-100478867211187871333
+                    // console.log(x.iss + "-" + x.sub)
+                    setIsOAuth(true)
+
+                }, 3000)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
         /* global google */
-        window.google.accounts.id.initialize({
-            client_id: googleClient_id,
-            callback: handleCallbackResponse
-        })
+
+        if (window.google) {
+
+            window.google.accounts.id.initialize({
+                client_id: googleClient_id,
+                callback: handleCallbackResponse
+            })
+            window.google.accounts.id.prompt((notification) => {
+
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    document.cookie = `g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+                    google.accounts.id.prompt()
+                }
+            });
+        }
         // window.google.accounts.id.prompt()
 
-        window.google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                google.accounts.id.prompt()
-            }
-        });
 
         // window.google.accounts.id.renderButton(
         //     document.getElementById("signId"),
@@ -145,13 +185,22 @@ const Login = () => {
         }
     }
 
+    useEffect(() => {
+        if (Capacitor.getPlatform() === "android") {
 
+            setKeyboardHeight(320)
+
+
+        } else {
+            setKeyboardHeight(0)
+        }
+    }, [])
 
     return (
         <Grid container component={Paper} sx={{
 
             // minHeight: "100vh",
-            height: "100vh",
+            height: `calc(100vh + ${keyboardHeight}px )`,
             width: "100vw",
             bgcolor: "background.default",
             minHeight: "700px"
@@ -185,7 +234,8 @@ const Login = () => {
                     height: {
                         xxs: "70%",
                         md: "100%",
-                    }
+                    },
+                    pb: `${keyboardHeight}px`
                 }}
             >
                 <Box
@@ -241,6 +291,7 @@ const Login = () => {
                             name="email"
                             autoComplete='email'
                             autoFocus
+                            value={email}
                             error={!errors.email && email.length > 0}
                             helperText={!errors.email && email.length > 0 ? "Please Enter Correct Email" : ""}
                             onChange={(e) => { setEmail(e.target.value) }}
@@ -369,8 +420,8 @@ const Login = () => {
 
             <IconButton sx={{
                 position: "absolute",
-                bottom: 0,
-                left: 0
+                top: 0,
+                right: 0
             }}
                 onClick={themeChange}>
 

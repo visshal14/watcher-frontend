@@ -1,11 +1,12 @@
 import { Clear, Search } from '@mui/icons-material'
 import { TextField, Box, InputAdornment, Stack, Grid, Typography, ClickAwayListener, Button } from '@mui/material'
-import axios from 'axios'
+// import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import knowMore from '../KnowMore'
-import { apiKey } from '../../tmdb'
+// import { apiKey } from '../../tmdb'
 import { useNavigate } from 'react-router-dom'
-const SearchBar = ({ closeFunc }) => {
+import backendAxios from "../../backendAxios"
+const SearchBar = ({ closeFunc, isMobile }) => {
 
 
 
@@ -15,11 +16,11 @@ const SearchBar = ({ closeFunc }) => {
 
 
     useEffect(() => {
-
+        if (value.length < 1) return
         setData([])
         var timer = setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${value}`).then((response) => {
 
+            backendAxios.get(`/getSearchBarResult/multi/${value}/1`).then((response) => {
                 if (response.data.results.lenght > 5) {
                     for (let i = 0; i < 5; i++) {
                         setData(prev => [...prev, response.data.results[i]])
@@ -30,6 +31,19 @@ const SearchBar = ({ closeFunc }) => {
             }).catch((e) => {
                 // console.log("error in axios ", e)
             })
+
+            // axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${value}`).then((response) => {
+
+            //     if (response.data.results.lenght > 5) {
+            //         for (let i = 0; i < 5; i++) {
+            //             setData(prev => [...prev, response.data.results[i]])
+            //         }
+            //     } else {
+            //         setData(response.data.results)
+            //     }
+            // }).catch((e) => {
+            //     // console.log("error in axios ", e)
+            // })
         }, 500)
         return () => {
             clearTimeout(timer)
@@ -74,7 +88,7 @@ const SearchBar = ({ closeFunc }) => {
             },
             position: "relative"
         }}>
-            <TextField fullWidth variant="outlined" placeholder='Search' autoFocus
+            <TextField fullWidth variant="outlined" placeholder='Search' autoFocus={isMobile}
                 value={value}
                 onKeyDown={searchKeyPressed}
                 onChange={(e) => { setValue(e.target.value) }}

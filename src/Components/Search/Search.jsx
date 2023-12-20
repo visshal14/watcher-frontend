@@ -2,12 +2,13 @@ import { Box, Grid, Stack, Typography, Pagination, Tooltip, Select, MenuItem, Ou
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { apiKey } from '../../tmdb'
-import axios from 'axios'
+// import { apiKey } from '../../tmdb'
+// import axios from 'axios'
 import { Helmet } from "react-helmet";
 import AddMenu from '../AddMenu'
 import MovieOverviewTip from '../MovieOverviewTip'
 import knowMore from '../KnowMore'
+import backendAxios from "../../backendAxios"
 const Search = () => {
 
 
@@ -41,9 +42,12 @@ const Search = () => {
     }, [type, query, currentPage])
 
     async function getData() {
-        const url = `https://api.themoviedb.org/3/search/${type}?query=${query}&api_key=${apiKey}&language=en-US&include_adult=false&page=${currentPage}`
+        // `/getSearchBarResult/multi/${value}/1`
+        // const url = `https://api.themoviedb.org/3/search/${type}?query=${query}&api_key=${apiKey}&language=en-US&include_adult=false&page=${currentPage}`
+        const url = `/getSearchBarResult/${type}/${query}/${currentPage}`
+
         // console.log(url)
-        axios.get(url).then((response) => {
+        backendAxios.get(url).then((response) => {
             setMovieData(response.data.results)
             setTotalPages(response.data.total_pages > 100 ? 100 : response.data.total_pages)
         }).catch((e) => {
@@ -73,6 +77,7 @@ const Search = () => {
         // setType(e.target.value)
         navigate(`/search?type=${e.target.value}&query=${query}&page=${page}`)
     }
+    const [typeMenu, setTypeMenu] = useState(false)
 
 
     return (
@@ -92,12 +97,15 @@ const Search = () => {
                     value={type}
                     onChange={typeChanged}
                     input={<OutlinedInput />}
-                    // MenuProps={MenuProps}
+                    onOpen={() => { setTypeMenu(true) }}
+                    onClose={() => { setTypeMenu(false) }}
                     renderValue={(type) => <Grid container>
 
                         <Typography sx={{
-
-                            fontSize: "25px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            fontSize: "20px",
                             lineHeight: 1,
                             padding: "2px 10px",
                             fontWeight: 600,
@@ -105,6 +113,9 @@ const Search = () => {
                         }}>  Type</Typography>
 
                         <Typography sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
                             textTransform: "capitalize",
                             ml: 3,
                             lineHeight: 1.7,
@@ -136,7 +147,13 @@ const Search = () => {
                             borderColor: "discover.buttonBorder",
                         },
                         '&.Mui-focused fieldset': {
+                            // border: "1px solid ",
+                            // borderColor: "discover.buttonBorder ",
                             border: 'none !important',
+                            // borderWidth: "1px ",
+                        },
+                        "& .MuiOutlinedInput:focus": {
+                            // borderColor: "discover.buttonBorder !important",
                         },
                         "& .MuiSelect-iconOutlined": {
                             display: "none"
@@ -149,11 +166,33 @@ const Search = () => {
                         width: "fit-content",
                         border: "1px solid",
                         borderColor: "discover.buttonBorder",
-                        borderRadius: "50px",
+                        borderRadius: !typeMenu ? "50px" : " 20px 20px 0 0",
                         padding: "0.25rem 5px 0.25rem 1rem",
-                        color: "discover.buttonFore"
+                        color: "discover.buttonFore",
+                        transform: "all 0.5s"
                     }}
+                    MenuProps={{
+                        PaperProps: {
+                            sx: {
 
+                                bgcolor: 'discover.tilesBack',
+                                border: "px solid",
+                                borderColor: "discover.buttonBorder",
+                                borderRadius: "0 0 20px 20px",
+                                marginTop: "-1px",
+                                '& .MuiMenuItem-root': {
+                                    // padding: "0 16px ",
+                                },
+                                "& .MuiMenu-list": {
+                                    padding: 0
+                                },
+                                "& .Mui-selected": {
+                                    bgcolor: "discover.selected"
+                                }
+
+                            },
+                        },
+                    }}
                 >
                     <MenuItem value="multi">Multi</MenuItem>
                     <MenuItem value="movie">Movie</MenuItem>

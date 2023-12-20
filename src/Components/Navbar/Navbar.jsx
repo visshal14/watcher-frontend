@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { setData } from '../../userSlice'
 import { useDispatch } from 'react-redux'
 import backendAxios from "../../backendAxios"
+
 const Navbar = () => {
 
 
@@ -24,8 +25,16 @@ const Navbar = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 600 ? true : false)
     const [isSearchBar, setIsSearchBar] = useState(window.innerWidth < 600 ? false : true)
 
+
+
+    // useEffect(() => {
+    //     console.log("Search Bar :" + isSearchBar)
+    // }, [isSearchBar])
+
     const dispatch = useDispatch()
     useEffect(() => {
+
+
         window.addEventListener("resize", () => {
             if (window.innerWidth < 600) {
                 setIsMobile(true)
@@ -48,9 +57,9 @@ const Navbar = () => {
         backendAxios.get("/getUserData", {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
-            let data = response.data
+
             // console.log(data)
-            dispatch(setData(data))
+            dispatch(setData(response.data))
         }).catch((e) => {
 
         })
@@ -61,6 +70,8 @@ const Navbar = () => {
     }, [])
 
 
+
+
     const searchBarShow = () => {
         if (isSearchBar === false && isMobile) {
             setIsSearchBar(true)
@@ -68,6 +79,8 @@ const Navbar = () => {
             setIsSearchBar(false)
         }
     }
+
+
     const loginBtnClicked = () => {
         if (firstName) {
             setRightDrawerOpen(!leftDrawerOpen)
@@ -79,10 +92,19 @@ const Navbar = () => {
     return (
 
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar sx={{ zIndex: "9", bgcolor: "navbar.background" }}>
+            <AppBar sx={{
+                zIndex: "9",
+                // marginTop: "env(safe-area-inset-top)",
+                paddingTop: "env(safe-area-inset-top)",
+                bgcolor: "navbar.background",
+                minHeight: {
+                    xxs: "calc(56px + env(safe-area-inset-top))",
+                    sm: "calc(64px + env(safe-area-inset-top))"
+                },
+
+            }}>
                 <Toolbar sx={{
                     justifyContent: "space-between",
-
                 }}>
 
                     <Grid container alignItems={"center"} sx={{
@@ -162,10 +184,15 @@ const Navbar = () => {
 
                     <Button startIcon={<Avatar src={profilePhoto} />}
                         sx={{
+                            "& .MuiButton-startIcon": {
+                                marginRight: "0px"
+                            },
                             color: "navbar.menuItem",
                             "&:hover": {
                                 borderRadius: "0.5rem"
-                            }
+                            },
+                            minWidth: 0,
+                            padding: "0"
                         }}
                         onClick={loginBtnClicked} >
                         <Typography sx={{
@@ -173,6 +200,7 @@ const Navbar = () => {
                                 xxs: "none",
                                 xsm: "initial"
                             },
+                            ml: 1
                             // color: "navbar.menuItem"
                         }}>{firstName || "Login"}</Typography>
                     </Button>
@@ -180,7 +208,7 @@ const Navbar = () => {
 
                 </Toolbar>
                 {
-                    isSearchBar && isMobile && <SearchBar closeFunc={searchBarShow} />
+                    isSearchBar && isMobile && <SearchBar closeFunc={searchBarShow} isMobile />
                 }
 
             </AppBar>

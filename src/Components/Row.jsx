@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded, PlayArrowRounded } from '@mui/icons-material'
-import { Box, Button, Grid, IconButton, Tooltip, Typography } from '@mui/material'
-import axios from 'axios'
+import { Box, Button, Grid, IconButton, Skeleton, Tooltip, Typography } from '@mui/material'
+// import axios from 'axios'
 import knowMore from './KnowMore'
 import MovieOverviewTip from './MovieOverviewTip'
 import AddMenu from './AddMenu'
 import { useNavigate } from 'react-router-dom'
-
+import backendAxios from "../backendAxios"
+// import LoadingComponent from './LoadingComponent'
 const Row = ({ titles, fetchUrl, type }) => {
 
 
@@ -15,7 +16,9 @@ const Row = ({ titles, fetchUrl, type }) => {
     const [genre, setGenre] = useState(fetchUrl.split("&").filter(ele => ele.includes("with_genres")).join().replace("with_genres=", ""))
 
     useEffect(() => {
-        axios.get(`https://api.themoviedb.org/3${fetchUrl}`).then((response) => {
+        backendAxios.post(`/getRowDetails`, {
+            fetchUrl
+        }).then((response) => {
             setTiles(response.data.results)
         }).catch((e) => {
             // console.log("error in axios ", e)
@@ -50,7 +53,7 @@ const Row = ({ titles, fetchUrl, type }) => {
                     fontWeight: "700",
                     cursor: "pointer"
 
-                }} onClick={() => navigate(`/discover/${type || 'movie'}?genre=${genre}`)}> {titles} </Typography>
+                }} onClick={() => navigate(`/discover/${type || 'movie'}?genre=${genre}`)}> {titles}  </Typography>
                 <Box>
                     <Button sx={{
                         bgcolor: "scrollBtn.background",
@@ -119,7 +122,7 @@ const Row = ({ titles, fetchUrl, type }) => {
                     },
 
                 }}>
-                {
+                {tiles.length > 1 ?
                     tiles?.map((ele, i) => (
 
                         <Box id={`${ele.media_type || type}/${ele.id}-outer`} key={i} sx={{
@@ -243,7 +246,10 @@ const Row = ({ titles, fetchUrl, type }) => {
                                 </Box>
                             </Tooltip>
                         </Box>
-                    ))
+                    )) :
+                    <Skeleton variant="rounded" width={"100%"} height={"100%"} />
+
+                    // <LoadingComponent />
                 }
             </Grid >
 

@@ -1,14 +1,15 @@
-import { Grid } from '@mui/material'
+import { Grid, Skeleton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import axios from "axios"
 import requests from '../../request'
 import SingleFeaturedPost from './SingleFeaturedPost'
+import backendAxios from "../../backendAxios"
+// import LoadingComponent from "../LoadingComponent"
 const FeaturedPosts = () => {
-
     const [featured, setFeatures] = useState([])
-
     useEffect(() => {
-        axios.get(`https://api.themoviedb.org/3${requests.fetchTrending}`).then((response) => {
+        backendAxios.post(`/getRowDetails`, {
+            fetchUrl: requests.fetchTrending
+        }).then((response) => {
             setFeatures(prev => [...prev, response.data.results[0]])
             setFeatures(prev => [...prev, response.data.results[1]])
             setFeatures(prev => [...prev, response.data.results[2]])
@@ -17,6 +18,9 @@ const FeaturedPosts = () => {
 
         })
     }, [])
+
+
+
 
     const [featurePost, setfeaturePost] = useState([{
         spot: true,
@@ -119,9 +123,15 @@ const FeaturedPosts = () => {
             position: "relative",
             height: "400px"
         }}>
-            {featured.map((ele, i) =>
-                <SingleFeaturedPost key={`featuredpost_${i}`} postNo={i} tileClicked={tileClicked} data={ele} series={featurePost[i].series} spot={featurePost[i].spot} />
-            )}
+
+            {featured.length > 1 ? featured.map((ele, i) =>
+                <SingleFeaturedPost key={`featuredpost_${i}`} postNo={i} tileClicked={tileClicked} data={ele} series={featurePost[i]?.series} spot={featurePost[i]?.spot} />
+            ) :
+                <Skeleton variant="rounded" width={"100%"} height={"100%"} />
+
+                //  <LoadingComponent />
+
+            }
         </Grid>
     )
 }

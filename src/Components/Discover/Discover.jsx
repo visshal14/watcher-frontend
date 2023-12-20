@@ -5,13 +5,14 @@ import countryList from "./countryList.json"
 import movieGenres from "./movieGenres.json"
 import tvGenres from "./tvGenres.json"
 import allGenres from "./allGenres.json"
-import { apiKey } from '../../tmdb'
-import axios from 'axios'
+// import { apiKey } from '../../tmdb'
+// import axios from 'axios'
 import { Helmet } from "react-helmet";
 import AddMenu from '../AddMenu'
 import MovieOverviewTip from '../MovieOverviewTip'
 import knowMore from '../KnowMore'
 import { Close, FilterAlt } from '@mui/icons-material'
+import backendAxios from "../../backendAxios"
 const Discover = () => {
 
     const { type } = useParams()
@@ -38,9 +39,8 @@ const Discover = () => {
 
 
 
-
     useEffect(() => {
-
+        // console.log("search")
         setMediaType(type)
         clearAllGenreCountry("genre")
         getData(pageNo, genre, countryParams)
@@ -54,9 +54,7 @@ const Discover = () => {
 
 
     async function getData(pageNo, genre, country) {
-        let date = new Date()
-        const todayDate = date.getFullYear() + "-" + ((date.getMonth() + 1) > 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`) + "-" + date.getDate()
-        const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&primary_release_date.lte=${todayDate}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo || 1}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+        // const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&primary_release_date.lte=${todayDate}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo || 1}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
         if (type === "all") {
             let tvGenres = []
             let movieGenres = []
@@ -107,10 +105,9 @@ const Discover = () => {
 
 
 
-            const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${tvGenres ? `&with_genres=${tvGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            // const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${tvGenres ? `&with_genres=${tvGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
 
 
-            const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
 
 
 
@@ -118,12 +115,37 @@ const Discover = () => {
             let movie = []
 
             setMovieData()
-            await axios.get(movieUrl).then((response) => {
+
+
+            // const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            await backendAxios.post("/getDiscoverDetails/movie", {
+                genre: movieGenres,
+                pageNo,
+                country
+            }).then((response) => {
                 if (response.data.results.length > 1) movie = response.data.results
             }).catch((e) => {
                 // console.log("error in axios ", e)
             })
-            await axios.get(tvUrl).then((response) => {
+
+            // const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            // await axios.get(movieUrl).then((response) => {
+            //     if (response.data.results.length > 1) movie = response.data.results
+            // }).catch((e) => {
+            //     // console.log("error in axios ", e)
+            // })
+
+            // await axios.get(tvUrl).then((response) => {
+            //     if (response.data.results.length > 1) tv = response.data.results
+            // }).catch((e) => {
+            //     // console.log("error in axios ", e)
+            // })
+
+            await backendAxios.post("/getDiscoverDetails/tv", {
+                genre: tvGenres,
+                pageNo,
+                country
+            }).then((response) => {
                 if (response.data.results.length > 1) tv = response.data.results
             }).catch((e) => {
                 // console.log("error in axios ", e)
@@ -136,7 +158,10 @@ const Discover = () => {
             }
             setMovieData(result)
         } else {
-            axios.get(url).then((response) => {
+            // const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&primary_release_date.lte=${todayDate}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo || 1}&with_watch_monetization_types=flatrate${genre ? `&with_genres=${genre}` : ""}${country ? `&with_origin_country=${country}` : ""}`
+            backendAxios.post(`/getDiscoverDetails/${type}`, {
+                pageNo, genre, country
+            }).then((response) => {
                 setMovieData(response.data.results)
             }).catch((e) => {
                 // console.log("error in axios ", e)
@@ -371,7 +396,7 @@ const Discover = () => {
             <Grid container justifyContent={"center"} sx={{
                 mt: 5
             }}>
-                <Pagination count={100} page={currentPage} onChange={pageChange} size="large" />
+                <Pagination count={100} page={currentPage} onChange={pageChange} />
             </Grid>
         </Stack>
     )

@@ -2,10 +2,9 @@ import { ExpandMore } from '@mui/icons-material'
 import { Grid, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from "axios"
 import AddMenu from '../AddMenu'
 import DetailCard from './DetailCard'
-import { apiKey } from '../../tmdb'
+import backendAxios from "../../backendAxios"
 const TvDetails = () => {
 
 
@@ -24,22 +23,39 @@ const TvDetails = () => {
     const [isTrailer, setIsTrailer] = useState(false)
     useEffect(() => {
         setSeasons([])
-        axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en&append_to_response=credits,videos`).then((response) => {
+
+        backendAxios.get(`/getTvDetails/${id}`).then((response) => {
             setDetails(response.data)
             getSeasonsEpisodes(response.data.number_of_seasons)
             setNoOfSeasons(response.data.number_of_seasons)
             setCast(response.data.credits.cast)
-        }).catch((e) => {
-            // console.log("error in axios ", e)
-        })
-        axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${apiKey}`).then((response) => {
-
-            if (response.data.results?.US?.flatrate) {
-                setWatch_provider(response.data.results.US.flatrate[0])
+            if (response.data?.networks) {
+                setWatch_provider(response.data.networks)
+            }
+            else if (response.data["watch/providers"].results?.US?.flatrate) {
+                setWatch_provider(response.data["watch/providers"].results?.US?.flatrate[0])
             }
         }).catch((e) => {
             // console.log("error in axios ", e)
         })
+
+
+        // axios.get(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en&append_to_response=credits,videos`).then((response) => {
+        //     setDetails(response.data)
+        //     getSeasonsEpisodes(response.data.number_of_seasons)
+        //     setNoOfSeasons(response.data.number_of_seasons)
+        //     setCast(response.data.credits.cast)
+        // }).catch((e) => {
+        //     // console.log("error in axios ", e)
+        // })
+        // axios.get(`https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${apiKey}`).then((response) => {
+
+        //     if (response.data.results?.US?.flatrate) {
+        //         setWatch_provider(response.data.results.US.flatrate[0])
+        //     }
+        // }).catch((e) => {
+        //     // console.log("error in axios ", e)
+        // })
 
         // eslint-disable-next-line
     }, [])
@@ -57,13 +73,19 @@ const TvDetails = () => {
 
 
     function getSeasonsEpisodes(n) {
-        for (let i = 1; i <= n; i++) {
-            axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${apiKey}`).then((response) => {
-                setSeasons(prev => [...prev, response.data])
-            }).catch((e) => {
-                // console.log("error in axios ", e)
-            })
-        }
+        // /getEpisodesDetails/:id/:n
+        backendAxios.get(`/getEpisodesDetails/${id}/${n}`).then((response) => {
+            setSeasons(response.data)
+        }).catch((e) => {
+            // console.log("error in axios ", e)
+        })
+        // for (let i = 1; i <= n; i++) {
+        //     axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${i}?api_key=${apiKey}`).then((response) => {
+        //         setSeasons(prev => [...prev, response.data])
+        //     }).catch((e) => {
+        //         // console.log("error in axios ", e)
+        //     })
+        // }
     }
     useEffect(() => {
         if (seasons.length === noOfSeasons && seasonUseRef.current === 0) {
@@ -91,10 +113,7 @@ const TvDetails = () => {
             xxs: 2,
             sm: 5
         }} py={10}
-            height=
-            {{ xxs: "auto", lg: !isTrailer ? "100vh" : "auto" }}
-
-
+            height={{ xxs: "auto", lg: !isTrailer ? "100vh" : "auto" }}
         >
             <Grid item lg={9} xxs={12} px={{
                 xxs: 0,
@@ -246,7 +265,7 @@ const SeasonsAccordion = ({ ele, id }) => {
                             >
                                 <Typography fontSize={"12px"}>
                                     {/* Episode {ep.episode_number} */}
-                                    {ep.episode_number} {ep.name}
+                                    {ep.episode_number}. {ep.name}
                                 </Typography>
                                 <AddMenu position={"normal"} mr="10px" id={id + "/" + j} padding={{
                                     xxs: "2px 2px",

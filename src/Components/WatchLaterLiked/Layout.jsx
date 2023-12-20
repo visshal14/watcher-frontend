@@ -49,7 +49,6 @@ const Layout = ({ data, title }) => {
                     <Button sx={{ color: "playlists.textColor" }} startIcon={<Sort />}> Sort</Button>
                     {
                         data?.map((ele, i) =>
-
                             <Grid key={i} id={ele.type + "/" + ele.id}
                                 container p={{
                                     xxs: 1,
@@ -60,7 +59,6 @@ const Layout = ({ data, title }) => {
                                 }} position={"relative"}>
                                 <Grid container onClick={() => {
                                     knowMore(ele.type + "/" + ele.id)
-
                                 }}>
                                     <Grid item xxs={12} md={4}>
                                         <img src={`https://image.tmdb.org/t/p/original${ele.background}`} loading="lazy" alt="img" style={{

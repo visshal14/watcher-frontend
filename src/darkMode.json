@@ -84,7 +84,8 @@
         "filterBack": "#fcba4e",
         "filterFore": "#484848",
         "tilesBack": "#484848",
-        "color": "#ffffff"
+        "color": "#ffffff",
+        "selected": "#121212"
     },
     "toolTip": {
         "foreBackground": "#171717",

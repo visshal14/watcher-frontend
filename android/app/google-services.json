@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "818310470936",
+    "project_id": "watcher-380709",
+    "storage_bucket": "watcher-380709.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818310470936:android:5c866715da2a019353526d",
+        "android_client_info": {
+          "package_name": "com.visshal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818310470936-12da3plkgmo9lo65of9a84qmjimqr268.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.visshal.app",
+            "certificate_hash": "a8250d0e418533c2010fa33aa4abe5a3cee38e4e"
+          }
+        },
+        {
+          "client_id": "818310470936-eikcvjh9v65bko219hjbonmt8vv9q23j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4_vmYnv9BjG1VW6O5NlJbzQZCo0EN44w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818310470936-eikcvjh9v65bko219hjbonmt8vv9q23j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "818310470936-g1inflf4pmkg11o5kon9r9gclbrbrrre.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.visshal.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

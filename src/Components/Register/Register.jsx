@@ -9,6 +9,9 @@ import { getTheme } from '../../userSlice';
 import { useNavigate } from 'react-router-dom';
 import { googleClient_id } from '../../tmdb';
 import { Helmet } from 'react-helmet';
+// eslint-disable-next-line
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { Capacitor } from '@capacitor/core';
 
 const Register = () => {
 
@@ -30,7 +33,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isProgress, setIsProgress] = useState(false)
     const [previewImage, setPreviewImage] = useState(null)
-
+    const [keyboardHeight, setKeyboardHeight] = useState(0)
     useEffect(() => {
         if (profilePhoto) {
             setPreviewImage(URL.createObjectURL(profilePhoto));
@@ -189,17 +192,42 @@ const Register = () => {
     useEffect(() => {
         /* global google */
         try {
-            window.google.accounts.id.initialize({
-                client_id: googleClient_id,
-                callback: handleCallbackResponse
-            })
-            // window.google.accounts.id.prompt()
 
-            window.google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    google.accounts.id.prompt()
-                }
-            });
+            if (!window?.google?.accounts?.id) {
+                // console.log("")
+                // eslint-disable-next-line
+                GoogleAuth?.init();
+                setTimeout(async () => {
+                    // eslint-disable-next-line
+                    const x = await GoogleAuth.signIn();
+
+                    setIsOAuth(true)
+                    setEmail(x.email)
+
+                    setFirstName(x.givenName)
+                    setlastName(x.family_name || "")
+                    setOAuthProfilePhoto(x.imageUrl || "")
+
+                    setPassword("https://accounts.google.com-" + x.id)
+
+
+
+                }, 3000)
+            }
+            if (window.google) {
+
+                window.google.accounts.id.initialize({
+                    client_id: googleClient_id,
+                    callback: handleCallbackResponse
+                })
+                // window.google.accounts.id.prompt()
+
+                window.google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        google.accounts.id.prompt()
+                    }
+                });
+            }
 
         } catch (e) {
             console.log("Error in Google Callback  " + e)
@@ -225,12 +253,23 @@ const Register = () => {
             }))
         }
     }
+    useEffect(() => {
+        if (Capacitor.getPlatform() === "android") {
 
+            setKeyboardHeight(320)
+
+
+        } else {
+            setKeyboardHeight(0)
+        }
+    }, [])
 
     return (
         <Grid container sx={{
             // minHeight: "100vh",
-            height: { xxs: "fit-content", md: "100vh" }, width: "100vw",
+            height: { xxs: "fit-content", md: "100vh" },
+
+            width: "100vw",
             overflow: "scroll",
             bgcolor: "background.default",
             minHeight: "700px"
@@ -268,6 +307,7 @@ const Register = () => {
                         xxs: 5,
                         md: 0
                     },
+                    pb: `${keyboardHeight}px`,
                     position: "relative"
                 }}
             >
@@ -367,8 +407,8 @@ const Register = () => {
                                 name="last_name"
                                 onChange={(e) => setlastName(e.target.value)}
                                 autoComplete='last_name'
-                                error={!errors.lastName && lastName.length > 0 && !isOAuth}
-                                helperText={!errors.lastName && lastName.length > 0 && !isOAuth ? "First Name must be more than 2" : ""}
+                                error={!errors?.lastName && lastName?.length > 0 && !isOAuth}
+                                helperText={!errors?.lastName && lastName?.length > 0 && !isOAuth ? "First Name must be more than 2" : ""}
                                 sx={{
                                     ml: 1,
                                     color: "login.mainText",
@@ -378,20 +418,20 @@ const Register = () => {
                                         borderRadius: "15px"
                                     },
                                     '& label.Mui-focused': {
-                                        color: !errors.lastName && lastName.length > 0 && !isOAuth ? "red " : 'login.labelText',
+                                        color: !errors?.lastName && lastName?.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                     },
                                     '& .MuiInput-underline:after': {
                                         borderBottomColor: 'login.labelText',
                                     },
                                     '& .MuiOutlinedInput-root': {
                                         '& fieldset': {
-                                            borderColor: !errors.lastName && lastName.length > 0 && !isOAuth ? "red " : 'login.labelText',
+                                            borderColor: !errors?.lastName && lastName?.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                         },
                                         '&:hover fieldset': {
-                                            borderColor: !errors.lastName && lastName.length > 0 && !isOAuth ? "red " : 'login.labelText',
+                                            borderColor: !errors?.lastName && lastName?.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                         },
                                         '&.Mui-focused fieldset': {
-                                            borderColor: !errors.lastName && lastName.length > 0 && !isOAuth ? "red " : 'login.labelText',
+                                            borderColor: !errors?.lastName && lastName?.length > 0 && !isOAuth ? "red " : 'login.labelText',
                                         },
                                     }
                                 }}
@@ -615,15 +655,7 @@ const Register = () => {
                         {/* <div id="signId"></div> */}
                     </Box>
                 </Box>
-                <IconButton sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0
-                }}
-                    onClick={themeChange}>
 
-                    {theme === "dark" ? <LightMode /> : <DarkMode />}
-                </IconButton>
             </Grid >
 
             <Grid item order={{ xxs: 1, md: 2 }} xxs={12} md={6}
@@ -640,7 +672,15 @@ const Register = () => {
                         xxs: "0 0 50px 50px"
                     },
                 }} />
+            <IconButton sx={{
+                position: "absolute",
+                top: 0,
+                right: 0
+            }}
+                onClick={themeChange}>
 
+                {theme === "dark" ? <LightMode /> : <DarkMode />}
+            </IconButton>
 
         </Grid >
 

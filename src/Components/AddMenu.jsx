@@ -196,6 +196,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 data: "There is being some error, try after some time or login again",
                 isOpen: true
             }))
+            LoginChecker()
             return
         }
 
@@ -292,10 +293,8 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     isOpen: true
                 }))
                 if (response.data.errMsg) {
-
                     setWatchedProgress("")
                     return
-
                 }
 
                 dispatchSetData(response.data.data)
@@ -316,22 +315,13 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     isOpen: true
                 }))
                 if (response.data.errMsg) {
-
                     setWatchedProgress("")
-
                     return
-
                 }
                 setWatchedProgress("")
                 dispatchSetData(response.data.data)
                 setIfWatched("Add To")
-
-
-
-
                 return
-
-
             }).catch((e) => {
                 // console.log("error in axios ", e)
             })
@@ -478,9 +468,6 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
     const dispatchSetData = (data) => {
         dispatch(setData(data))
-
-
-
     }
 
 

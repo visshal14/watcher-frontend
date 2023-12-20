@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">watcher</string>
+    <string name="title_activity_main">watcher</string>
+    <string name="package_name">com.visshal.app</string>
+    <string name="custom_url_scheme">com.visshal.app</string>
+    <string name="server_client_id">818310470936-eikcvjh9v65bko219hjbonmt8vv9q23j.apps.googleusercontent.com</string>
+    
+</resources>
+
+
+
+<!-- android/app/src/main/java/com/devdactic/capalogin/MainActivity.java -->

@@ -76,9 +76,6 @@ const Row = ({ titles, data, url }) => {
 
                         }}> {titles} </Typography>
                     </Link>
-
-
-
                     : <Typography component="span" variant='h5' color={"playlists.textColor"} sx={{
                         fontSize: {
                             xxs: "0.8rem",
@@ -86,9 +83,6 @@ const Row = ({ titles, data, url }) => {
                         }
 
                     }}> {titles} </Typography>}
-
-
-
 
                 <Box>
                     <Button sx={{
@@ -140,9 +134,9 @@ const Row = ({ titles, data, url }) => {
                 </Box>
             </Grid>
             <Helmet>
-
                 <title>Watcher</title>
             </Helmet>
+
             <Grid id={titles} ref={rowRef} container flexWrap="nowrap" overflow="auto"
                 sx={{
                     "&::-webkit-scrollbar": {
@@ -159,7 +153,6 @@ const Row = ({ titles, data, url }) => {
                 }}>
                 {data &&
                     data?.map((ele, i) => (
-
                         <Box id={`${ele?.type || ele.details?.type || ele?.media_type}/${ele?.id || ele?.details?.id || ele?.media_id}-outer`} key={i} sx={{
                             minWidth: {
                                 xxs: "200px",
@@ -179,7 +172,7 @@ const Row = ({ titles, data, url }) => {
                             },
                             scrollSnapAlign: "start",
                             position: "relative",
-                            cursor: "default"
+                            cursor: "pointer"
                         }}>
 
                             <AddMenu id={`${ele.type || ele.media_type || ele?.details?.type}/${ele.id || ele.media_id || ele.details?.id}`} name={ele.name || ele.title || ele?.original_title || ele?.details.title || ""} />
@@ -216,7 +209,7 @@ const Row = ({ titles, data, url }) => {
                                     </Box>
 
 
-                                    <img src={`https://image.tmdb.org/t/p/original${ele.background || ele.details?.background}`} loading="lazy" alt="abc" style={{
+                                    <img className='row-image-border' src={`https://image.tmdb.org/t/p/original${ele.background || ele.details?.background}`} loading="lazy" alt="abc" style={{
                                         width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px"
                                     }} />
 

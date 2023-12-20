@@ -52,6 +52,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                 zIndex: 1,
                 width: "200px",
                 flexShrink: 0,
+                marginTop: " env(safe-area-inset-top)",
                 [`& .MuiDrawer-paper`]: {
                     width: "200px",
                     boxSizing: 'border-box',

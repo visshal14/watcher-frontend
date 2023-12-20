@@ -6,8 +6,10 @@ import AddMenu from '../AddMenu'
 import Cast from './Cast'
 import WatchLater from '../WatchLaterBtn'
 import { useParams } from 'react-router-dom'
-import axios from 'axios';
-import { apiKey } from '../../tmdb';
+// import axios from 'axios';
+// import { apiKey } from '../../tmdb';
+import backendAxios from "../../backendAxios"
+import LoadingComponent from '../LoadingComponent';
 
 const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIsTrailer }) => {
 
@@ -47,7 +49,9 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
         if (epino && !details?.current_season_no_of_episodes) {
 
-            axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${epino}?api_key=${apiKey}&append_to_response=videos`).then((response) => {
+
+
+            backendAxios.get(`/getSeasonsVideos/${id}/${epino}`).then((response) => {
                 if (response.data.videos.results.length > 0) {
                     setSeasonVideos(response.data)
                 } else {
@@ -66,6 +70,27 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
             }).catch((e) => {
                 // console.log("error in axios ", e)
             })
+
+
+            // axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${epino}?api_key=${apiKey}&append_to_response=videos`).then((response) => {
+            //     if (response.data.videos.results.length > 0) {
+            //         setSeasonVideos(response.data)
+            //     } else {
+            //         setSeasonVideos(details)
+            //     }
+
+
+            //     setDetails({
+            //         ...details,
+            //         current_season_overview: response.data.overview,
+            //         current_season_no_of_episodes: response.data.episodes.length,
+            //         current_season_air_date: response.data.air_date,
+            //         current_season_poster_path: response.data.poster_path
+            //     })
+
+            // }).catch((e) => {
+            //     // console.log("error in axios ", e)
+            // })
         }
 
 
@@ -77,7 +102,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
 
         if (epino) {
 
-            axios.get(`https://api.themoviedb.org/3/tv/${id}/season/${epino}?api_key=${apiKey}&append_to_response=videos`).then((response) => {
+            backendAxios.get(`/getSeasonsVideos/${id}/${epino}`).then((response) => {
                 setSeasonVideos(response.data)
             }).catch((e) => {
 
@@ -308,9 +333,9 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                 background: details?.backdrop_path ? "none" : "rgba(0,0,0)",
                 borderRadius: "20px"
             }}>
-                {(details?.backdrop_path || details?.poster_path) && <img src={details?.backdrop_path || details?.poster_path ? `https://image.tmdb.org/t/p/original${epino ? details?.current_season_poster_path : details?.backdrop_path || details?.poster_path}` : ""} loading="lazy" alt={`background of ${details?.original_title || details?.name}`} style={{
+                {details ? (details?.backdrop_path || details?.poster_path) && <img src={details?.backdrop_path || details?.poster_path ? `https://image.tmdb.org/t/p/original${epino ? details?.current_season_poster_path : details?.backdrop_path || details?.poster_path}` : ""} loading="lazy" alt={`background of ${details?.original_title || details?.name}`} style={{
                     width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px"
-                }} />}
+                }} /> : <LoadingComponent />}
             </Box>
 
 
@@ -332,7 +357,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                     xxs: "static",
                     // sm:"absolute",
                     sm: !detailsDisplay ? "static" : "absolute"
-                }, width: "100%", borderRadius: " 0 0 12px 12px",
+                }, width: "100%", borderRadius: " 0 0 20px 20px",
             }}>
                 <Grid container sx={{
 

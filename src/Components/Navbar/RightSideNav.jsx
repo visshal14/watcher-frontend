@@ -31,7 +31,7 @@ const RightSideNav = ({ isOpen, openFunc }) => {
         window.localStorage.setItem("accessToken", "")
 
         dispatch(setInitialState())
-        
+
         openFunc(false)
         navigate("/")
         handleClose()
@@ -56,10 +56,12 @@ const RightSideNav = ({ isOpen, openFunc }) => {
                 },
                 flexShrink: 0,
                 [`& .MuiDrawer-paper`]: {
+                    marginTop: "env(safe-area-inset-top)",
                     width: {
                         xxs: "270px",
                         xsm: "300px"
                     },
+                    height: "calc(100% - env(safe-area-inset-top))",
                     boxSizing: 'border-box',
                     p: "20px 20px",
                     borderRadius: "30px 0 0 30px",
@@ -290,11 +292,11 @@ const Row = ({ name, data, id }) => {
 
     const scrollLeft = () => {
         rowRef.current.scrollLeft -= 150;
-        
+
     }
     const scrollRight = () => {
         rowRef.current.scrollLeft += 150;
-        
+
     }
     return (
         <Stack sx={{

@@ -359,23 +359,11 @@ const Playlist = () => {
                                     </Grid>
                                 </Grid>
 
-
-
-
                                 <AddMenu id={`${ele.media_type}/${ele.media_id}`} name={ele?.name} mr={0.5} mt={0.5} />
 
                             </Grid>
-
-
                         )
                     }
-
-
-
-
-
-
-
                 </Box>
 
             </Grid>

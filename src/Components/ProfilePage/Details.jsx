@@ -44,8 +44,6 @@ const Details = () => {
             }
         }).then((response) => {
             setIsProgress(false)
-
-
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
                 data: response.data.errMsg || response.data.err || response.data.msg || response.data,
@@ -231,7 +229,7 @@ const Details = () => {
                                         "& .MuiInputBase-root": {
                                             borderRadius: "4px"
                                         },
-                                        borderRadius: "4px ",
+                                        borderRadius: "4px",
                                         bgcolor: "details.inputBackground"
                                     }}
                                     InputProps={{
