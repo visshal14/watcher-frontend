@@ -103,7 +103,22 @@ const Replies = ({ ele, location, email, getComments, hightLightedCommentParents
         setShowMoreComment(prev => !prev)
     }
     const shareComment = () => {
-        navigate(`${location.pathname}?comment_id=${ele.comment_id}`)
+        var text = `${frontEnd}${location.pathname}?comment_id=${ele.comment_id}`
+        navigator.clipboard.writeText(text).then(function () {
+            // // console.log('Async: Copying to clipboard was successful!');
+            dispatch(setAlert({
+                type: "success",
+                data: "Shared link copied to clipboard",
+                isOpen: true
+            }))
+        }, function (err) {
+            dispatch(setAlert({
+                type: "error",
+                data: "Could not copy shared link",
+                isOpen: true
+            }))
+        });
+
     }
 
     useEffect(() => {
