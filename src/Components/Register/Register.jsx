@@ -49,7 +49,7 @@ const Register = () => {
     })
 
     // useEffect(() => {
-    //     console.log(errors)
+    //     // console.log(errors)
     // }, [errors])
     const handleClick = () => {
         setShowPassword(prev => !prev);
@@ -159,7 +159,7 @@ const Register = () => {
                     data: error.message,
                     isOpen: true
                 }))
-                // console.log("Error in login Frontend: ", error);
+                // // console.log("Error in login Frontend: ", error);
             });
     }
 
@@ -194,7 +194,7 @@ const Register = () => {
         try {
 
             if (!window?.google?.accounts?.id) {
-                // console.log("")
+                // // console.log("")
                 // eslint-disable-next-line
                 GoogleAuth?.init();
                 setTimeout(async () => {
@@ -230,7 +230,7 @@ const Register = () => {
             }
 
         } catch (e) {
-            console.log("Error in Google Callback  " + e)
+            // console.log("Error in Google Callback  " + e)
         }
 
         // window.google.accounts.id.renderButton(

@@ -5,11 +5,20 @@ import { useNavigate, useParams } from 'react-router-dom'
 import AddMenu from '../AddMenu'
 import DetailCard from './DetailCard'
 import backendAxios from "../../backendAxios"
+import Comments from './Comments/Comments'
+import { useDispatch } from 'react-redux'
+import { setAlert } from '../../userSlice'
+
 const TvDetails = () => {
 
 
     const { id } = useParams()
 
+    const dispatch = useDispatch()
+
+    // useEffect(() => {
+    //     console.log(location.pathname)
+    // }, [location])
 
 
 
@@ -25,6 +34,14 @@ const TvDetails = () => {
         setSeasons([])
 
         backendAxios.get(`/getTvDetails/${id}`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
             setDetails(response.data)
             getSeasonsEpisodes(response.data.number_of_seasons)
             setNoOfSeasons(response.data.number_of_seasons)
@@ -36,6 +53,13 @@ const TvDetails = () => {
                 setWatch_provider(response.data["watch/providers"].results?.US?.flatrate[0])
             }
         }).catch((e) => {
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+
             // console.log("error in axios ", e)
         })
 
@@ -75,8 +99,24 @@ const TvDetails = () => {
     function getSeasonsEpisodes(n) {
         // /getEpisodesDetails/:id/:n
         backendAxios.get(`/getEpisodesDetails/${id}/${n}`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setSeasons(response.data)
         }).catch((e) => {
+            console.log("tvDetails Error 113")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
             // console.log("error in axios ", e)
         })
         // for (let i = 1; i <= n; i++) {
@@ -115,9 +155,9 @@ const TvDetails = () => {
         }} py={10}
             height={{ xxs: "auto", lg: !isTrailer ? "100vh" : "auto" }}
         >
-            <Grid item lg={9} xxs={12} px={{
+            <Grid item xxs={12} px={{
                 xxs: 0,
-                lg: 3
+                // lg: 3
             }} mb={{
                 xxs: 3,
                 lg: 0
@@ -127,7 +167,10 @@ const TvDetails = () => {
             </Grid>
 
 
-            <Grid item lg={3} xxs={12} sx={{
+            <Grid item xxs={12} xmd={8} lg={9} pr={1} mb={1} order={{ xxs: 3, xmd: 2 }}>
+                <Comments />
+            </Grid>
+            <Grid item xxs={12} xmd={4} lg={3} order={{ xxs: 2, xmd: 3 }} sx={{
                 bgcolor: "movieTv.seasonsBackground",
                 height: {
                     xxs: "fit-content",
@@ -172,6 +215,7 @@ const TvDetails = () => {
                     )}
                 </Box>
             </Grid>
+
         </Grid>
     )
 }
@@ -183,7 +227,7 @@ const SeasonsAccordion = ({ ele, id }) => {
 
     const seasonsClicked = (e) => {
         if (id.split("/")[2] === epino) {
-            navigate("./")
+            navigate(".")
         } else {
             navigate(`season/${id.split("/")[2]}`)
         }

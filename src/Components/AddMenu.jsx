@@ -186,6 +186,10 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
 
+
+    // // console.log("addMenu   " + name)
+
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
 
@@ -247,7 +251,15 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     setWatchLaterProgress("")
                 }
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("addMenu Error 254")
+
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/${type}/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
@@ -277,7 +289,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("addMenu Error 292")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         }
     }
@@ -302,7 +321,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 setWatchedProgress("")
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("addMenu Error 324")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         } else if (mediaData.split("/")[0] === "tv") {
             const season = mediaData.split("/")[2] || "all"
@@ -324,7 +350,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 setIfWatched("Add To")
                 return
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("addMenu Error 354")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         }
     }
@@ -347,20 +380,35 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
             friendEmail: friendEmail,
             mediaData: tempMediaData
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
                 data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                 isOpen: true
             }))
 
-            if (response.data.errMsg) return
 
             dispatchSetData(response.data.data)
 
 
 
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("addMenu Error 404")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
 
     }
@@ -376,7 +424,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 isOpen: true
             }))
         }), function () {
-            console.log('Copy Error')
+            // console.log('Copy Error')
         });
     }
 
@@ -395,6 +443,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
             media_id: mediaData.split("/")[1],
             media_type: mediaData.split("/")[0]
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
 
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
@@ -402,12 +458,18 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 isOpen: true
             }))
 
-            if (response.data.errMsg) return
             dispatchSetData(response.data.data)
 
 
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("addMenu Error 465")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
 
 
@@ -427,6 +489,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 shareable: visibilty,
                 description: ""
             }).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
 
                 dispatch(setAlert({
                     type: response.data.errMsg || response.data.err ? "error" : "success",
@@ -434,13 +504,20 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     isOpen: true
                 }))
 
-                if (response.data.errMsg) return
                 if (response.data.success) {
                     backendAxios.post("/addMediaToPlaylist", {
                         _id: response.data.playlist_id,
                         media_id: mediaData.split("/")[1],
                         media_type: mediaData.split("/")[0]
                     }).then((response) => {
+                        if (response.data.errMsg) {
+                            dispatch(setAlert({
+                                type: "error",
+                                data: response.data.errMsg,
+                                isOpen: true
+                            }))
+                            return
+                        }
 
                         dispatch(setAlert({
                             type: response.data.errMsg || response.data.err ? "error" : "success",
@@ -448,7 +525,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                             isOpen: true
                         }))
 
-                        if (response.data.errMsg) return
+
 
                         dispatchSetData(response.data.data)
 
@@ -458,7 +535,14 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                 }
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("addMenu Error 538")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
             setNewPlaylistName("")
             setIsCreatePlaylist(!isCreatePlaylist)
@@ -474,8 +558,9 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
     const closeClicked = () => {
         setAnchorEl(null)
-        // console.log("clicked")
+        // // console.log("clicked")
     }
+
 
 
 
@@ -515,7 +600,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
 
 
 
-            <Modal
+            {anchorEl && <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
@@ -789,7 +874,7 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                         </Box>
                     }
                 </Box>
-            </Modal>
+            </Modal>}
         </>
     )
 }

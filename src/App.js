@@ -67,7 +67,7 @@ function App() {
 
 
     var lang = navigator.language || navigator.userLanguage;
-    console.log(lang)
+    // console.log(lang)
 
     // eslint-disable-next-line
   }, [])

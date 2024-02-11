@@ -7,9 +7,12 @@ import MovieOverviewTip from './MovieOverviewTip'
 import AddMenu from './AddMenu'
 import { useNavigate } from 'react-router-dom'
 import backendAxios from "../backendAxios"
+import { useDispatch } from 'react-redux'
+import { setAlert } from '../userSlice'
 // import LoadingComponent from './LoadingComponent'
 const Row = ({ titles, fetchUrl, type }) => {
 
+    const dispatch = useDispatch()
 
     const [tiles, setTiles] = useState([])
     // eslint-disable-next-line
@@ -19,9 +22,25 @@ const Row = ({ titles, fetchUrl, type }) => {
         backendAxios.post(`/getRowDetails`, {
             fetchUrl
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setTiles(response.data.results)
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("Row Error 36")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
 
         // eslint-disable-next-line

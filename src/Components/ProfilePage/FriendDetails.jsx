@@ -27,7 +27,7 @@ const FriendDetails = () => {
     }, [sharedList, currentFriend])
 
     // useEffect(() => {
-    //     console.log(friends)
+    //     // // console.log(friends)
     // }, [friends])
 
     const [friendExpand, setFriendExpand] = useState(false)
@@ -49,11 +49,19 @@ const FriendDetails = () => {
                     isOpen: true
                 }))
                 return
-
             }
+
             setCurrentFriendPlaylist(response.data.data)
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // // console.log("freindDetails Error 56")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // // console.log("error in axios ", e)
         })
 
 
@@ -75,6 +83,14 @@ const FriendDetails = () => {
             friendEmail: pendingRequestEmail
         }).then((response) => {
             if (response.data === "Unauthorized") return window.location.reload();
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
 
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
@@ -82,11 +98,18 @@ const FriendDetails = () => {
                 isOpen: true
             }))
 
-            if (response.data.errMsg || response.data.err) return
 
             dispatchSetData(response.data.data)
             setPendingRequestEmail("")
         }).catch(() => {
+            // // console.log("freindDetails Error 105")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
             return window.location.reload();
         })
     }
@@ -98,33 +121,69 @@ const FriendDetails = () => {
             backendAxios.post("/acceptFriendRequest", {
                 friendEmail: e.currentTarget.id.split("_")[2]
             }).then((response) => {
+
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
+
                 dispatch(setAlert({
                     type: response.data.errMsg || response.data.err ? "error" : "success",
                     data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
-                if (response.data.errMsg) return
+
 
                 dispatchSetData(response.data.data)
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // // console.log("freindDetails Error 144")
+
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/removeFriend/${e.currentTarget.id.split("_")[0]}`, {
                 friendEmail: e.currentTarget.id.split("_")[2]
             }).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
                 dispatch(setAlert({
                     type: response.data.errMsg || response.data.err ? "error" : "success",
                     data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
-                if (response.data.errMsg) return
+
 
 
                 dispatchSetData(response.data.data)
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // // console.log("freindDetails Error 178")
+
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // // console.log("error in axios ", e)
             })
         }
     }
@@ -378,7 +437,7 @@ const AFriendDetail = ({ email, friendRemoveFunc, currentSharedList, playlists }
                             {
                                 currentSharedList?.map((ele) =>
                                     <Card key={`card_${ele.id}`} sx={{ maxWidth: 350, m: 1, borderRadius: "10px", width: "100%", bgcolor: "friends.background" }} id={`${ele.type}/${ele.id}`} onClick={(e) => {
-                                        // console.log(`${ele.type}/${ele.id}`)
+                                        // // // console.log(`${ele.type}/${ele.id}`)
                                         knowMore(`${ele.type}/${ele.id}`)
                                     }}>
                                         <CardActionArea>

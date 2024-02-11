@@ -1,6 +1,6 @@
 
 const knowMore = (data) => {
-    console.log(data)
+    // console.log(data)
     window.location.href = "/" + data
 
 }

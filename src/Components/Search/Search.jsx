@@ -9,9 +9,12 @@ import AddMenu from '../AddMenu'
 import MovieOverviewTip from '../MovieOverviewTip'
 import knowMore from '../KnowMore'
 import backendAxios from "../../backendAxios"
+import { useDispatch } from 'react-redux';
+import { setAlert } from '../../userSlice';
 const Search = () => {
 
 
+    const dispatch = useDispatch()
 
     const [searchParams] = useSearchParams()
     const [movieData, setMovieData] = useState([])
@@ -46,11 +49,28 @@ const Search = () => {
         // const url = `https://api.themoviedb.org/3/search/${type}?query=${query}&api_key=${apiKey}&language=en-US&include_adult=false&page=${currentPage}`
         const url = `/getSearchBarResult/${type}/${query}/${currentPage}`
 
-        // console.log(url)
+        // // console.log(url)
         backendAxios.get(url).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setMovieData(response.data.results)
             setTotalPages(response.data.total_pages > 100 ? 100 : response.data.total_pages)
         }).catch((e) => {
+            // console.log("search Error 66")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
 
         })
 

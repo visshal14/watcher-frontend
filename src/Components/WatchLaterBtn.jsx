@@ -31,20 +31,43 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
         LoginChecker()
         if (isWatch_later === true) {
             backendAxios.post(`/removeFromWatchLLiked/watch-later/${mediaData.split("/")[1]}`).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
                 dispatch(setAlert({
                     type: response.data.errMsg || response.data.err ? "error" : "success",
                     data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
-                if (response.data.errMsg) return
                 dispatchSetData(response.data.data)
 
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("watchlaterBtn Error 52")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         } else {
             backendAxios.post(`/saveForWatchLater/watch-later/${mediaData.split("/")[0]}/${mediaData.split("/")[1]}`).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
 
                 dispatch(setAlert({
                     type: response.data.errMsg || response.data.err ? "error" : "success",
@@ -52,12 +75,20 @@ const WatchLater = ({ mr, mt, padding, fontSize, data }) => {
                     isOpen: true
                 }))
 
-                if (response.data.errMsg) return
+
                 dispatchSetData(response.data.data)
 
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("watchlaterBtn Error 82")
+
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         }
 

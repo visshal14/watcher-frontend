@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setData, setTheme, setAlert } from '../../userSlice';
 import { getTheme } from '../../userSlice';
 import { googleClient_id } from '../../tmdb';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 // eslint-disable-next-line
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
@@ -29,6 +29,9 @@ const Login = () => {
     const [signInText, setSignInText] = useState("Sign In")
     const [isProgress, setIsProgress] = useState(false)
     const [keyboardHeight, setKeyboardHeight] = useState(0)
+    const [searchParams] = useSearchParams()
+
+
     const [errors, setErrors] = useState({
         password: false,
         email: false
@@ -62,14 +65,14 @@ const Login = () => {
     }, [password, isOAuth])
 
     const submitButton = () => {
-        // console.log("submit")
+        // // console.log("submit")
         setSignInText("Please Wait")
         setIsProgress(true)
         backendAxios.post('/login', {
             email, password
         })
             .then(function (response) {
-                // console.log(response.data)
+                // // console.log(response.data)
                 if (response.data.errMsg) {
 
                     setSignInText("Sign In")
@@ -85,6 +88,11 @@ const Login = () => {
 
                 dispatch(setData(response.data))
                 localStorage.setItem("accessToken", response.data.accessToken)
+
+                // console.log(searchParams.get("redirected"))
+                if (searchParams.get("redirected") === "true") {
+                    window.close();
+                }
                 navigate("/")
             })
             .catch(function (error) {
@@ -97,7 +105,7 @@ const Login = () => {
                         isOpen: true
                     }))
                 }
-                // console.log("Error in login Frontend: ", error);
+                // // console.log("Error in login Frontend: ", error);
             });
 
 
@@ -125,24 +133,24 @@ const Login = () => {
 
 
         if (!window?.google?.accounts?.id) {
-            // console.log("capacitor12345")
+            // // console.log("capacitor12345")
             // eslint-disable-next-line
             try {
 
                 GoogleAuth?.init();
                 setTimeout(async () => {
                     const x = await GoogleAuth.signIn();
-                    console.log(x)
-                    // console.log(x.email)
+                    // console.log(x)
+                    // // console.log(x.email)
                     setEmail(x.email)
                     setPassword("https://accounts.google.com-" + x.id)
                     // https://accounts.google.com-100478867211187871333
-                    // console.log(x.iss + "-" + x.sub)
+                    // // console.log(x.iss + "-" + x.sub)
                     setIsOAuth(true)
 
                 }, 3000)
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
         }
 

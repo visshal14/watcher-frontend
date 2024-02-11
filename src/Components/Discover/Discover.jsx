@@ -13,6 +13,8 @@ import MovieOverviewTip from '../MovieOverviewTip'
 import knowMore from '../KnowMore'
 import { Close, FilterAlt } from '@mui/icons-material'
 import backendAxios from "../../backendAxios"
+import { setAlert } from '../../userSlice'
+import { useDispatch } from 'react-redux'
 const Discover = () => {
 
     const { type } = useParams()
@@ -25,7 +27,7 @@ const Discover = () => {
     const [page, setPage] = useState(1)
     const navigate = useNavigate()
     const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page')) || 1)
-
+    const dispatch = useDispatch()
 
     let pageNo = searchParams.get('page')
     let genre = searchParams.get('genre')
@@ -39,8 +41,9 @@ const Discover = () => {
 
 
 
+
     useEffect(() => {
-        // console.log("search")
+        // // console.log("search")
         setMediaType(type)
         clearAllGenreCountry("genre")
         getData(pageNo, genre, countryParams)
@@ -95,7 +98,7 @@ const Discover = () => {
                 } else {
                     sameButDifferent.forEach((i) => {
                         if (i.movie === ele || i.tv === ele) {
-                            // console.log(ele)
+                            // // console.log(ele)
                             movieGenres.push(i.movie)
                             tvGenres.push(i.tv)
                         }
@@ -123,22 +126,38 @@ const Discover = () => {
                 pageNo,
                 country
             }).then((response) => {
+
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
                 if (response.data.results.length > 1) movie = response.data.results
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("Discover Error 140")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
 
             // const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNo}&with_watch_monetization_types=flatrate${movieGenres ? `&with_genres=${movieGenres.join(",")}` : ""}${country ? `&with_origin_country=${country}` : ""}`
             // await axios.get(movieUrl).then((response) => {
             //     if (response.data.results.length > 1) movie = response.data.results
             // }).catch((e) => {
-            //     // console.log("error in axios ", e)
+            //     // // console.log("error in axios ", e)
             // })
 
             // await axios.get(tvUrl).then((response) => {
             //     if (response.data.results.length > 1) tv = response.data.results
             // }).catch((e) => {
-            //     // console.log("error in axios ", e)
+            //     // // console.log("error in axios ", e)
             // })
 
             await backendAxios.post("/getDiscoverDetails/tv", {
@@ -146,9 +165,24 @@ const Discover = () => {
                 pageNo,
                 country
             }).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
                 if (response.data.results.length > 1) tv = response.data.results
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("Discover Error 179")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+                // // console.log("error in axios ", e)
             })
 
             let result = []
@@ -162,9 +196,24 @@ const Discover = () => {
             backendAxios.post(`/getDiscoverDetails/${type}`, {
                 pageNo, genre, country
             }).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
                 setMovieData(response.data.results)
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("Discover Error 1209")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         }
     }

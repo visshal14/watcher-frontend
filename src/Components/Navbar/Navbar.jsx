@@ -7,7 +7,7 @@ import LeftSideNav from './LeftSideNav'
 import RightSideNav from './RightSideNav'
 import SearchBar from "./SearchBar"
 import { useSelector } from 'react-redux'
-import { getFirstName, getProfilePhoto } from '../../userSlice'
+import { getFirstName, getProfilePhoto, setAlert } from '../../userSlice'
 import { Link, useNavigate } from 'react-router-dom'
 import { setData } from '../../userSlice'
 import { useDispatch } from 'react-redux'
@@ -28,7 +28,7 @@ const Navbar = () => {
 
 
     // useEffect(() => {
-    //     console.log("Search Bar :" + isSearchBar)
+    //     // console.log("Search Bar :" + isSearchBar)
     // }, [isSearchBar])
 
     const dispatch = useDispatch()
@@ -51,19 +51,37 @@ const Navbar = () => {
 
 
     const getUserData = () => {
-        if (window.localStorage.getItem("accessToken") === "") {
+
+        if (window.localStorage.getItem("accessToken") === null || window.localStorage.getItem("accessToken") === "") {
             return
         }
         backendAxios.get("/getUserData", {
             headers: { 'authorization': `Bearer ${localStorage.getItem("accessToken")}` }
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
 
-            // console.log(data)
+            // // console.log(data)
             dispatch(setData(response.data))
         }).catch((e) => {
+            // // console.log("navbar Error 72")
+            // // console.log(e)
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
 
         })
     }
+
+
     useEffect(() => {
         getUserData()
         // eslint-disable-next-line

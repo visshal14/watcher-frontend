@@ -7,9 +7,12 @@ import { useParams } from 'react-router-dom'
 // import axios from 'axios'
 // import { apiKey } from '../../tmdb'
 import backendAxios from "../../backendAxios"
+import { useDispatch } from 'react-redux'
+import { setAlert } from '../../userSlice'
 const Person = () => {
 
     const { id } = useParams()
+    const dispatch = useDispatch()
 
     const [details, setDetails] = useState()
     const [popular, setPopular] = useState()
@@ -17,26 +20,60 @@ const Person = () => {
         // getPersonDetails
 
 
-        backendAxios.get(`/getPersonDetails/${id}`).then((response) =>
+        backendAxios.get(`/getPersonDetails/${id}`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setDetails(response.data)
+        }
         ).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("person Error 36")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
         // axios.get(`https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}&append_to_response=combined_credits,images,external_ids`).then((response) =>
         //     setDetails(response.data)
         // ).catch((e) => {
-        //     // console.log("error in axios ", e)
+        //     // // console.log("error in axios ", e)
         // })
         // axios.get(`https://api.themoviedb.org/3/person/popular?api_key=${apiKey}`).then((response) =>
         //     setPopular(response.data.results)
         // ).catch((e) => {
-        //     // console.log("error in axios ", e)
+        //     // // console.log("error in axios ", e)
         // })
 
-        backendAxios.get(`/getPopularPerson`).then((response) =>
+        backendAxios.get(`/getPopularPerson`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
             setPopular(response.data.results)
+
+        }
         ).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("person Error 69")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
 
 

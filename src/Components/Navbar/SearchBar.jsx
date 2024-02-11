@@ -6,6 +6,8 @@ import knowMore from '../KnowMore'
 // import { apiKey } from '../../tmdb'
 import { useNavigate } from 'react-router-dom'
 import backendAxios from "../../backendAxios"
+import { useDispatch } from 'react-redux'
+import { setAlert } from '../../userSlice'
 const SearchBar = ({ closeFunc, isMobile }) => {
 
 
@@ -13,6 +15,7 @@ const SearchBar = ({ closeFunc, isMobile }) => {
     const [value, setValue] = useState("")
     const navigate = useNavigate()
     const [data, setData] = useState([])
+    const dispatch = useDispatch()
 
 
     useEffect(() => {
@@ -21,6 +24,15 @@ const SearchBar = ({ closeFunc, isMobile }) => {
         var timer = setTimeout(() => {
 
             backendAxios.get(`/getSearchBarResult/multi/${value}/1`).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
                 if (response.data.results.lenght > 5) {
                     for (let i = 0; i < 5; i++) {
                         setData(prev => [...prev, response.data.results[i]])
@@ -29,7 +41,14 @@ const SearchBar = ({ closeFunc, isMobile }) => {
                     setData(response.data.results)
                 }
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("searchbar Error 44")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
 
             // axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${value}`).then((response) => {
@@ -42,14 +61,14 @@ const SearchBar = ({ closeFunc, isMobile }) => {
             //         setData(response.data.results)
             //     }
             // }).catch((e) => {
-            //     // console.log("error in axios ", e)
+            //     // // console.log("error in axios ", e)
             // })
         }, 500)
         return () => {
             clearTimeout(timer)
         }
 
-
+        // eslint-disable-next-line
     }, [value])
 
 

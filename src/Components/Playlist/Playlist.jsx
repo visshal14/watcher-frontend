@@ -42,8 +42,6 @@ const Playlist = () => {
                         data: response.data.errMsg,
                         isOpen: true
                     }))
-
-
                     return
                 }
 
@@ -55,7 +53,14 @@ const Playlist = () => {
                     setIsOwner(true)
                 }
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // console.log("playlist Error 56")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // console.log("error in axios ", e)
             })
         }
         // eslint-disable-next-line
@@ -90,7 +95,15 @@ const Playlist = () => {
 
             setData(response.data.data)
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // console.log("playlist Error 98")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // console.log("error in axios ", e)
         })
 
 
@@ -114,7 +127,15 @@ const Playlist = () => {
                     setData(response.data.data)
                     setIsNamechanging(false)
                 }).catch((e) => {
-                    // console.log("error in axios ", e)
+                    // console.log("playlist Error 130")
+
+                    dispatch(setAlert({
+                        type: "error",
+                        data: "There is been error, please try again",
+                        isOpen: true
+                    }))
+
+                    // // console.log("error in axios ", e)
                 })
             } else {
                 setIsNamechanging(false)
@@ -135,7 +156,15 @@ const Playlist = () => {
                     setData(response.data.data)
                     setIsDesChanging(false)
                 }).catch((e) => {
-                    // console.log("error in axios ", e)
+                    // console.log("playlist Error 159")
+
+                    dispatch(setAlert({
+                        type: "error",
+                        data: "There is been error, please try again",
+                        isOpen: true
+                    }))
+
+                    // // console.log("error in axios ", e)
                 })
 
 

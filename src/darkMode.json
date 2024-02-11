@@ -42,10 +42,10 @@
         "smtextColor": "#ffffff",
         "xxsTextColor": "#ffffff",
         "smCastColor": "#ffffff",
-        "seasonsBackground": "#929294",
-        "aSeasonBackground": "#484848",
-        "episodesBackground": "#929294",
-        "aEpisodeBackground": "#484848"
+        "seasonsBackground": "#484848",
+        "aSeasonBackground": "#272727",
+        "episodesBackground": "#484848",
+        "aEpisodeBackground": "#272727"
     },
     "profileTabs": {
         "background": "#484848",

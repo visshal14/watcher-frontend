@@ -43,19 +43,35 @@ const Details = () => {
                 "Content-Type": "multipart/form-data"
             }
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setIsProgress(false)
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
                 data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                 isOpen: true
             }))
-            if (response.data.errMsg) return
 
 
             dispatch(setData(response.data.data))
             cancelChange()
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // // console.log("details Error 66")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // // console.log("error in axios ", e)
         })
     }
     const cancelChange = () => {

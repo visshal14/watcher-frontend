@@ -49,10 +49,18 @@ const PasswordSecurity = () => {
         if (window.localStorage.getItem("accessToken") === "") {
             window.location.reload();
             backendAxios.interceptors.request.use(request => {
-                console.log('Starting Request', JSON.stringify(request, null, 2))
+                // // console.log('Starting Request', JSON.stringify(request, null, 2))
                 return request
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // // console.log("passwordSecurity Error 55")
+
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
+
+                // // // console.log("error in axios ", e)
             })
         }
     }, [])
@@ -73,6 +81,15 @@ const PasswordSecurity = () => {
         backendAxios.post(`/updatePassword`, {
             password: newPassword
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             dispatch(setAlert({
                 type: response.data.errMsg || response.data.err ? "error" : "success",
                 data: response.data.errMsg || response.data.err || response.data.msg || response.data,
@@ -80,11 +97,18 @@ const PasswordSecurity = () => {
             }))
             setResetPasswordText("Reset Password")
             setIsProgress(false)
-            if (response.data.errMsg || response.data.err) return
             setNewPassword("")
             setConfirmPassword("")
         }).catch((e) => {
-            // console.log("error in axios ", e)
+            // // console.log("passwordSecurity Error 103")
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+            // // // console.log("error in axios ", e)
         })
     }
 

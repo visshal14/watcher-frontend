@@ -43,7 +43,7 @@ const EnterEmail = ({ email, setEmail }) => {
             .then(function (response) {
 
                 dispatch(setAlert({
-                    type: response.data.errMsg || response.data.err ? "error" : "success",
+                    type: response.data.errMsg ? "error" : "success",
                     data: response.data.errMsg || response.data.err || response.data.msg || response.data,
                     isOpen: true
                 }))
@@ -68,7 +68,7 @@ const EnterEmail = ({ email, setEmail }) => {
                         isOpen: true
                     }))
                 }
-                // console.log("Error in login Frontend: ", error);
+                // // console.log("Error in login Frontend: ", error);
             });
 
     }

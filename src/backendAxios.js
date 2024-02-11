@@ -4,13 +4,16 @@ const instance = axios.create({
 
     // baseURL: "http://192.168.1.7:3001/api/v1",
     // baseURL: "http://192.168.29.25:3001/api/v1",
-    baseURL: "https://watcher-backend.onrender.com/api/v1",
+    // baseURL: "https://watcher-backend.onrender.com/api/v1",
+    baseURL: "http://localhost:3001/api/v1",
     headers: {
         'authorization': `Bearer ${localStorage.getItem("accessToken")}`,
 
     }
 
 })
+
+
 
 
 instance.interceptors.request.use(
@@ -25,3 +28,6 @@ instance.interceptors.request.use(
     }
 );
 export default instance;
+
+
+export const frontEnd = "http://localhost:3000"

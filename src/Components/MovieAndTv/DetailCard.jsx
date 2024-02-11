@@ -10,10 +10,13 @@ import { useParams } from 'react-router-dom'
 // import { apiKey } from '../../tmdb';
 import backendAxios from "../../backendAxios"
 import LoadingComponent from '../LoadingComponent';
+import { useDispatch } from 'react-redux';
+import { setAlert } from '../../userSlice';
 
 const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIsTrailer }) => {
 
     const [videoID, setVideoID] = useState("")
+    const dispatch = useDispatch()
 
 
     const getHourFromRuntime = (runtime) => {
@@ -68,7 +71,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                 })
 
             }).catch((e) => {
-                // console.log("error in axios ", e)
+                // // console.log("error in axios ", e)
             })
 
 
@@ -89,7 +92,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
             //     })
 
             // }).catch((e) => {
-            //     // console.log("error in axios ", e)
+            //     // // console.log("error in axios ", e)
             // })
         }
 
@@ -103,8 +106,23 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
         if (epino) {
 
             backendAxios.get(`/getSeasonsVideos/${id}/${epino}`).then((response) => {
+                if (response.data.errMsg) {
+                    dispatch(setAlert({
+                        type: "error",
+                        data: response.data.errMsg,
+                        isOpen: true
+                    }))
+                    return
+                }
+
                 setSeasonVideos(response.data)
             }).catch((e) => {
+                // console.log("detailCard Error 120")
+                dispatch(setAlert({
+                    type: "error",
+                    data: "There is been error, please try again",
+                    isOpen: true
+                }))
 
             })
         }
@@ -204,7 +222,7 @@ const DetailCard = ({ watch_provider, tempDetails, isTv, cast, detailsRef, setIs
                         setPlayer(event.target)
                     },
                     'onError': function (errEvent) {
-                        console.log("onError")
+                        // console.log("onError")
                         setYoutubeError(true)
 
                     }

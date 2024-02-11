@@ -3,18 +3,38 @@ import React, { useEffect, useState } from 'react'
 import requests from '../../request'
 import SingleFeaturedPost from './SingleFeaturedPost'
 import backendAxios from "../../backendAxios"
+import { useDispatch } from 'react-redux'
+import { setAlert } from '../../userSlice'
 // import LoadingComponent from "../LoadingComponent"
 const FeaturedPosts = () => {
     const [featured, setFeatures] = useState([])
+    const dispatch = useDispatch()
+
     useEffect(() => {
         backendAxios.post(`/getRowDetails`, {
             fetchUrl: requests.fetchTrending
         }).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+
             setFeatures(prev => [...prev, response.data.results[0]])
             setFeatures(prev => [...prev, response.data.results[1]])
             setFeatures(prev => [...prev, response.data.results[2]])
             setFeatures(prev => [...prev, response.data.results[3]])
         }).catch((e) => {
+
+            // console.log("featuredPost Error 32")
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
 
         })
     }, [])
