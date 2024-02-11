@@ -715,8 +715,8 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                     {showFriends &&
                         <Box sx={{
                             bgcolor: "grey",
-                            borderRadius: "10px"
-
+                            borderRadius: "4px",
+                            mb: 1
                         }}>
                             {friends.map((ele, i) =>
 
@@ -743,7 +743,8 @@ const AddMenu = ({ position, padding, mr, mt, height, id, name }, ref) => {
                                     xxs: "2px 6px",
                                     xs: "3px 8px",
                                     sm: "6px 16px"
-                                }
+                                },
+
                             }}
                                 onClick={copyLink}
                             >Copy Link</Button>
