@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getEmail, getProfilePhoto, setAlert } from '../../../userSlice'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import backendAxios, { frontEnd } from "../../../backendAxios"
+import InfiniteScroll from "react-infinite-scroll-component";
+import LoadingComponent from '../../LoadingComponent'
 
 const Comments = () => {
 
@@ -17,6 +19,11 @@ const Comments = () => {
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
     const [hightLightedCommentParents, setHightLightedCommentParents] = useState([])
+
+    const [hasMore, setHasMore] = useState(true);
+    const [index, setIndex] = useState(1);
+    const [totalComments, setTotalComments] = useState(0)
+
     // id
     //reply
     //user_id
@@ -38,7 +45,7 @@ const Comments = () => {
     const [data, setData] = useState([])
 
     const getComments = () => {
-        backendAxios.get(`/getComments${location.pathname}`).then((response) => {
+        backendAxios.get(`/getComments${location.pathname}?offset=0&limit=10`).then((response) => {
             if (response.data.errMsg) {
                 dispatch(setAlert({
                     type: "error",
@@ -47,9 +54,6 @@ const Comments = () => {
                 }))
                 return
             }
-
-
-
             setData(response.data)
             // // console.log(response.data)
             // // console.log(response.data)
@@ -63,6 +67,33 @@ const Comments = () => {
 
         })
     }
+
+
+    const fetchMoreData = () => {
+        backendAxios.get(`/getComments${location.pathname}?offset=${index}0&limit=10`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+            setData((prevItems) => [...prevItems, ...response.data]);
+
+            response.data.length > 0 ? setHasMore(true) : setHasMore(false);
+        }).catch((err) => {
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+        });
+
+        setIndex((prevIndex) => prevIndex + 1);
+    };
+
 
     useEffect(() => {
         // // console.log(location.pathname.split("/")[1])
@@ -107,6 +138,26 @@ const Comments = () => {
 
     useEffect(() => {
         getComments()
+        backendAxios.get(`/getCommentsCount${location.pathname}?offset=0&limit=10`).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+            setTotalComments(response.data)
+
+        }).catch((e) => {
+
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+
+        })
         // eslint-disable-next-line
     }, [location.pathname])
 
@@ -198,7 +249,7 @@ const Comments = () => {
                     md: "20px"
                 }
 
-            }}>{data?.length} {data?.length > 1 ? "Comments" : "Comment"}</Typography>
+            }}>{totalComments} {totalComments > 1 ? "Comments" : "Comment"}</Typography>
 
 
             <Grid container sx={{
@@ -271,10 +322,20 @@ const Comments = () => {
             </Grid>
 
             <Stack>
+                <InfiniteScroll
+                    dataLength={data.length}
+                    next={fetchMoreData}
+                    hasMore={hasMore}
+                    loader={<LoadingComponent />}
+                >
 
-                {data?.map((ele, i) =>
-                    <Comment ele={ele} key={i} isReply={false} location={location} email={email} hightLightedCommentParents={hightLightedCommentParents} getComments={getComments} />
-                )}
+                    {data?.map((ele, i) =>
+                        <Comment ele={ele} key={i} isReply={false} location={location} email={email} hightLightedCommentParents={hightLightedCommentParents} getComments={getComments} />
+                    )}
+
+
+                </InfiniteScroll>
+
             </Stack>
 
 
