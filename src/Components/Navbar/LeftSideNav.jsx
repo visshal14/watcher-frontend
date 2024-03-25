@@ -1,16 +1,17 @@
-import { BookmarkBorder, DarkModeOutlined, ExploreOutlined, FavoriteBorder, HelpOutline, Home, LightModeOutlined, LogoutRounded, Movie, PlaylistPlay, Tv, WatchLaterOutlined } from '@mui/icons-material'
+import { BookmarkBorder, DarkModeOutlined, ExploreOutlined, FavoriteBorder, HelpOutline, Home, LightModeOutlined, LoginRounded, LogoutRounded, Movie, PlaylistPlay, Tv, WatchLaterOutlined } from '@mui/icons-material'
 import { Button, Drawer, Box, Stack, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux';
-import { setTheme, getAllPlaylists, getTheme, setAlert, setInitialState } from '../../userSlice';
+import { setTheme, getAllPlaylists, getTheme, setAlert, setInitialState, getEmail } from '../../userSlice';
 import { useNavigate } from 'react-router-dom';
+
 
 
 const LeftSideNav = ({ isOpen, openFunc }) => {
 
     const dispatch = useDispatch()
-
     const theme = useSelector(getTheme)
     const allPlaylists = useSelector(getAllPlaylists)
+    const userEmail = useSelector(getEmail)
     const navigate = useNavigate();
     const themeChange = () => {
         if (theme === "dark") {
@@ -25,24 +26,20 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
     }
 
     const logout = () => {
-
-
         window.localStorage.setItem("accessToken", "")
-
         dispatch(setInitialState())
-
         navigate("/")
         dispatch(setAlert({
             type: "success",
             data: "Logout Succesfull",
             isOpen: true
         }))
-
-
-
         openFunc(false)
     }
+    const login = () => {
+        navigate("/login")
 
+    }
     return (
         <Drawer
             anchor={"left"}
@@ -179,7 +176,7 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                     >Help</Button>
                 </Stack>
             </Box>
-            <Button startIcon={<LogoutRounded />}
+            {userEmail ? <Button startIcon={<LogoutRounded />}
                 onClick={logout}
                 sx={{
                     position: "absolute",
@@ -189,7 +186,17 @@ const LeftSideNav = ({ isOpen, openFunc }) => {
                     fontSize: "13px",
                     minHeight: 0,
 
-                }}>Logout</Button>
+                }}>Logout</Button> : <Button startIcon={<LoginRounded />}
+                    onClick={login}
+                    sx={{
+                        position: "absolute",
+                        bottom: 20,
+                        justifyContent: "flex-start",
+                        color: "leftSideNav.textColor",
+                        fontSize: "13px",
+                        minHeight: 0,
+
+                    }}>Login</Button>}
         </Drawer>
     )
 }

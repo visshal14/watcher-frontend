@@ -165,7 +165,9 @@ const Row = ({ titles, fetchUrl, type }) => {
                             scrollSnapAlign: "start",
 
                             "&:hover": {
-                                cursor: "pointer"
+                                cursor: "pointer",
+                                border: "1px solid",
+                                borderColor: "white",
 
                             }
                         }}>
@@ -194,6 +196,8 @@ const Row = ({ titles, fetchUrl, type }) => {
                                         xxs: "10px 10px 0 0",
                                         sm: "10px"
                                     },
+
+
                                 }}>
 
 
