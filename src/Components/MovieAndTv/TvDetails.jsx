@@ -168,7 +168,7 @@ const TvDetails = () => {
 
 
             <Grid item xxs={12} xmd={8} lg={9} pr={1} mb={1} order={{ xxs: 3, xmd: 2 }}>
-                <Comments />
+                <Comments media={details} />
             </Grid>
             <Grid item xxs={12} xmd={4} lg={3} order={{ xxs: 2, xmd: 3 }} sx={{
                 bgcolor: "movieTv.seasonsBackground",

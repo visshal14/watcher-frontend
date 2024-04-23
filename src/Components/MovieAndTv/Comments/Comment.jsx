@@ -48,7 +48,8 @@ const Comment = ({ ele, location, email, getComments, hightLightedCommentParents
         backendAxios.post("/addReplies", {
             text: replyText,
             toReply_id: ele?.comment_id,
-            media_data: location.pathname
+            media_data: location.pathname,
+            media_name: ele?.media_name
         }).then((response) => {
 
             if (response.data.errMsg) {

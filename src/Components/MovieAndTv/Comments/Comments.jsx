@@ -8,7 +8,7 @@ import backendAxios, { frontEnd } from "../../../backendAxios"
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingComponent from '../../LoadingComponent'
 
-const Comments = () => {
+const Comments = ({ media }) => {
 
 
     const profile_photo = useSelector(getProfilePhoto)
@@ -23,6 +23,11 @@ const Comments = () => {
     const [hasMore, setHasMore] = useState(true);
     const [index, setIndex] = useState(1);
     const [totalComments, setTotalComments] = useState(0)
+
+    // useEffect(() => {
+
+    //     console.log("media", media)
+    // }, [media])
 
     // id
     //reply
@@ -178,11 +183,12 @@ const Comments = () => {
             return
         }
 
+
         backendAxios.post("/addComment", {
 
             text: comment,
-            media_data: location.pathname
-
+            media_data: location.pathname,
+            media_name: media?.title || media?.original_title || media?.name || media?.original_name
         }).then((response) => {
             if (response.data.errMsg) {
                 dispatch(setAlert({

@@ -6,11 +6,46 @@ import PasswordSecurity from './PasswordSecurity'
 import FriendDetails from './FriendDetails'
 import { useSelector } from 'react-redux'
 import { getIsOAuth } from '../../userSlice'
+import CommentsProfile from './CommentsProfile'
+import backendAxios from '../../backendAxios'
 
 const ProfileTabs = () => {
 
     const isOAuth = useSelector(getIsOAuth)
     const [current, setCurrent] = useState("details")
+    const [commentData, setCommentData] = useState([])
+
+
+
+    const getComments = () => {
+        backendAxios.get(`/getUserComment`,).then((response) => {
+            if (response.data.errMsg) {
+                dispatch(setAlert({
+                    type: "error",
+                    data: response.data.errMsg,
+                    isOpen: true
+                }))
+                return
+            }
+            setCommentData(response.data)
+        }).catch((err) => {
+            dispatch(setAlert({
+                type: "error",
+                data: "There is been error, please try again",
+                isOpen: true
+            }))
+        })
+    }
+
+    const tabs = {
+        details: <Details />,
+        friend: <FriendDetails />,
+        security: <PasswordSecurity />,
+        comments: <CommentsProfile data={commentData} getComments={getComments} />
+    }
+
+
+
 
     return (
         <Stack sx={{
@@ -45,10 +80,17 @@ const ProfileTabs = () => {
                 }}>
                     Security
                 </Button>}
+                <Button sx={{ color: current === "comments" ? "profileTabs.activHeading" : "profileTabs.inActivHeading" }} onClick={() => {
+                    setCurrent("comments")
+                }}>
+                    Comments
+                </Button>
+
             </Box>
             <Divider sx={{ color: "profileTabs.divider" }} />
 
-            {current === "details" ? <Details /> : current === "friend" ? <FriendDetails /> : <PasswordSecurity />}
+            {tabs[current]}
+            {/* {current === "details" ? <Details /> : current === "friend" ? <FriendDetails /> : <PasswordSecurity />} */}
         </Stack>
     )
 }

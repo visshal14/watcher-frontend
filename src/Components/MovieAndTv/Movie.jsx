@@ -131,7 +131,7 @@ const Movie = () => {
 
                 </Grid>
             }
-            <Comments />
+            <Comments media={details} />
         </Grid >
     )
 }
