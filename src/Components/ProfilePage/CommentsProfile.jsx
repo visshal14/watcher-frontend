@@ -16,6 +16,7 @@ const CommentsProfile = ({ data, getComments }) => {
     }, [])
 
     const deleteComment = (id) => {
+        console.log("id delete")
         backendAxios.delete(`/deleteComment/${id}`,).then((response) => {
 
             if (response.data.errMsg) {
@@ -49,8 +50,8 @@ const CommentsProfile = ({ data, getComments }) => {
 
             },
         }}>
-            {data.map((ele, i) =>
-                <Grid container key={i} sx={{
+            {data.map((ele, i) => {
+                !ele?.isDeleted && <Grid container key={i} sx={{
                     p: "5px",
                     position: "relative",
                     borderRadius: "10px",
@@ -77,6 +78,7 @@ const CommentsProfile = ({ data, getComments }) => {
                         <Delete />
                     </IconButton>
                 </Grid>
+            }
 
             )}
         </Stack>
